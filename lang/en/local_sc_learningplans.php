@@ -17,12 +17,71 @@
 /**
  * Plugin strings are defined here.
  *
- * @package     local_sc_learningplans
- * @category    string
- * @copyright   2022 Solutto <>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   local_sc_learningplans
+ * @category  string
+ * @copyright 2022 Solutto <>
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Learning Plans';
+
+$string['sc_learningplans:manage'] = 'Manager - learning plans in local sc_learningplans';
+$string['sc_learningplans:teach'] = 'Teacher - learning plans in local sc_learningplans';
+
+$string['id']           = 'ID';
+$string['shortname']    = 'Short name';
+$string['name']         = 'Name';
+$string['coursecount']  = 'Courses';
+$string['usercount']    = 'Users';
+$string['periodcount']  = 'Periods';
+$string['created_at']   = 'Created at';
+$string['updated_at']   = 'Updated at';
+$string['actions']      = 'Actions';
+
+$string['manage_users']         = 'Manage users';
+$string['manage_courses']       = 'Manage courses';
+$string['delete_learningplan']  = 'Delete Learning Plan';
+$string['edit_plan']            = 'Edit Learning plan';
+$string['duplicate_plan']       = 'Duplicate Learning plan';
+$string['report']               = "Learning Plan's Report";
+$string['requirement_title']    = 'Add new requirement';
+$string['manage_periods']       = 'Manage Periods';
+$string['title_current_users']  = 'List users';
+
+$string['new_learning_plan'] = 'New learning plan';
+$string['plan_name'] = 'Learning Plan Name';
+$string['addingperiods'] = 'You want to add Periods';
+$string['select_periods'] = 'Select the number of periods';
+$string['btnaddperiods'] = 'Add Periods';
+$string['title_add_course'] = 'Add new course';
+$string['select_course'] = 'Select Course';
+$string['btn_add_course'] = 'Add';
+$string['btn_addopt_course'] = 'Add Optional';
+$string['title_current_course'] = 'Current courses';
+$string['title_optional_course'] = 'Optional courses';
+$string['delete_current_course'] = 'Delete course';
+$string['title_add_users'] = 'Manage users';
+$string['add_user_lp'] = 'Add new users in Learning Plan';
+$string['select_user'] = 'Select User';
+$string['select_role'] = 'Select Rol';
+$string['btn_add_user'] = 'Add users';
+$string['title_desc_plan'] = 'Plan description';
+$string['plan_image'] = 'Plan Image';
+$string['add_plan'] = 'Add learning plan';
+
+$string['bulk_users'] = 'Bulk upload users in csv file';
+
+$string['periodname']   = 'Period name';
+$string['period']       = 'Period';
+$string['typeperiod']   = 'Select the registration type of Period ';
+$string['manual']       = 'Manual';
+$string['auto']         = 'Automatic';
+
+$string['periodnamesetting'] = 'Period name';
+$string['periodnamesetting_desc'] = 'Select a default period name';
+$string['default_period_months'] = 'Period duration';
+$string['default_period_months_desc'] = 'Default period duration in months';
+
+$string['periodmonths'] = 'Duración (Meses)';

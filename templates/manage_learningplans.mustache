@@ -1,0 +1,16 @@
+<div class="d-flex justify-content-between pb-4">
+    <div class="massive_upload_users">
+        <p>{{#str}}bulk_users, local_sc_learningplans{{/str}}</p>
+        <form action="/local/sc_learningplans/massive.php" method='POST' enctype="multipart/form-data">
+            <input type="file" onchange='this.form.submit();' id="upload_massive_lp_users_" class="btn btn-primary" name='massivecsv' />
+        </form>
+    </div>
+    <div class="adding_user">
+        <a id="add_new_learningplan_" class="btn btn-primary" href="/local/sc_learningplans/create.php">{{#str}} add_plan, local_sc_learningplans {{/str}}</a>
+    </div>
+</div>
+
+<!-- Modal -->
+<div>
+    {{{createform}}}
+</div>

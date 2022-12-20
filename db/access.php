@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Plugin Acces - List of cap
  *
  * @package     local_sc_learningplans
  * @copyright   2022 Solutto <>
@@ -24,8 +24,21 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_sc_learningplans';
-$plugin->release = '0.1.0';
-$plugin->version = 2022121901;
-$plugin->requires = 2020061500;
-$plugin->maturity = MATURITY_ALPHA;
+$capabilities = array(
+    'local/sc_learningplans:manage' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW,
+        ),
+    ),
+    'local/sc_learningplans:teach' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager'           => CAP_ALLOW,
+            'editingteacher'    => CAP_ALLOW,
+            'coursecreator'     => CAP_ALLOW,
+        ),
+    ),
+);

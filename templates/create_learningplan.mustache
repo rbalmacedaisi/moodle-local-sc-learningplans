@@ -1,0 +1,121 @@
+<div class="container">
+    <h5 class="text-center w-100 font-weight-bold">{{#str}} new_learning_plan, local_sc_learningplans {{/str}}</h5>
+    <div class="row required pt-4">
+        <div class="col-sm-12 col-md-6 py-2">
+            <label class="w-100 text-dark" for="learningshortid">{{#str}} shortname, local_sc_learningplans {{/str}}</label>
+            <input required type="text" name="learningshortid" placeholder="{{#str}} shortname, local_sc_learningplans {{/str}}" id="learningshortid" class="w-100" />
+        </div>
+        <div class="col-sm-12 col-md-6 py-2">
+            <label class="w-100 text-dark" for="learningname">{{#str}} plan_name, local_sc_learningplans {{/str}}</label>
+            <input required type="text" name="learningname" placeholder="{{#str}} name, local_sc_learningplans {{/str}}" id="learningname" class="w-100" />
+        </div>
+    </div>
+    
+    <div class="row required pt-4">
+        <div class="col-sm-12 col-md-12 py-2">
+            <div>
+                <label class="w-100" for="learningname">{{#str}} addingperiods, local_sc_learningplans {{/str}}</label>
+                <input type="radio" id="notperiod" name="check_period" value="0" checked>
+                <label for="notperiod">{{#str}} no {{/str}}</label>
+                <input type="radio" id="addperiod" name="check_period" value="1">
+                <label for="addperiod">{{#str}} yes {{/str}}</label>
+            </div>
+            
+            <div>
+                <label for="periodslist">{{#str}} select_periods, local_sc_learningplans {{/str}}</label>
+                <select name="list-periods" id="periodslist" disabled>
+                    {{#optionsperiod}}
+                        <option value="{{id}}">{{value}}</option>
+                    {{/optionsperiod}}
+                </select>
+                <button id="addingperiods" disabled class="btn btn-primary">{{#str}} btnaddperiods, local_sc_learningplans {{/str}}</button>
+            </div>
+            
+            <div class="col-sm-12 col-md-12" id="listperiods"></div>
+            <div class="col-sm-12 col-md-12 pt-2" id="type_enrol"></div>
+        </div>
+    </div>
+    
+    <div class="courses col-sm-12 col-md-6 py-2 p-0" id="addcourses">
+        <label class="w-100" for="learningname">{{#str}} title_add_course, local_sc_learningplans {{/str}}</label>
+        <form id='formAddCourseToLearningPlan' class="d-flex align-items-center flex-wrap">
+            <input type="hidden" name="id" value="{{learningplanid}}" />
+            <select required class="p-1" id='selectAddCourseToLearningPlan' name="selectedcourse">
+                <option class="b scm-box" value=''>{{#str}} select_course, local_sc_learningplans {{/str}}</option>
+                {{#courses}}
+                <option class="b scm-box" value='{{id}}'>{{shortname}}</option>
+                {{/courses}}
+            </select>
+            <button id="addrequired" type="submit" name='add' class="btn btn-primary lp_button mx-1">
+                {{#str}} btn_add_course, local_sc_learningplans {{/str}}
+            </button>
+            <button id="addooptional" type="submit" name='add' class="btn btn-outline-primary lp_button mx-1">{{#str}} btn_addopt_course, local_sc_learningplans {{/str}}</button>
+        </form>
+    </div>
+    
+    <div class="row" id="listcoursesplan">
+        <div class="col-md-6">
+            <label class="w-100 text-primary font-weight-bold" for="learningname">{{#str}} title_current_course, local_sc_learningplans {{/str}}</label>
+            <form id='formCurrentCourseToLearningPlan'>
+                <input type="hidden" name="id" value="{{learningplanid}}" /> 
+            </form>
+        </div>
+        <div class="col-md-6">
+            <label class="w-100 text-primary font-weight-bold" for="learningname">{{#str}} title_optional_course, local_sc_learningplans {{/str}}</label>
+            <form id='formOptionalCourseToLearningPlan'>
+                <input type="hidden" name="id" value="{{learningplanid}}" />
+            </form>
+        </div>
+    </div>
+    
+    <div class="row users" id="listusersplan">
+        <div class="col-sm-12 col-md-6 py-2">
+            <label class="w-100" for="learningname">{{#str}} title_add_users, local_sc_learningplans {{/str}}</label>
+            <select name="listusers" id="listusers" class="w-100" required>
+                <option value=''>{{#str}} select_user, local_sc_learningplans {{/str}}</option>
+                {{#allusers}}
+                <option value="{{id}}">{{firstname}} {{lastname}} - {{email}}</option>
+                {{/allusers}}
+            </select>
+        </div>
+
+        <div class="col-sm-12 col-md-6 py-2">
+            <label class="w-100" for="learningname">{{#str}} title_add_users, local_sc_learningplans {{/str}}</label>
+            <div class="d-flex align-items-center flex-wrap">
+            <select name="listroles" id="listroles" required class="mr-1">
+                <option value=''>{{#str}} select_role, local_sc_learningplans {{/str}}</option>
+                {{#roles}}
+                <option value="{{id}}">{{strname}}</option>
+                {{/roles}}
+            </select>
+            <button id="adduser" class="btn btn-primary lp_button">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-10 py-2">
+            <label class="w-100 mb-0 text-primary font-weight-bold" for="learningname">{{#str}} title_current_users, local_sc_learningplans {{/str}}</label>
+            <div class="listlearningusers">
+                <ul class="d-none">
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-12 col-md-12 py-2">
+            <label class="w-100 text-primary font-weight-bold" for="desc_plan">{{#str}} title_desc_plan, local_sc_learningplans {{/str}}</label>
+            {{{formeditor}}}
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-12 col-md-12 py-2 mx-0 pickerlp">
+            <label class="w-100 text-primary font-weight-bold" for="desc_plan">{{#str}}plan_image, local_sc_learningplans{{/str}}</label>
+            {{{formimagpicker}}}
+        </div>
+    </div>
+    
+   <div class="modal-footer">
+            <button id="addplan" class="btn btn-primary">{{#str}} add_plan, local_sc_learningplans {{/str}}</button>
+    </div>
+

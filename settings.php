@@ -30,4 +30,21 @@ if ($hassiteconfig) {
         get_string('pluginname', 'local_sc_learningplans'),
         new moodle_url('/local/sc_learningplans/index.php')
     ));
+
+    $settingspage = new admin_settingpage('local_sc_learningplans_settings', get_string('pluginname', 'local_sc_learningplans'));
+    if ($ADMIN->fulltree) {
+        $settingspage->add(new admin_setting_configtext(
+            'local_sc_learningplans/periodnamesetting',
+            get_string('periodnamesetting', 'local_sc_learningplans'),
+            get_string('periodnamesetting_desc', 'local_sc_learningplans'),
+            get_string('period', 'local_sc_learningplans'),
+        ));
+        $settingspage->add(new admin_setting_configtext(
+            'local_sc_learningplans/default_period_months',
+            get_string('default_period_months', 'local_sc_learningplans'),
+            get_string('default_period_months_desc', 'local_sc_learningplans'),
+            4,
+        ));
+    }
+    $ADMIN->add('localplugins', $settingspage);
 }
