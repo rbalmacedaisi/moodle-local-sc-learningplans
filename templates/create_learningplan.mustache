@@ -43,7 +43,7 @@
             <select required class="p-1" id='selectAddCourseToLearningPlan' name="selectedcourse">
                 <option class="b scm-box" value=''>{{#str}} select_course, local_sc_learningplans {{/str}}</option>
                 {{#courses}}
-                <option class="b scm-box" value='{{id}}'>{{shortname}}</option>
+                <option class="b scm-box" value='{{id}}'>{{fullname}}</option>
                 {{/courses}}
             </select>
             <button id="addrequired" type="submit" name='add' class="btn btn-primary lp_button mx-1">

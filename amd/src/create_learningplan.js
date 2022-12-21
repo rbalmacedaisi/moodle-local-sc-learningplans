@@ -1,19 +1,26 @@
-/* import * as Ajax from 'core/ajax';*/
+import * as Ajax from 'core/ajax';
 import * as Str from 'core/str';
 
 export const init = (str_name_period_config, default_period_months) => {
-    /*const btnadd = document.querySelector('#addplan');
-     if (btnadd) {
+    addLearningPlan();
+    addUsers();
+    addCourses();
+    addPeriodsOrNot(str_name_period_config, default_period_months);
+};
+
+let addLearningPlan = () => {
+    const btnadd = document.querySelector('#addplan');
+    if (btnadd) {
         btnadd.addEventListener('click', e => {
             e.preventDefault();
-            const plannameelement = document.querySelector('#learningname');
-            if (!plannameelement.validity.valid) {
-                plannameelement.reportValidity();
-                return;
-            }
             const learningshortid = document.querySelector('#learningshortid');
             if (!learningshortid.validity.valid) {
                 learningshortid.reportValidity();
+                return;
+            }
+            const plannameelement = document.querySelector('#learningname');
+            if (!plannameelement.validity.valid) {
+                plannameelement.reportValidity();
                 return;
             }
             const learningname = document.querySelector('#learningname');
@@ -29,14 +36,14 @@ export const init = (str_name_period_config, default_period_months) => {
             const type_enrol_automatic = document.getElementById("type_automatic");
             let hasperiod = 0;
             let type_enrol = 0;
-            if (type_enrol_manual != null) {
+            if (type_enrol_manual !== null) {
                 if (type_enrol_manual.checked) {
                     type_enrol = 1;
                 }
             } else {
                 type_enrol = 0;
             }
-            if (type_enrol_automatic != null) {
+            if (type_enrol_automatic !== null) {
                 if (type_enrol_automatic.checked) {
                     type_enrol = 2;
                 }
@@ -49,7 +56,7 @@ export const init = (str_name_period_config, default_period_months) => {
             listperiods.forEach(e => {
                 periods.push({
                     name: e.value,
-                    vigency: 0
+                    months: 0
                 });
             });
             if (btnscourse.length != 0) {
@@ -69,19 +76,22 @@ export const init = (str_name_period_config, default_period_months) => {
                     });
                 });
             }
+            const args = {
+                learningshortid: learningshortid.value,
+                learningname: learningname.value,
+                periods,
+                courses,
+                users,
+                fileimage: learningimage.value,
+                description: desc_plan.value,
+                hasperiod: hasperiod,
+                enroltype: type_enrol,
+            };
+            window.console.log(args);
             const promise = Ajax.call([{
                 methodname: 'local_sc_learningplans_save_learning_plan',
-                args: {
-                    learningname: learningname.value,
-                    periods,
-                    courses,
-                    users,
-                    fileimage: learningimage.value,
-                    description: desc_plan.value,
-                    hasperiod: hasperiod,
-                    enroltype: type_enrol,
-                }
-            },]);
+                args
+           },]);
             promise[0].done(function (response) {
                 window.console.log('local_sc_learningplans_save_learning_plan', response);
                 location.href = '/local/sc_learningplans/index.php';
@@ -90,7 +100,59 @@ export const init = (str_name_period_config, default_period_months) => {
             });
         });
     }
+};
 
+let addUsers = () => {
+    const adduser = document.querySelector('#adduser');
+    const listusers = document.querySelector('#listusers');
+    const listroles = document.querySelector('#listroles');
+    const listlearningusers = document.querySelector('.listlearningusers');
+    if (adduser && listusers && listroles) {
+        adduser.addEventListener('click', async e => {
+            e.preventDefault();
+            if (!listusers.validity.valid) {
+                listusers.reportValidity();
+                return;
+            }
+            if (!listroles.validity.valid) {
+                listroles.reportValidity();
+                return;
+            }
+            const selectedoption = listusers.querySelector(`option[value="${listusers.value}"]`);
+            if (selectedoption) {
+                const userid = listusers.value;
+                const roleid = listroles.value;
+                const username = selectedoption.innerHTML;
+                selectedoption.disabled = true;
+                const divcontainer = document.createElement('div');
+                const div = document.createElement('div');
+                div.classList.add('lp_user_list', 'p-1', 'alert-primary');
+                div.innerHTML = username;
+                const deletebtn = document.createElement('button');
+                deletebtn.setAttribute('roleid', roleid);
+                deletebtn.setAttribute('userid', userid);
+                deletebtn.setAttribute('aria-label', 'Close');
+                deletebtn.setAttribute('type', 'button');
+                deletebtn.classList.add('close');
+                deletebtn.onclick = e => {
+                    e.preventDefault();
+                    selectedoption.disabled = false;
+                    divcontainer.remove();
+                };
+                const deleteicon = document.createElement('i');
+                deleteicon.classList.add('fa', 'fa-close');
+                divcontainer.append(div);
+                div.append(deletebtn);
+                listlearningusers.append(divcontainer);
+                deletebtn.append(deleteicon);
+                listusers.value = '';
+                listroles.value = '';
+            }
+        });
+    }
+};
+
+let addCourses = async () => {
     const selectedcourse = document.querySelector('#selectAddCourseToLearningPlan');
     const addrequired = document.querySelector('#addrequired');
     const requiredlist = document.querySelector('#formCurrentCourseToLearningPlan');
@@ -113,8 +175,7 @@ export const init = (str_name_period_config, default_period_months) => {
                 div.classList.add('lp_course_list', 'p-1', 'alert-primary');
                 div.innerHTML = coursename;
                 const deletebtn = document.createElement('button');
-                const strdelete = await Str.get_string('delete_current_course', 'local_sc_learningplans');
-                window.console.log(strdelete);
+
                 deletebtn.setAttribute('isrequired', 1);
                 deletebtn.setAttribute('courseid', courseid);
                 deletebtn.setAttribute('aria-label', 'Close');
@@ -179,55 +240,6 @@ export const init = (str_name_period_config, default_period_months) => {
             }
         });
     }
-
-    const adduser = document.querySelector('#adduser');
-    const listusers = document.querySelector('#listusers');
-    const listroles = document.querySelector('#listroles');
-    const listlearningusers = document.querySelector('.listlearningusers');
-    if (adduser && listusers && listroles) {
-        adduser.addEventListener('click', async e => {
-            e.preventDefault();
-            if (!listusers.validity.valid) {
-                listusers.reportValidity();
-                return;
-            }
-            if (!listroles.validity.valid) {
-                listroles.reportValidity();
-                return;
-            }
-            const selectedoption = listusers.querySelector(`option[value="${listusers.value}"]`);
-            if (selectedoption) {
-                const userid = listusers.value;
-                const roleid = listroles.value;
-                const username = selectedoption.innerHTML;
-                selectedoption.disabled = true;
-                const divcontainer = document.createElement('div');
-                const div = document.createElement('div');
-                div.classList.add('lp_user_list', 'p-1', 'alert-primary');
-                div.innerHTML = username;
-                const deletebtn = document.createElement('button');
-                deletebtn.setAttribute('roleid', roleid);
-                deletebtn.setAttribute('userid', userid);
-                deletebtn.setAttribute('aria-label', 'Close');
-                deletebtn.setAttribute('type', 'button');
-                deletebtn.classList.add('close');
-                deletebtn.onclick = e => {
-                    e.preventDefault();
-                    selectedoption.disabled = false;
-                    divcontainer.remove();
-                };
-                const deleteicon = document.createElement('i');
-                deleteicon.classList.add('fa', 'fa-close');
-                divcontainer.append(div);
-                div.append(deletebtn);
-                listlearningusers.append(divcontainer);
-                deletebtn.append(deleteicon);
-                listusers.value = '';
-                listroles.value = '';
-            }
-        });
-    } */
-    addPeriodsOrNot(str_name_period_config, default_period_months);
 };
 
 let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {

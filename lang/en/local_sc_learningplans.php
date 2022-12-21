@@ -85,3 +85,8 @@ $string['default_period_months'] = 'Period duration';
 $string['default_period_months_desc'] = 'Default period duration in months';
 
 $string['periodmonths'] = 'Duración (Meses)';
+
+$string['student']          = 'Student';
+$string['teacher']          = 'Teacher';
+$string['editingteacher']   = 'Editing teacher';
+$string['manager']          = 'Manager';

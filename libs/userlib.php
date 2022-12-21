@@ -15,17 +15,32 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Local Lib - Common function for users
  *
  * @package     local_sc_learningplans
- * @copyright   2022 Solutto <>
+ * @copyright   2022 Solutto < G>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'local_sc_learningplans';
-$plugin->release = '0.1.0';
-$plugin->version = 2022122001;
-$plugin->requires = 2020061500;
-$plugin->maturity = MATURITY_ALPHA;
+/**
+ * Get allowed roles for this plugin
+ *
+ * @return array
+ */
+function sc_learningplan_get_roles() {
+    global $DB;
+    $roles = $DB->get_records('role');
+    foreach ($roles as $key => &$role) {
+        if (
+            $role->shortname != 'manager' &&
+            $role->shortname != 'editingteacher' &&
+            $role->shortname != 'teacher' &&
+            $role->shortname != 'student'
+        ) {
+            unset($roles[$key]);
+            continue;
+        }
+        $role->strname = get_string($role->shortname, 'local_sc_learningplans');
+    }
+    return $roles;
+}

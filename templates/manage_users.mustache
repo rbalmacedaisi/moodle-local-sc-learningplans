@@ -1,0 +1,77 @@
+<h5 class="text-center font-weight-bold">{{#str}} title_add_users, local_sc_learningplans {{/str}}</h5>
+
+<div class="d-flex justify-content-between pt-4 content_upload_user">
+    <div class="d-flex action_upload_user">
+         <div class="btn_adding_user">
+             {{#hasmanualenrol}}
+             <a id="list_users_approve" class="btn btn-primary" href="/local/sc_learningplans/usersperiod.php?id={{learningplanid}}">Usuarios en Espera</a>
+             {{/hasmanualenrol}}
+             <button id="add_new_user_" class="btn btn-primary" data-toggle="modal" data-target="#userModal">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
+        </div>
+    </div>
+    
+    <div class="input-group has-search">
+        <input type='text' class="form-control mb-4 py-2 border-right-0 border" placeholder='{{#str}} search_users, local_sc_learningplans{{/str}}' id="searchUsers">
+        <span class="input-group-append">
+            <button class="btn border-left-0 border" type="button">
+                <i class="fa fa-search"></i>
+            </button>
+        </span>
+    </div>
+</div>
+
+<h5>{{#str}} title_current_users, local_sc_learningplans {{/str}}</h5>
+
+<table class="flexible table table-hover shadow-sm" id="usersTable">
+  <thead>
+    <tr>
+      <th scope="col">{{#str}} id_user, local_sc_learningplans {{/str}}</th>
+      <th scope="col">{{#str}} name_user, local_sc_learningplans {{/str}}</th>
+      <th scope="col">{{#str}} email_user, local_sc_learningplans {{/str}}</th>
+      {{#hasperiods}}
+      <th scope="col">{{#str}}period_enrol, local_sc_learningplans{{/str}}</th>
+      {{/hasperiods}}
+      <th scope="col">{{#str}} roles_user, local_sc_learningplans {{/str}}</th>
+      <th scope="col">{{#str}} action_user, local_sc_learningplans {{/str}}</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<div id='userpaginationsc' class="d-flex justify-content-end"></div>
+
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100 font-weight-bold" id="exampleModalLabel">{{#str}} add_user_lp, local_sc_learningplans {{/str}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style='visibility: hidden;'>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <label class="w-100" for="learningname">{{#str}} assign_users, local_sc_learningplans {{/str}}</label>
+                    <select name="listusers" id="listusers"  required>
+                        <option value=''>{{#str}} select_user, local_sc_learningplans {{/str}}</option>
+                        {{#allusers}}
+                        <option value="{{id}}">{{firstname}} {{lastname}} - {{email}}</option>
+                        {{/allusers}}
+                    </select>
+                    
+                    <label class="w-100 pt-4" for="learningname">{{#str}}assign_rol, local_sc_learningplans {{/str}}</label>
+                    <select name="listroles" id="listroles" required>
+                        <option value=''>{{#str}} select_role, local_sc_learningplans {{/str}}</option>
+                        {{#roles}}
+                        <option value="{{id}}">{{strname}}</option>
+                        {{/roles}}
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} close_modal, local_sc_learningplans {{/str}}</button>
+                <button type="button" class="btn btn-primary" id="adduser">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
+            </div>
+        </div>
+    </div>
+</div>

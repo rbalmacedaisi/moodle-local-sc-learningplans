@@ -1,0 +1,246 @@
+<h5 class="text-center font-weight-bold">{{#str}} title_add_course, local_sc_learningplans {{/str}}</h5>
+
+{{#hasperiod}}
+    <div class="d-flex justify-content-end pt-4 pb-4">
+        <button id="add_new_user_" class="btn btn-primary" data-toggle="modal" data-target="#addCoursesPlanPeriod">{{#str}} add_courses_period, local_sc_learningplans {{/str}}</button>
+    </div>
+    {{#listcoursesperiod}}
+    <div class="accordion" id="accordionList-{{idperiod}}">
+        <div class="card">
+            <div class="card-header collapsed" data-toggle="collapse" data-target="#collapse-{{idperiod}}" aria-expanded="false">     
+                <span class="title">{{nameperiod}}</span>
+                <span class="icon-drop"><i class="fa fa-angle-down rotate-icon"></i></span>
+            </div>
+            <div id="collapse-{{idperiod}}" class="collapse" data-parent="#accordionList-{{idperiod}}">
+                <div class="card-body">
+                    <nav class="justify-content-center d-flex tabs-courses pt-4">
+                      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-link active requiredcourses" id="nav-requiredcourses-{{idperiod}}-tab" data-toggle="tab" href="#nav-requiredcourses-{{idperiod}}" role="tab" aria-controls="nav-requiredcourses-{{idperiod}}" aria-selected="true">{{#str}} courses_required, local_sc_learningplans {{/str}}</a>
+                        <a class="nav-link optionalcourses" id="nav-optionalcourses-{{idperiod}}-tab" data-toggle="tab" href="#nav-optionalcourses-{{idperiod}}" role="tab" aria-controls="nav-optionalcourses-{{idperiod}}" aria-selected="false">{{#str}} courses_optional, local_sc_learningplans {{/str}}</a>
+                      </div>
+                    </nav>
+                
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-requiredcourses-{{idperiod}}" role="tabpanel" aria-labelledby="nav-requiredcourses-{{idperiod}}-tab">
+                            <ul class="coursesrequired">
+                                {{#coursesrequired}}
+                                <li class="list-courses-required-period" draggable="true" datacourse="courses[{{id}}]" lpid={{learningplanid}} poscourse="{{pos}}" periodid={{idperiod}}>
+                                    <i class="fa fa-book course-icon"></i>
+                                    <span class="pl-4 name-course" for="course-{{id}}">{{shortname}}</span>
+                                    <div class="float-right actions-course">
+                                        <i class="fa fa-arrows-alt"></i>
+                                        <button id="btndeletecourse" course-id="{{id}}" course-required="1" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{#str}}delete_current_course, local_sc_learningplans{{/str}}"><i class="lp_icon fa fa-trash fa-fw"></i></button>
+                                    </div>
+                                </li>
+                                <hr>
+                                {{/coursesrequired}} 
+                            </ul>
+                            <div class="d-flex justify-content-end">
+                                <button id="courseOrderInPeriod" periodid="{{idperiod}}" lpid={{learningplanid}} class="btn btn-primary">{{#str}} btn_save_coursepos, local_sc_learningplans {{/str}}</button>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-optionalcourses-{{idperiod}}" role="tabpanel" aria-labelledby="nav-optionalcourses-{{idperiod}}">
+                            <ul class="coursesrequired">
+                                {{#coursesoptional}}
+                                <li class="list-courses-required" datacourse="courses[{{id}}]">
+                                    <i class="fa fa-book course-icon"></i>
+                                    <span class="pl-4 name-course" for="course-{{id}}">{{shortname}}</span>
+                                    <div class="float-right actions-course">
+                                        <button id="btndeletecourse" course-id="{{id}}" course-required="0" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{#str}}delete_current_course, local_sc_learningplans{{/str}}"><i class="lp_icon fa fa-trash fa-fw"></i></button>
+                                    </div>
+                                </li>
+                                <hr>
+                                {{/coursesoptional}} 
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/listcoursesperiod}}
+{{/hasperiod}}
+
+{{^hasperiod}}
+<nav class="justify-content-center d-flex tabs-courses pt-4">
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-link active" id="nav-requiredcourses-tab" data-toggle="tab" href="#nav-requiredcourses" role="tab" aria-controls="nav-requiredcourses" aria-selected="true">{{#str}} courses_required, local_sc_learningplans {{/str}}</a>
+    <a class="nav-link" id="nav-optionalcourses-tab" data-toggle="tab" href="#nav-optionalcourses" role="tab" aria-controls="nav-optionalcourses" aria-selected="false">{{#str}} courses_optional, local_sc_learningplans {{/str}}</a>
+  </div>
+</nav>
+
+<div class="tab-content" id="nav-tabContent">
+  <!---Tab courses Required---->
+   <div class="tab-pane fade show active" id="nav-requiredcourses" role="tabpanel" aria-labelledby="nav-requiredcourses-tab">
+        <div class="d-flex justify-content-end pt-4">
+            <button id="add_new_user_" class="btn btn-primary" data-toggle="modal" data-target="#coursesRequiredModal">{{#str}} add_courses_required, local_sc_learningplans {{/str}}</button>
+        </div>
+    
+        <form id='formCurrentCourseToLearningPlan' class="pl-4">
+            <input type="hidden" name="id" value="{{learningplanid}}" /> 
+            <ul class="coursesrequired" learningplanid="{{learningplanid}}">
+            {{#currentcourses}}
+             <li class="list-courses-required" draggable="true" datacourse="courses[{{id}}]" poscourse="{{pos}}">
+                <i class="fa fa-book course-icon"></i>
+                <span class="pl-4 name-course" for="course-{{id}}">{{fullname}}</span>
+                <div class="float-right actions-course">
+                    <i class="fa fa-arrows-alt"></i>
+                    <button id="btndeletecourse" course-id="{{id}}" course-required="1" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{#str}}delete_current_course, local_sc_learningplans{{/str}}"><i class="lp_icon fa fa-trash fa-fw"></i></button>
+                </div>
+              </li>
+              <hr>
+              {{/currentcourses}} 
+            </ul>
+            <div class="d-flex justify-content-end">
+                <button id="updatecourseorder" class="btn btn-primary">{{#str}} btn_save_coursepos, local_sc_learningplans {{/str}}</button>
+            </div>
+        </form>
+   </div>
+  <!---End tab courses required---->
+  
+  <!---Tab courses Optional---->
+  <div class="tab-pane fade" id="nav-optionalcourses" role="tabpanel" aria-labelledby="nav-optionalcourses-tab">
+    <div class="d-flex justify-content-end pt-4">
+        <button id="add_new_user_" class="btn btn-primary" data-toggle="modal" data-target="#coursesOptionalModal">{{#str}} add_courses_optional, local_sc_learningplans {{/str}}</button>
+    </div>
+    
+    <form id='formOptionalCourseToLearningPlan' class="pl-4">
+        <input type="hidden" name="id" value="{{learningplanid}}" /> 
+        <ul class="coursesoptional">
+            {{#optionalcourses}}
+            <li class="list-courses-optional" draggable="true">
+                <i class="fa fa-book course-icon"></i>
+                <span class="pl-4 name-course" for="course-{{id}}">{{fullname}}</span>
+                <div class="float-right actions-course">
+                    <button id="addoptional_required" cid="{{id}}" cname="{{shortname}}" lpid="{{learningplanid}}" class="btn btn-primary mr-4">{{#str}} add_courses_required, local_sc_learningplans{{/str}}</button>
+                    <button id="btndeletecourse" course-id="{{id}}" course-required="0" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Delete Course"><i class="lp_icon fa fa-trash fa-fw"></i></button>
+                </div>
+            </li>
+          <hr>
+          {{/optionalcourses}}
+        </ul>
+    </form>
+  </div>
+  <!---End tab courses optional---->
+</div>
+{{/hasperiod}}
+
+<!---Modal Add courses Period---->
+<div class="modal fade" id="addCoursesPlanPeriod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100 font-weight-bold" id="exampleModalLabel">{{#str}}add_courses_period, local_sc_learningplans{{/str}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style='visibility: hidden;'>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <input type="hidden" name="id" value="{{learningplanid}}" />
+                    <select id="selectAddCourseToLearningPlanPeriod" class="form-select" required name="selectedcourse">
+                        <option class="b scm-box" value=''>{{#str}} select_course, local_sc_learningplans {{/str}}</option>
+                        {{#courses}}
+                        <option class="b scm-box" value='{{id}}'>{{shortname}}</option>
+                        {{/courses}}
+                    </select>
+                    
+                    <div>
+                        <select id="selectPeriodToLearningPlan" class="form-select" required name="selectedperiod">
+                            <option value=''>{{#str}} select_one_period, local_sc_learningplans {{/str}}</option>
+                            {{#listperiods}}
+                            <option class="b scm-box" value='{{id}}'>{{name}}</option>
+                            {{/listperiods}}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <select id="selectCredits" class class="form-select" required name="selectedcredits">
+                            <option value=''>{{#str}} select_credits, local_sc_learningplans {{/str}}</option>
+                            {{#credits}}
+                            <option class="b scm-box" value='{{id}}'>{{value}}</option>
+                            {{/credits}}
+                        </select>
+                    </div>
+                    
+                    <div class="pt-2">
+                        <label for="required">{{#str}} courses_required, local_sc_learningplans {{/str}}</label>
+                        <input type="radio" id="required" name="type_course" value="1">
+                        
+                        <label for="optional">{{#str}} courses_optional, local_sc_learningplans {{/str}}</label>
+                        <input type="radio" id="optional" name="type_course" value="0">
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} close_modal, local_sc_learningplans {{/str}}</button>
+                <button  id="addcourses" type="button" class="btn btn-primary">{{#str}} btn_add_course, local_sc_learningplans {{/str}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---End Modal Add courses Period---->
+
+
+<!---Modal courses Required---->
+<div class="modal fade" id="coursesRequiredModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100 font-weight-bold" id="exampleModalLabel">{{#str}} title_add_course, local_sc_learningplans {{/str}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style='visibility: hidden;'>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <label class="w-100" for="learningname">{{#str}} available_courses, local_sc_learningplans {{/str}}</label>
+                    <input type="hidden" name="id" value="{{learningplanid}}" />
+                    <select id="selectAddCourseToLearningPlan" class="form-select" multiple required size="4" name="selectedcourse">
+                        <option class="b scm-box" value=''>{{#str}} select_course, local_sc_learningplans {{/str}}</option>
+                        {{#courses}}
+                        <option class="b scm-box" value='{{id}}'>{{fullname}}</option>
+                        {{/courses}}
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} close_modal, local_sc_learningplans {{/str}}</button>
+                <button  id="addrequired" type="button" class="btn btn-primary">{{#str}} btn_add_course, local_sc_learningplans {{/str}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---End Modal courses Required---->
+
+<!---Modal courses Optional---->
+<div class="modal fade" id="coursesOptionalModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100 font-weight-bold" id="exampleModalLabel">{{#str}} title_add_course, local_sc_learningplans {{/str}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style='visibility: hidden;'>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <label class="w-100" for="learningname">{{#str}} available_courses, local_sc_learningplans {{/str}}</label>
+                    <input type="hidden" name="id" value="{{learningplanid}}" />
+                    <select required class="form-select" multiple id="selectAddCourseOptionalToLearningPlan" size="4" name="selectedcourse">
+                        <option class="b scm-box" value=''>{{#str}} select_course, local_sc_learningplans {{/str}}</option>
+                        {{#courses}}
+                        <option class="b scm-box" value='{{id}}'>{{fullname}}</option>
+                        {{/courses}}
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} close_modal, local_sc_learningplans {{/str}}</button>
+                <button  id="addOptional" type="button" class="btn btn-primary">{{#str}} btn_add_course, local_sc_learningplans {{/str}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---End Modal courses Optional---->

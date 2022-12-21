@@ -25,6 +25,7 @@
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/forms/createlp_form.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
 require_login();
 $context = context_system::instance();
 if (!has_any_capability(['local/sc_learningplans:manage'], $context)) {
@@ -55,9 +56,17 @@ $optionsperiod = [
     ['id' => '11', 'value' => '11'],
     ['id' => '12', 'value' => '12'],
 ];
+
+$allcourses = get_courses();
+unset($allcourses[1]);
+
+$allusers = $DB->get_records('user', ['suspended' => 0, 'deleted' => 0]);
+unset($allusers[1]); // Guest user!
+
+$roles = sc_learningplan_get_roles();
+
 $config = get_config('local_sc_learningplans');
 $coursetemplatedata = [
-    'courses' => $courses,
     'currentcourses' => $requiredcourses,
     'optionalcourses' => $optionalcourses,
 ];
@@ -70,8 +79,9 @@ $maintemplatedata = [
     'formimagpicker' => $formimagepicker->render(),
     'formeditor' => $formeditor->render(),
     'optionsperiod' => $optionsperiod,
-    'mustachecourses' => $OUTPUT->render_from_template('local_sc_learningplans/manage_courses', $coursetemplatedata),
-    'mustacheusers' => $OUTPUT->render_from_template('local_sc_learningplans/manage_users', $usertemplatedata),
+    'courses' => array_values($allcourses),
+    'allusers' => array_values($allusers),
+    'roles' => array_values($roles),
 
 ];
 echo $OUTPUT->header();
