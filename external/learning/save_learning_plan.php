@@ -31,6 +31,7 @@ $CFG->debugdisplay = 1;              // NOT FOR PRODUCTION SERVERS!
 
 require_once($CFG->dirroot . '/local/sc_learningplans/external/course/save_learning_course.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/external/user/add_learning_user.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/external/period/addperiod_learning_plan.php');
 require_once($CFG->libdir . '/filelib.php');
 
 class save_learning_plan_external extends external_api {
@@ -136,14 +137,14 @@ class save_learning_plan_external extends external_api {
                 $newlearningplan->usercount++;
                 add_learning_user_external::add_learning_user($learningplanid, $userid, $roleid);
             }
+        } else {
+            // Only add periods.
+            foreach ($periods as $period) {
+                $name = $period['name'];
+                $months = $period['months'];
+                addperiod_learning_plan_external::addperiod_learning_plan($learningplanid, $name, $months);
+            }
         }
-
-        /*
-        foreach ($periods as $period) {
-           $name = $period['name'];
-            $months = $period['months'];
-            addperiod_learning_plan_external::addperiod_learning_plan($learningplanid, $name, $months);
-        } */
 
         if ($fileimage) {
             $itemid = $fileimage;
@@ -159,7 +160,7 @@ class save_learning_plan_external extends external_api {
         }
         $newlearningplan->updated_at = time();
         $DB->update_record('local_learning_plans', $newlearningplan);
-        die;
+
         return [
             'learningplanid' => $learningplanid
         ];

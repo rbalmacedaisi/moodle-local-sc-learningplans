@@ -54,9 +54,16 @@ let addLearningPlan = () => {
                 hasperiod = 1;
             }
             listperiods.forEach(e => {
+                const index = e.getAttribute('index');
+                const name = e.value == '' ? index : e.value;
+                const monthsElement = document.querySelector(`#inputPeriodMonth${index}`);
+                let months = 0;
+                if (monthsElement) {
+                    months = monthsElement.value == '' ? 0 : monthsElement.value;
+                }
                 periods.push({
-                    name: e.value,
-                    months: 0
+                    name,
+                    months
                 });
             });
             if (btnscourse.length != 0 && hasperiod == 0) {
@@ -68,7 +75,7 @@ let addLearningPlan = () => {
                     });
                 });
             }
-            if (btnsusers.length != 0  && hasperiod == 0) {
+            if (btnsusers.length != 0 && hasperiod == 0) {
                 btnsusers.forEach(e => {
                     users.push({
                         userid: parseInt(e.getAttribute('userid')),
@@ -91,7 +98,7 @@ let addLearningPlan = () => {
             const promise = Ajax.call([{
                 methodname: 'local_sc_learningplans_save_learning_plan',
                 args
-           },]);
+            },]);
             promise[0].done(function (response) {
                 window.console.log('local_sc_learningplans_save_learning_plan', response);
                 location.href = '/local/sc_learningplans/index.php';
@@ -255,8 +262,6 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
         const divInput = document.createElement('div');
         const label = document.createElement('label');
         const input = document.createElement('input');
-        input.classList.add('period_name');
-
         addperiod.addEventListener('click', () => {
             let addingperiods = document.getElementById('addingperiods');
             addingperiods.disabled = false;
@@ -274,7 +279,9 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
                         labelForName.innerHTML = `${periodname} ${i}:&nbsp;`;
 
                         const inputForName = input.cloneNode();
+                        inputForName.classList.add('period_name');
                         inputForName.setAttribute('value', `${str_name_period_config} ${i}`);
+                        inputForName.setAttribute('index', i);
                         inputForName.placeholder = `${str_name_period_config} ${i}`;
                         inputForName.id = `inputPeriodName${i}`;
 
@@ -285,6 +292,7 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
                         const inputForMonths = input.cloneNode();
                         inputForMonths.setAttribute('value', default_period_months);
                         inputForMonths.placeholder = default_period_months;
+                        inputForMonths.setAttribute('index', i);
                         inputForMonths.id = `inputPeriodMonth${i}`;
 
                         const divToPut = divInput.cloneNode();
