@@ -59,7 +59,7 @@ let addLearningPlan = () => {
                     months: 0
                 });
             });
-            if (btnscourse.length != 0) {
+            if (btnscourse.length != 0 && hasperiod == 0) {
                 btnscourse.forEach(e => {
                     courses.push({
                         courseid: parseInt(e.getAttribute('courseid')),
@@ -68,7 +68,7 @@ let addLearningPlan = () => {
                     });
                 });
             }
-            if (btnsusers.length != 0) {
+            if (btnsusers.length != 0  && hasperiod == 0) {
                 btnsusers.forEach(e => {
                     users.push({
                         userid: parseInt(e.getAttribute('userid')),

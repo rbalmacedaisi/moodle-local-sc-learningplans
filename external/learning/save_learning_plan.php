@@ -24,6 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+@error_reporting(E_ALL | E_STRICT);   // NOT FOR PRODUCTION SERVERS!
+@ini_set('display_errors', '1');         // NOT FOR PRODUCTION SERVERS!
+$CFG->debug = (E_ALL | E_STRICT);   // === DEBUG_DEVELOPER - NOT FOR PRODUCTION SERVERS!
+$CFG->debugdisplay = 1;              // NOT FOR PRODUCTION SERVERS!
+
+require_once($CFG->dirroot . '/local/sc_learningplans/external/course/save_learning_course.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/external/user/add_learning_user.php');
 require_once($CFG->libdir . '/filelib.php');
 
 class save_learning_plan_external extends external_api {
@@ -78,7 +85,6 @@ class save_learning_plan_external extends external_api {
         $enroltype
         ) {
         global $DB, $USER;
-
         // Check if LP exist with the shortid.
         $learningplanexist = $DB->record_exists('local_learning_plans', ['shortname' => $learningshortid]);
         if ($learningplanexist) {
@@ -91,6 +97,7 @@ class save_learning_plan_external extends external_api {
             $countperiod = count($periods);
         }
         $description = strip_tags($description);
+
         $newlearningplan = new stdClass();
         $newlearningplan->shortname     = $learningshortid;
         $newlearningplan->name          = $learningname;
@@ -99,30 +106,41 @@ class save_learning_plan_external extends external_api {
         $newlearningplan->usercount     = 0;
         $newlearningplan->hasperiod     = $hasperiod;
         $newlearningplan->periodcount   = $countperiod;
+        $newlearningplan->enroltype     = $enroltype;
         $newlearningplan->usermodified  = $USER->id;
         $newlearningplan->timecreated = time();
         $newlearningplan->timemodified = time();
-        $newlearningplan->enroltype = $enroltype;
         $learningplanid = $DB->insert_record('local_learning_plans', $newlearningplan);
-
-        // Save courses (This step is optional, only if data is received)!
-        /* foreach ($courses as $course) {
-            $courseid = $course['courseid'];
-            $isrequired = $course['required'];
-            $credits = $course['credits'];
-            save_learning_course_external::save_learning_course($learningplanid, null, $courseid, $isrequired, $credits);
+        $newlearningplan->id = $learningplanid;
+        if ($hasperiod == 0) {
+            // Not periods, so the request data have courses and users.
+            $pos = 0;
+            foreach ($courses as $course) {
+                $courseid = $course['courseid'];
+                $isrequired = $course['required'];
+                $credits = $course['credits'];
+                if ($isrequired) {
+                    $pos++;
+                    $position = $pos;
+                    $newlearningplan->coursecount++;
+                } else {
+                    $position = 0;
+                }
+                save_learning_course_external::save_learning_course(
+                    $learningplanid, null, $courseid, $isrequired, $credits, $position
+                );
+            }
+            foreach ($users as $user) {
+                $userid = $user['userid'];
+                $roleid = $user['roleid'];
+                $newlearningplan->usercount++;
+                add_learning_user_external::add_learning_user($learningplanid, $userid, $roleid);
+            }
         }
 
-        // Save users (This step is optional, only if data is received)!
-        foreach ($users as $user) {
-            $userid = $user['userid'];
-            $roleid = $user['roleid'];
-            add_learning_user_external::add_learning_user($learningplanid, $userid, $roleid);
-        }
-
-        // Save Periods for Plan (Only if data is send).
+        /*
         foreach ($periods as $period) {
-            $name = $period['name'];
+           $name = $period['name'];
             $months = $period['months'];
             addperiod_learning_plan_external::addperiod_learning_plan($learningplanid, $name, $months);
         } */
@@ -139,7 +157,9 @@ class save_learning_plan_external extends external_api {
                 array('subdirs' => 0, 'maxfiles' => 1)
             );
         }
-
+        $newlearningplan->updated_at = time();
+        $DB->update_record('local_learning_plans', $newlearningplan);
+        die;
         return [
             'learningplanid' => $learningplanid
         ];
