@@ -84,9 +84,19 @@ $string['periodnamesetting_desc'] = 'Ingresa un nombre por defecto para los peri
 $string['default_period_months'] = 'Duración de cada periodo';
 $string['default_period_months_desc'] = 'Ingresa la duración en meses para cada periodo';
 
-$string['periodmonths'] = 'Duration (Months)';
+$string['periodmonths'] = 'Duración (Meses)';
 
 $string['student']          = 'Estudiante';
 $string['teacher']          = 'Instructor';
 $string['editingteacher']   = 'Instructor editor';
 $string['manager']          = 'Gestor';
+
+$string['addnewperiods'] = 'Añadir un nuevo periodo';
+$string['name_period'] = 'Asigne un nombre al periodo';
+$string['close_modal'] = 'Cerrar';
+
+$string['titleconfirm'] = 'Confirmar eliminación';
+$string['msgconfirm_course'] = 'La eliminación de periodos de los planes de aprendizaje no se puede deshacer. ¿Está seguro de que desea eliminar el periodo seleccionado?';
+$string['yesconfirm'] = 'Eliminar';
+
+$string['edit_period'] = 'Editar periodos';

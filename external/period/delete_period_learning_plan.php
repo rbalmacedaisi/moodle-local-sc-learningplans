@@ -15,37 +15,30 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * External Lib - Add new learning period
+ * External Lib - Delete learning period
  *
  * @package     local_sc_learningplans
- * @copyright   2022 Solutto <>
+ * @copyright   2022 Solutto <nicolas.castillo@soluttoconsulting.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-class addperiod_learning_plan_external extends external_api {
+class delete_period_learning_plan_external extends external_api {
 
-    public static function addperiod_learning_plan_parameters() {
+    public static function delete_period_learning_plan_parameters() {
         return new external_function_parameters(
             array(
-                'learningplanid'   => new external_value(
+                'learningplan'   => new external_value(
                     PARAM_INT,
                     'ID of the learning plan',
                     VALUE_REQUIRED,
                     null,
                     NULL_NOT_ALLOWED
                 ),
-                'name'   => new external_value(
-                    PARAM_TEXT,
-                    'Name of period',
-                    VALUE_REQUIRED,
-                    null,
-                    NULL_NOT_ALLOWED
-                ),
-                'vigency'  => new external_value(
+                'periodid'   => new external_value(
                     PARAM_INT,
-                    'ID of the role related to the suer',
+                    'ID of the period to delete',
                     VALUE_REQUIRED,
                     null,
                     NULL_NOT_ALLOWED
@@ -54,37 +47,35 @@ class addperiod_learning_plan_external extends external_api {
         );
     }
 
-    public static function addperiod_learning_plan($learningplanid, $name, $vigency) {
-        global $DB, $USER;
+    public static function delete_period_learning_plan($learningplan, $periodid) {
+        global $USER, $DB;
 
-        $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplanid]);
+        $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplan]);
         if (!$learningplanrecord) {
             throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
         }
 
-        $tableperiod = 'local_learning_periods';
+        $isdelete = null;
+        $result = false;
 
-        $createperiod = new stdClass();
-        $createperiod->learningplanid = $learningplanid;
-        $createperiod->name = $name;
-        $createperiod->months = $vigency;
-        $createperiod->usermodified = $USER->id;
-        $createperiod->timecreated = time();
-        $createperiod->timemodified = time();
-        $createperiod->id = $DB->insert_record($tableperiod, $createperiod);
+        $isdelete = $DB->delete_records('local_learning_periods', ['id' => $periodid]);
 
-        $learningplanrecord->periodcount += 1;
+        if ($isdelete) {
+            $result = true;
+        }
+
+        $learningplanrecord->periodcount -= 1;
         $learningplanrecord->updated_at = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
         return [
-            'id' => $createperiod->id,
+            'isdelete' => $result,
         ];
     }
 
-    public static function addperiod_learning_plan_returns() {
+    public static function delete_period_learning_plan_returns() {
         return new external_single_structure(
             array(
-                'id' => new external_value(PARAM_TEXT,  'Record ID'),
+                'isdelete' => new external_value(PARAM_BOOL,  'If the course is delete succesfull'),
             )
         );
     }

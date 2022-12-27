@@ -1,0 +1,80 @@
+<h5 class="text-center font-weight-bold">{{#str}}manage_periods, local_sc_learningplans{{/str}}</h5>
+<div class="">
+    <div class="d-flex justify-content-end pt-4">
+        <button id="add_new_periods" class="btn btn-primary" data-toggle="modal" data-target="#addingPeriods">{{#str}}btnaddperiods, local_sc_learningplans{{/str}}</button>
+    </div>
+    {{#hasperiods}}
+    <ul class="list-group pt-4">
+        {{#listperiods}}
+        <li class="list-group-item d-flex justify-content-between align-items-center" period-id="{{id}}">
+            <div class="w-100">
+                <span>{{name}}</span>
+                <span class="badge badge-pill badge-info ml-4" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{credits}} creditos">{{credits}}</span>
+            </div>
+            <button id="editperiod" edit-periodid="{{id}}" class="btn"  data-toggle="modal" data-target="#editNamePeriod-{{id}}" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Edit Name Period"><i class="lp_icon fa fa-pencil fa-fw"></i></button>
+            <button id="btndeleteperiod" period-id="{{id}}" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Delete Period"><i class="lp_icon fa fa-trash fa-fw"></i></button>
+        </li>
+      {{/listperiods}}
+    </ul>
+    {{/hasperiods}}
+    {{^hasperiods}}
+        <h5 class="text-center pt-4">{{#str}}not_periods, local_sc_learningplans{{/str}}</h5>
+    {{/hasperiods}}
+    
+    <div class="modal fade" id="addingPeriods" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center w-100 font-weight-bold" id="exampleModalLabel">{{#str}}addnewperiods, local_sc_learningplans{{/str}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style='visibility: hidden;'>
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <p>{{#str}}name_period, local_sc_learningplans{{/str}}</p>
+                        <input required class="form-control" id="name_new_period" type="text">
+                    </div>
+                    <div class="form-group">
+                        <p>{{#str}}periodmonths, local_sc_learningplans{{/str}}</p>
+                        <input required class="form-control" id="vigency_new_period" type="text">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} close_modal, local_sc_learningplans {{/str}}</button>
+                    <button id="save_new_period" type="button" class="btn btn-primary">{{#str}} btn_add_course, local_sc_learningplans {{/str}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {{#hasperiods}}
+        {{#listperiods}}
+        <div class="modal fade modalEditPeriod" id="editNamePeriod-{{id}}" data-id="{{id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center w-100 font-weight-bold" id="exampleModalLabel">Editar {{name}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style='visibility: hidden;'>
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <p>{{name}}</p>
+                            <label for="name_new_period_{{id}}">{{#str}} periodnamesetting, local_sc_learningplans {{/str}}</label>
+                            <input required class="form-control" value="{{name}}" id="name_new_period_{{id}}" type="text">
+                            <label for="vigency_new_period_{{id}}">{{#str}} periodmonths, local_sc_learningplans {{/str}}</label>
+                            <input required class="form-control" value="{{months}}" id="vigency_new_period_{{id}}" type="text">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} close_modal, local_sc_learningplans {{/str}}</button>
+                        <button id="save_edit_period_{{id}}" type="button" class="btn btn-primary">{{#str}} btn_add_course, local_sc_learningplans {{/str}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/listperiods}}
+    {{/hasperiods}}
+</div>

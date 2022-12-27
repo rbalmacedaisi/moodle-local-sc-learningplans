@@ -34,6 +34,31 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
     ),
+
+    'local_sc_learningplans_addperiod_learning_plan' => array(
+        'classname'     => 'addperiod_learning_plan_external',
+        'methodname'    => 'addperiod_learning_plan',
+        'classpath'     => 'local/sc_learningplans/external/period/addperiod_learning_plan.php',
+        'description'   => 'Add periods to learning plan',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
+    'local_sc_learningplans_delete_period_learning_plan' => array(
+        'classname'     => 'delete_period_learning_plan_external',
+        'methodname'    => 'delete_period_learning_plan',
+        'classpath'     => 'local/sc_learningplans/external/period/delete_period_learning_plan.php',
+        'description'   => 'Delete periods to Learning Plan',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
+    'local_sc_learningplans_edit_period_learning_plan' => array(
+        'classname'     => 'edit_period_learning_plan_external',
+        'methodname'    => 'edit_period_learning_plan',
+        'classpath'     => 'local/sc_learningplans/external/period/edit_period_learning_plan.php',
+        'description'   => 'Edit periods to Learning Plan',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
 );
 
 $services = array(

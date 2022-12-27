@@ -84,9 +84,19 @@ $string['periodnamesetting_desc'] = 'Select a default period name';
 $string['default_period_months'] = 'Period duration';
 $string['default_period_months_desc'] = 'Default period duration in months';
 
-$string['periodmonths'] = 'Duración (Meses)';
+$string['periodmonths'] = 'Duration (Months)';
 
 $string['student']          = 'Student';
 $string['teacher']          = 'Teacher';
 $string['editingteacher']   = 'Editing teacher';
 $string['manager']          = 'Manager';
+
+$string['addnewperiods'] = 'Add new Periods';
+$string['name_period'] = 'Assign name Period';
+$string['close_modal'] = 'close';
+
+$string['titleconfirm'] = 'Confirm delete';
+$string['msgconfirm_period'] = 'Are you sure you want to delete this Period?<br/>Once you accept you will not be able to undo the changes and all data related to the period will be deleted.';
+$string['yesconfirm'] = 'Delete';
+
+$string['edit_period'] = 'Edit periods';
