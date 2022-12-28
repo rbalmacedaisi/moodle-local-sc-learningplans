@@ -98,5 +98,17 @@ $string['close_modal'] = 'close';
 $string['titleconfirm'] = 'Confirm delete';
 $string['msgconfirm_period'] = 'Are you sure you want to delete this Period?<br/>Once you accept you will not be able to undo the changes and all data related to the period will be deleted.';
 $string['yesconfirm'] = 'Delete';
+$string['msgconfirm_course'] = 'Are you sure you want to delete this Course?<br/>Once you accept you will not be able to undo the changes and all data related to the course will be deleted.';
 
 $string['edit_period'] = 'Edit periods';
+
+$string['managecourses'] = 'Learning plan - Manage courses of {$a->name}';
+$string['available_courses'] = 'Available Courses';
+$string['courses_required'] = 'Required Courses';
+$string['courses_optional'] = 'Optionals Courses';
+$string['add_courses_required'] = 'Add Required Courses';
+$string['add_courses_optional'] = 'Add Optionals Courses';
+$string['btn_save_coursepos'] = 'Save Courses Position';
+$string['add_courses_period'] = 'Add new courses';
+$string['select_credits'] = 'Select number credits';
+$string['select_one_period'] = 'Select Period';

@@ -83,7 +83,8 @@ class save_learning_course_external extends external_api {
         $tablecourses = 'local_learning_courses';
         // Check if course exist before in this learning plan.
         $existbefore = $DB->get_record($tablecourses, [
-            'courseid' => $courseid
+            'courseid' => $courseid,
+            'learningplanid' => $learningplan,
         ]);
         if ($existbefore) {
             throw new moodle_exception('error_course_exist_before', 'local_sc_learningplans');
@@ -113,6 +114,7 @@ class save_learning_course_external extends external_api {
         $learningplancourses->timemodified = time();
         $learningplancourses->id = $DB->insert_record('local_learning_courses', $learningplancourses);
 
+        $learningplanrecord->coursecount++;
         $learningplanrecord->updated_at = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
 

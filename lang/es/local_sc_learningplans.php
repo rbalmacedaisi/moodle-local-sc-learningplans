@@ -96,7 +96,19 @@ $string['name_period'] = 'Asigne un nombre al periodo';
 $string['close_modal'] = 'Cerrar';
 
 $string['titleconfirm'] = 'Confirmar eliminación';
-$string['msgconfirm_course'] = 'La eliminación de periodos de los planes de aprendizaje no se puede deshacer. ¿Está seguro de que desea eliminar el periodo seleccionado?';
+$string['msgconfirm_period'] = 'La eliminación de periodos de los planes de aprendizaje no se puede deshacer. ¿Está seguro de que desea eliminar el periodo seleccionado?';
 $string['yesconfirm'] = 'Eliminar';
+$string['msgconfirm_course'] = 'La eliminación de cursos de los planes de aprendizaje no se puede deshacer. ¿Está seguro de que desea eliminar el curso seleccionado?';
 
 $string['edit_period'] = 'Editar periodos';
+
+$string['managecourses'] = 'Plan de aprendizaje - Gestión de cursos de  {$a->name}';
+$string['available_courses'] = 'Cursos Disponibles';
+$string['courses_required'] = 'Cursos Requeridos';
+$string['courses_optional'] = 'Cursos Opcionales';
+$string['add_courses_required'] = 'Agregar Cursos Requeridos';
+$string['add_courses_optional'] = 'Agregar Cursos Opcionales';
+$string['btn_save_coursepos'] = 'Guardar Posiciones en Cursos';
+$string['add_courses_period'] = 'Agregar nuevos Cursos';
+$string['select_credits'] = 'Seleccione el número de créditos';
+$string['select_one_period'] = 'Seleccione un Período';

@@ -1,0 +1,314 @@
+import * as notification from 'core/notification';
+import * as Str from 'core/str';
+import * as Ajax from 'core/ajax';
+
+export const init = (learningplanid) => {
+    deleteCourseAction(learningplanid);
+    addCoursePeriodAction(learningplanid);
+    addRequiredAction(learningplanid);
+    addOptionalAction(learningplanid);
+    changeOptionalToRequiredAction(learningplanid);
+
+    updateCoursePositionAction();
+};
+
+let deleteCourseAction = (learningplanid) => {
+    const deleteBtns = document.querySelectorAll('#btndeletecourse');
+    if (deleteBtns) {
+        const titleconfirm = Str.get_string('titleconfirm', 'local_sc_learningplans');
+        const msgconfirm = Str.get_string('msgconfirm_course', 'local_sc_learningplans');
+        const yesconfirm = Str.get_string('yesconfirm', 'local_sc_learningplans');
+        for (const el of deleteBtns) {
+            el.addEventListener('click', e => {
+                e.preventDefault();
+                const courseid = e.target.parentElement.getAttribute('course-id');
+                const isrequired = e.target.parentElement.getAttribute('course-required');
+                notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
+                    callDeleteCourse(learningplanid, courseid, isrequired);
+                });
+            });
+        }
+    }
+};
+
+let addCoursePeriodAction = (learningplanid) => {
+    const btnaddcourses = document.querySelector('#addcourses');
+    if (btnaddcourses) {
+        btnaddcourses.addEventListener('click', e => {
+            e.preventDefault();
+            const courseselected = document.getElementById('selectAddCourseToLearningPlanPeriod').selectedOptions;
+            const periodselected = document.getElementById('selectPeriodToLearningPlan').value;
+            const creditselected = document.getElementById('selectCredits').value;
+            let typecourse = 0;
+            if (document.getElementById('required').checked) {
+                typecourse = 1;
+            } else if (document.getElementById('optional').checked) {
+                typecourse = 0;
+            }
+            if (courseselected) {
+                const datacourses = Array.prototype.slice.call(courseselected);
+                const courseid = datacourses.map(select => {
+                    return select.value;
+                }).join(',');
+                callAddCourse(learningplanid, periodselected, courseid, typecourse, creditselected);
+            }
+        });
+    }
+};
+
+let addRequiredAction = (learningplanid) => {
+    const btnaddrequired = document.querySelector('#addrequired');
+    if (btnaddrequired) {
+        btnaddrequired.addEventListener('click', e => {
+            e.preventDefault();
+            const courseselected = document.getElementById('selectAddCourseToLearningPlan').selectedOptions;
+            if (courseselected) {
+                const datacourses = Array.prototype.slice.call(courseselected);
+                const courseid = datacourses.map(select => select.value).join(',');
+                callAddCourse(learningplanid, -1, courseid, 1, -1);
+            }
+        });
+    }
+};
+
+let addOptionalAction = (learningplanid) => {
+    const btnaddooptional = document.querySelector('#addOptional');
+    if (btnaddooptional) {
+        btnaddooptional.addEventListener('click', e => {
+            e.preventDefault();
+            const courseselected = document.getElementById('selectAddCourseOptionalToLearningPlan').selectedOptions;
+            if (courseselected) {
+                const datacourses = Array.prototype.slice.call(courseselected);
+                const courseid = datacourses.map(select => select.value).join(',');
+                callAddCourse(learningplanid, -1, courseid, 0, -1);
+            }
+        });
+    }
+};
+
+let changeOptionalToRequiredAction = (learningplanid) => {
+    const addoptionalrequired = document.querySelectorAll('#addoptional_required');
+    if (addoptionalrequired) {
+        for (const add of addoptionalrequired) {
+            add.addEventListener('click', e => {
+                e.preventDefault();
+                const addcourserequired = e.target.getAttribute('cid');
+                const coursename = e.target.getAttribute('cname');
+                if (addcourserequired) {
+                    const courseid = addcourserequired;
+                    const titleconfirm = Str.get_string('titleconfirmmove', 'local_sc_learningplans');
+                    const msgconfirm = Str.get_string('msgconfirm_mmove', 'local_sc_learningplans', { cname: coursename });
+                    const yesconfirm = Str.get_string('yesmmoveconfirm', 'local_sc_learningplans');
+                    notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
+                        callDeleteCourse(learningplanid, courseid, 0);
+                        callAddCourse(learningplanid, courseid, 1);
+                    });
+                }
+            });
+        }
+    }
+};
+
+
+const callUpdateCourse = (learningid, courseorder) => {
+    learningid = parseInt(learningid);
+    const promise = Ajax.call([{
+        methodname: 'local_sc_learningplans_update_required_learning_courses',
+        args: {
+            learningplan: learningid,
+            courseorder,
+        }
+    },]);
+
+    promise[0].done(function (response) {
+        window.console.log('local_sc_learningplans_update_required_learning_courses', response);
+        location.reload();
+    }).fail(function (response) {
+        window.console.error(response);
+    });
+};
+
+const callAddCourse = (learningid, periodid, courseid, isrequired, credits) => {
+    learningid = parseInt(learningid);
+    courseid = parseInt(courseid);
+    isrequired = parseInt(isrequired);
+    const promise = Ajax.call([{
+        methodname: 'local_sc_learningplans_save_learning_course',
+        args: {
+            learningplan: learningid,
+            periodid: periodid,
+            courseid,
+            required: isrequired,
+            credits: credits,
+        }
+    },]);
+
+    promise[0].done(function (response) {
+        window.console.log('local_sc_learningplans_save_learning_course', response);
+        location.reload();
+    }).fail(function (response) {
+        window.console.error(response);
+    });
+};
+
+const callDeleteCourse = (learningid, courseid, isrequired) => {
+    learningid = parseInt(learningid);
+    courseid = parseInt(courseid);
+    isrequired = parseInt(isrequired);
+    const promise = Ajax.call([{
+        methodname: 'local_sc_learningplans_delete_learning_course',
+        args: {
+            learningplan: learningid,
+            courseid,
+            required: isrequired,
+        }
+    },]);
+
+    promise[0].done(function (response) {
+        window.console.log('local_sc_learningplans_delete_learning_course', response);
+        location.reload();
+    }).fail(function (response) {
+        window.console.error(response);
+    });
+};
+
+let items = document.querySelectorAll('.list-courses-required');
+let containercourses = document.querySelectorAll('.coursesrequired');
+
+const updateCoursePositionAction = () => {
+    const btnupdatecourseorder = document.querySelector('#updatecourseorder');
+
+    items.forEach(function (item) {
+        item.addEventListener('dragstart', handleDragStart, false);
+        item.addEventListener('dragenter', handleDragEnter, false);
+        item.addEventListener('dragover', handleDragOver, false);
+        item.addEventListener('dragleave', handleDragLeave, false);
+        item.addEventListener('drop', handleDrop, false);
+        item.addEventListener('dragend', handleDragEnd, false);
+    });
+
+    containercourses.forEach(function (contelement) {
+        contelement.addEventListener('dragenter', handleDragEnter, false);
+        contelement.addEventListener('dragleave', handleDragLeave, false);
+        contelement.addEventListener('dragover', handleDragOver, false);
+        contelement.addEventListener('drop', handleDropNew, false);
+    });
+
+    if (btnupdatecourseorder) {
+        const lpid = document.querySelector(".coursesrequired");
+        let learningplanid = lpid.getAttribute('learningplanid');
+        btnupdatecourseorder.addEventListener('click', e => {
+            e.preventDefault();
+            const courseData = [];
+            items.forEach(function (item) {
+                let listCoursesid = item.attributes.datacourse.value;
+                let listCoursePosition = item.attributes.poscourse.value;
+                courseData.push({
+                    courseid: listCoursesid.replace('courses[', '').replace(']', ''),
+                    position: listCoursePosition,
+                });
+            });
+
+            const coursePosition = [];
+            courseData.forEach((index) => {
+                coursePosition.push({
+                    courseid: index.courseid,
+                    position: index.position,
+                    periodid: index.periodid
+                });
+            });
+            callUpdateCourse(learningplanid, coursePosition);
+        });
+    }
+};
+
+var dragSrcEl = null;
+
+/**
+ *
+ * @param {*} e
+ */
+function handleDragStart(e) {
+    this.style.opacity = '0.4';
+
+    dragSrcEl = this;
+
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+}
+
+/**
+ *
+ * @param {*} e
+ */
+function handleDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+
+    e.dataTransfer.dropEffect = 'move';
+
+    return false;
+}
+
+/**
+ *
+ */
+function handleDragEnter() {
+    this.classList.add('over');
+}
+
+/**
+ *
+ */
+function handleDragLeave() {
+    this.classList.remove('over');
+}
+
+/**
+ *
+ * @param {*} e
+ */
+function handleDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation(); // stops the browser from redirecting.
+    }
+    if (dragSrcEl != this) {
+        dragSrcEl.innerHTML = this.innerHTML;
+        this.innerHTML = e.dataTransfer.getData('text/html');
+        let itemToReplaceAttr = this.attributes["datacourse"].value;
+        let draggedItemAttr = dragSrcEl.attributes["datacourse"].value;
+        this.setAttribute("datacourse", draggedItemAttr);
+        dragSrcEl.setAttribute("datacourse", itemToReplaceAttr);
+    }
+
+    return false;
+}
+
+/**
+ *
+ * @param {*} e
+ */
+function handleDropNew(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation(); // stops the browser from redirecting.
+    }
+    const dragParent = dragSrcEl.parentElement;
+    if (dragParent != e.target) {
+        e.target.append(dragSrcEl);
+    }
+    return false;
+}
+
+/**
+ *
+ */
+function handleDragEnd() {
+    this.style.opacity = '1';
+    items.forEach(function (item) {
+        item.classList.remove('over');
+    });
+    containercourses.forEach(function (item) {
+        item.classList.remove('over');
+    });
+}

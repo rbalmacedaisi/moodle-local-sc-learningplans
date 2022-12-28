@@ -1,0 +1,307 @@
+#add_new_learningplan {
+    margin-bottom: 15px;
+}
+
+.deleteLearningPlan {
+    cursor: pointer;
+}
+
+#page-local-sc_learningplans-index form.dataformatselector label[for="downloadtype_download"] {
+    width: 100%;
+    justify-content: start;
+}
+
+#page-local-sc_learningplans-index form.dataformatselector select#downloadtype_download {
+    margin-left: 0;
+}
+
+#page-local-sc_learningplans-index .table th,
+#page-local-sc_learningplans-users .table th {
+    border-top: none;
+    border-bottom: none;
+    font-weight: 500;
+}
+
+#page-local-sc_learningplans-index .lp_icon,
+#page-local-sc_learningplans-courses .lp_icon,
+#page-local-sc_learningplans-users .lp_icon {
+    font-size: 20px;
+    color: #999;
+}
+
+#fitem_id_learningplan_image,
+#fitem_id_desc_plan {
+    flex-direction: column;
+    margin-left: -15px;
+}
+
+#page-local-sc_learningplans-index input,
+#page-local-sc_learningplans-index select,
+#page-local-sc_learningplans-create select,
+#page-local-sc_learningplans-create input,
+#page-local-sc_learningplans-edit input {
+    height: 34px;
+}
+
+#learningModal {
+    z-index: 1042;
+}
+
+#page-local-sc_learningplans-users #upload_massive_lp_users_ {
+    height: auto;
+    color: #000;
+    background-color: #fff;
+}
+
+select#selectAddCourseToLearningPlan,
+select#selectAddCourseOptionalToLearningPlan,
+select#listroles {
+    width: 300px;
+}
+
+#page-local-sc_learningplans-create #desc_plan,
+#page-local-sc_learningplans-edit #desc_plan {
+    height: 90px;
+}
+
+#fitem_id_learningplan_image .align-items-start.felement,
+#fitem_id_desc_plan .align-items-start.felement {
+    max-width: 100%;
+}
+
+#userModal .modal-dialog,
+#coursesRequiredModal .modal-dialog,
+#coursesOptionalModal .modal-dialog,
+#addCoursesPlanPeriod .modal-dialog {
+    width: 484px;
+    height: 451px;
+}
+
+#userModal .modal-body,
+#coursesRequiredModal .modal-body,
+#coursesOptionalModal .modal-body,
+#addCoursesPlanPeriod .modal-body {
+    text-align: start;
+}
+
+#page-local-sc_learningplans-users select#listusers,
+#page-local-sc_learningplans-users select#listroles {
+    width: 412px;
+    height: 34px;
+    border-radius: 5px;
+}
+
+.has-search {
+    width: 370px;
+}
+
+#icon-searchusers {
+    position: absolute;
+    right: 0;
+    top: 5px;
+    margin-right: 13px;
+}
+
+.coursesrequired,
+.coursesoptional {
+    list-style: none;
+    padding: 15px;
+}
+
+#formCurrentCourseToLearningPlan,
+#formOptionalCourseToLearningPlan {
+    padding-top: 45px;
+}
+
+.actions-course {
+    padding-right: 50px;
+}
+
+.list-courses-optional .course-icon,
+.list-courses-required .course-icon,
+.list-courses-required-period .course-icon {
+    display: inline-block;
+    border-radius: 50%;
+    box-shadow: 0 0 2px #888;
+    padding: 0.5em 0.6em;
+    font-size: 18px;
+    color: #fff;
+}
+
+#nav-optionalcourses-tab,
+#nav-requiredcourses-tab {
+    margin: 15px;
+}
+
+.tabs-courses .nav-link.active {
+    border-bottom: 4px solid #0f6fc5;
+}
+
+.tabs-courses #nav-tab,
+.nav-tabs .nav-link {
+    border-bottom: none;
+    border: none;
+}
+
+.list-courses-optional .name-course,
+.list-courses-required .name-course,
+.list-courses-required-period .name-course {
+    font-size: 20px;
+}
+
+#page-local-sc_learningplans-edit input#duplicate_courses,
+#page-local-sc_learningplans-edit input#duplicate_users {
+    height: auto;
+}
+
+#page-local-sc_learningplans-index .modal-dialog {
+    top: 120px;
+}
+
+#page-local-sc_learningplans-index .modal-title,
+#page-local-sc_learningplans-users .modal-title,
+#page-local-sc_learningplans-courses .modal-title {
+    position: absolute;
+}
+
+#page-local-sc_learningplans-index .modal-footer,
+#page-local-sc_learningplans-index .modal-header,
+#page-local-sc_learningplans-users .modal-header,
+#page-local-sc_learningplans-users .modal-footer,
+#page-local-sc_learningplans-courses .modal-footer,
+#page-local-sc_learningplans-courses .modal-header {
+    justify-content: center;
+}
+
+#page-local-sc_learningplans-index .modal-body,
+#page-local-sc_learningplans-users .modal-body,
+#page-local-sc_learningplans-courses .modal-body {
+    text-align: center;
+}
+
+#page-local-sc_learningplans-users .has-search button {
+    height: 37px;
+}
+
+#userpaginationsc a {
+    position: relative;
+    padding: 0.5rem 0.75rem;
+    line-height: 1.25;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+}
+
+#userpaginationsc .activelp {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.list-courses-optional .course-icon {
+    background-color: #999;
+}
+
+.list-courses-required .course-icon,
+.list-courses-required-period .course-icon {
+    background-color: #86d418;
+}
+
+#nav-optionalcourses-tab:focus,
+#nav-requiredcourses-tab:focus,
+.nav-link.requiredcourses:focus,
+.nav-link.optionalcourses:focus {
+    -webkit-box-shadow: none;
+}
+
+#page-local-sc_learningplans-users .action_upload_user {
+    order: 1;
+}
+
+#page-local-sc_learningplans-users .btn_adding_user,
+#page-local-sc_learningplans-users .has-search {
+    padding-top: 40px;
+}
+
+@media (max-width: 1200px) {
+    #page-local-sc_learningplans-users .content_upload_user {
+        display: block;
+    }
+}
+
+.list-courses-required,
+.list-courses-required-period {
+    cursor: all-scroll;
+}
+
+.learningPlansTable td.cell {
+    white-space: pre-wrap;
+}
+
+#page-local-sc_learningplans-index .massive_upload_users input {
+    height: auto;
+}
+
+#page-local-sc_learningplans-index .adding_user {
+    padding-top: 40px;
+}
+
+#page-local-sc_learningplans-courses #selectAddCourseToLearningPlan,
+#page-local-sc_learningplans-courses #selectAddCourseOptionalToLearningPlan {
+    width: 405px;
+}
+
+input#addperiod,
+input#notperiod,
+input#type_manual,
+input#type_automatic {
+    height: auto;
+}
+
+#listperiods,
+#type_enrol {
+    margin-top: 25px;
+    padding: 0;
+}
+
+#selectPeriodToLearningPlan,
+#selectCredits,
+#selectPeriodOptionalToLearningPlan,
+#selectOptionalCredits,
+#selectAddCourseToLearningPlanPeriod {
+    width: 360px;
+    margin-top: 15px;
+}
+
+#listperiods div {
+    margin-top: 20px;
+}
+
+#listperiods .period_name {
+    margin-left: 15px;
+}
+
+#content-periods {
+    width: 250px;
+    margin-top: 15px;
+}
+
+.nav-link.requiredcourses,
+.nav-link.optionalcourses {
+    margin: 15px;
+}
+
+.icon-drop {
+    float: right;
+    font-size: 20px;
+}
+
+.card-header:not(.collapsed) .rotate-icon {
+    transform: rotate(180deg);
+}
+
+#page-local-sc_learningplans-create #formCurrentCourseToLearningPlan,
+#page-local-sc_learningplans-create #formOptionalCourseToLearningPlan {
+    padding-top: 15px;
+}

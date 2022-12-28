@@ -59,6 +59,31 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
     ),
+
+    'local_sc_learningplans_update_required_learning_courses' => array(
+        'classname'     => 'update_required_learning_courses_external',
+        'methodname'    => 'update_required_learning_courses',
+        'classpath'     => 'local/sc_learningplans/external/course/update_required_learning_courses.php',
+        'description'   => 'Update courses order in the learning plan',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
+    'local_sc_learningplans_save_learning_course' => array(
+        'classname'     => 'save_learning_course_external',
+        'methodname'    => 'save_learning_course',
+        'classpath'     => 'local/sc_learningplans/external/course/save_learning_course.php',
+        'description'   => 'Save new (optional or required) course to learning plan',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
+    'local_sc_learningplans_delete_learning_course' => array(
+        'classname'     => 'delete_learning_course_external',
+        'methodname'    => 'delete_learning_course',
+        'classpath'     => 'local/sc_learningplans/external/course/delete_learning_course.php',
+        'description'   => 'Delete learning course (optional or required)',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
 );
 
 $services = array(

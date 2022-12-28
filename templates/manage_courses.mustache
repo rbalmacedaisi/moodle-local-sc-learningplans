@@ -24,9 +24,9 @@
                         <div class="tab-pane fade show active" id="nav-requiredcourses-{{idperiod}}" role="tabpanel" aria-labelledby="nav-requiredcourses-{{idperiod}}-tab">
                             <ul class="coursesrequired">
                                 {{#coursesrequired}}
-                                <li class="list-courses-required-period" draggable="true" datacourse="courses[{{id}}]" lpid={{learningplanid}} poscourse="{{pos}}" periodid={{idperiod}}>
+                                <li class="list-courses-required-period" draggable="true" datacourse="courses[{{id}}]" lpid={{learningplanid}} poscourse="{{position}}" periodid={{idperiod}}>
                                     <i class="fa fa-book course-icon"></i>
-                                    <span class="pl-4 name-course" for="course-{{id}}">{{shortname}}</span>
+                                    <span class="pl-4 name-course" for="course-{{id}}">{{coursename}}</span>
                                     <div class="float-right actions-course">
                                         <i class="fa fa-arrows-alt"></i>
                                         <button id="btndeletecourse" course-id="{{id}}" course-required="1" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{#str}}delete_current_course, local_sc_learningplans{{/str}}"><i class="lp_icon fa fa-trash fa-fw"></i></button>
@@ -44,7 +44,7 @@
                                 {{#coursesoptional}}
                                 <li class="list-courses-required" datacourse="courses[{{id}}]">
                                     <i class="fa fa-book course-icon"></i>
-                                    <span class="pl-4 name-course" for="course-{{id}}">{{shortname}}</span>
+                                    <span class="pl-4 name-course" for="course-{{id}}">{{coursename}}</span>
                                     <div class="float-right actions-course">
                                         <button id="btndeletecourse" course-id="{{id}}" course-required="0" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{#str}}delete_current_course, local_sc_learningplans{{/str}}"><i class="lp_icon fa fa-trash fa-fw"></i></button>
                                     </div>
@@ -80,9 +80,9 @@
             <input type="hidden" name="id" value="{{learningplanid}}" /> 
             <ul class="coursesrequired" learningplanid="{{learningplanid}}">
             {{#currentcourses}}
-             <li class="list-courses-required" draggable="true" datacourse="courses[{{id}}]" poscourse="{{pos}}">
+             <li class="list-courses-required" draggable="true" datacourse="courses[{{id}}]" poscourse="{{position}}">
                 <i class="fa fa-book course-icon"></i>
-                <span class="pl-4 name-course" for="course-{{id}}">{{fullname}}</span>
+                <span class="pl-4 name-course" for="course-{{id}}">{{coursename}}</span>
                 <div class="float-right actions-course">
                     <i class="fa fa-arrows-alt"></i>
                     <button id="btndeletecourse" course-id="{{id}}" course-required="1" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{#str}}delete_current_course, local_sc_learningplans{{/str}}"><i class="lp_icon fa fa-trash fa-fw"></i></button>
@@ -110,9 +110,9 @@
             {{#optionalcourses}}
             <li class="list-courses-optional" draggable="true">
                 <i class="fa fa-book course-icon"></i>
-                <span class="pl-4 name-course" for="course-{{id}}">{{fullname}}</span>
+                <span class="pl-4 name-course" for="course-{{id}}">{{coursename}}</span>
                 <div class="float-right actions-course">
-                    <button id="addoptional_required" cid="{{id}}" cname="{{shortname}}" lpid="{{learningplanid}}" class="btn btn-primary mr-4">{{#str}} add_courses_required, local_sc_learningplans{{/str}}</button>
+                    <button id="addoptional_required" cid="{{id}}" cname="{{coursename}}" lpid="{{learningplanid}}" class="btn btn-primary mr-4">{{#str}} add_courses_required, local_sc_learningplans{{/str}}</button>
                     <button id="btndeletecourse" course-id="{{id}}" course-required="0" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Delete Course"><i class="lp_icon fa fa-trash fa-fw"></i></button>
                 </div>
             </li>
@@ -141,7 +141,7 @@
                     <select id="selectAddCourseToLearningPlanPeriod" class="form-select" required name="selectedcourse">
                         <option class="b scm-box" value=''>{{#str}} select_course, local_sc_learningplans {{/str}}</option>
                         {{#courses}}
-                        <option class="b scm-box" value='{{id}}'>{{shortname}}</option>
+                        <option class="b scm-box" value='{{id}}'>{{coursename}}</option>
                         {{/courses}}
                     </select>
                     
