@@ -40,9 +40,9 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="nav-optionalcourses-{{idperiod}}" role="tabpanel" aria-labelledby="nav-optionalcourses-{{idperiod}}">
-                            <ul class="coursesrequired">
+                            <ul class="coursesoptional">
                                 {{#coursesoptional}}
-                                <li class="list-courses-required" datacourse="courses[{{id}}]">
+                                <li class="list-courses-optional" datacourse="courses[{{id}}]">
                                     <i class="fa fa-book course-icon"></i>
                                     <span class="pl-4 name-course" for="course-{{id}}">{{coursename}}</span>
                                     <div class="float-right actions-course">
@@ -141,7 +141,7 @@
                     <select id="selectAddCourseToLearningPlanPeriod" class="form-select" required name="selectedcourse">
                         <option class="b scm-box" value=''>{{#str}} select_course, local_sc_learningplans {{/str}}</option>
                         {{#courses}}
-                        <option class="b scm-box" value='{{id}}'>{{coursename}}</option>
+                        <option class="b scm-box" value='{{id}}'>{{fullname}}</option>
                         {{/courses}}
                     </select>
                     

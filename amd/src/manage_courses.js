@@ -42,14 +42,12 @@ let addCoursePeriodAction = (learningplanid) => {
             let typecourse = 0;
             if (document.getElementById('required').checked) {
                 typecourse = 1;
-            } else if (document.getElementById('optional').checked) {
+            } else {
                 typecourse = 0;
             }
             if (courseselected) {
                 const datacourses = Array.prototype.slice.call(courseselected);
-                const courseid = datacourses.map(select => {
-                    return select.value;
-                }).join(',');
+                const courseid = datacourses.map(select => select.value).join(',');
                 callAddCourse(learningplanid, periodselected, courseid, typecourse, creditselected);
             }
         });
@@ -93,6 +91,8 @@ let changeOptionalToRequiredAction = (learningplanid) => {
             add.addEventListener('click', e => {
                 e.preventDefault();
                 const addcourserequired = e.target.getAttribute('cid');
+                const credits = e.target.getAttribute('credits') ?? -1;
+                const periodid = e.target.getAttribute('periodid') ?? -1;
                 const coursename = e.target.getAttribute('cname');
                 if (addcourserequired) {
                     const courseid = addcourserequired;
@@ -100,8 +100,7 @@ let changeOptionalToRequiredAction = (learningplanid) => {
                     const msgconfirm = Str.get_string('msgconfirm_mmove', 'local_sc_learningplans', { cname: coursename });
                     const yesconfirm = Str.get_string('yesmmoveconfirm', 'local_sc_learningplans');
                     notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
-                        callDeleteCourse(learningplanid, courseid, 0);
-                        callAddCourse(learningplanid, courseid, 1);
+                        callDeleteCourse(learningplanid, courseid, 0, false, credits, periodid);
                     });
                 }
             });
@@ -110,13 +109,14 @@ let changeOptionalToRequiredAction = (learningplanid) => {
 };
 
 
-const callUpdateCourse = (learningid, courseorder) => {
+const callUpdateCourse = (learningid, courseorder, periodid = null) => {
     learningid = parseInt(learningid);
     const promise = Ajax.call([{
         methodname: 'local_sc_learningplans_update_required_learning_courses',
         args: {
             learningplan: learningid,
             courseorder,
+            periodid
         }
     },]);
 
@@ -130,7 +130,6 @@ const callUpdateCourse = (learningid, courseorder) => {
 
 const callAddCourse = (learningid, periodid, courseid, isrequired, credits) => {
     learningid = parseInt(learningid);
-    courseid = parseInt(courseid);
     isrequired = parseInt(isrequired);
     const promise = Ajax.call([{
         methodname: 'local_sc_learningplans_save_learning_course',
@@ -151,7 +150,7 @@ const callAddCourse = (learningid, periodid, courseid, isrequired, credits) => {
     });
 };
 
-const callDeleteCourse = (learningid, courseid, isrequired) => {
+const callDeleteCourse = (learningid, courseid, isrequired, notaddingcourse = true, credits = -1, periodid = -1) => {
     learningid = parseInt(learningid);
     courseid = parseInt(courseid);
     isrequired = parseInt(isrequired);
@@ -166,19 +165,35 @@ const callDeleteCourse = (learningid, courseid, isrequired) => {
 
     promise[0].done(function (response) {
         window.console.log('local_sc_learningplans_delete_learning_course', response);
-        location.reload();
+        if (notaddingcourse) {
+            location.reload();
+        }
+        else {
+            callAddCourse(learningid, periodid, courseid, 1, credits);
+        }
+
     }).fail(function (response) {
         window.console.error(response);
     });
 };
 
 let items = document.querySelectorAll('.list-courses-required');
+let itemsPeriod = document.querySelectorAll('.tab-pane .list-courses-required-period');
 let containercourses = document.querySelectorAll('.coursesrequired');
 
 const updateCoursePositionAction = () => {
     const btnupdatecourseorder = document.querySelector('#updatecourseorder');
 
     items.forEach(function (item) {
+        item.addEventListener('dragstart', handleDragStart, false);
+        item.addEventListener('dragenter', handleDragEnter, false);
+        item.addEventListener('dragover', handleDragOver, false);
+        item.addEventListener('dragleave', handleDragLeave, false);
+        item.addEventListener('drop', handleDrop, false);
+        item.addEventListener('dragend', handleDragEnd, false);
+    });
+
+    itemsPeriod.forEach(function (item) {
         item.addEventListener('dragstart', handleDragStart, false);
         item.addEventListener('dragenter', handleDragEnter, false);
         item.addEventListener('dragover', handleDragOver, false);
@@ -218,6 +233,34 @@ const updateCoursePositionAction = () => {
                 });
             });
             callUpdateCourse(learningplanid, coursePosition);
+        });
+    }
+
+    const btnupdatecourseperiodorder = document.querySelectorAll('#courseOrderInPeriod');
+    for(const btnupdate of btnupdatecourseperiodorder){
+        btnupdate.addEventListener('click', e =>{
+            e.preventDefault();
+            let periodid = e.target.attributes.periodid.value;
+            let lpid = e.target.attributes.lpid.value;
+            const itemsPeriod = document.querySelectorAll(`li[lpid="${lpid}"][periodid="${periodid}"]`);
+            const courseData = [];
+            itemsPeriod.forEach(function (item) {
+                let listCoursesid = item.attributes.datacourse.value;
+                let listCoursePosition = item.attributes.poscourse.value;
+                courseData.push({
+                    courseid: listCoursesid.replace('courses[', '').replace(']', ''),
+                    position: listCoursePosition,
+                });
+            });
+            const coursePosition = [];
+            courseData.forEach((index) => {
+                coursePosition.push({
+                    courseid: index.courseid,
+                    position: index.position,
+                    periodid: index.periodid
+                });
+            });
+            callUpdateCourse(lpid, coursePosition, periodid);
         });
     }
 };

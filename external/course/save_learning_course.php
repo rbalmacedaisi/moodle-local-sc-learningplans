@@ -81,40 +81,43 @@ class save_learning_course_external extends external_api {
             throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
         }
         $tablecourses = 'local_learning_courses';
-        // Check if course exist before in this learning plan.
-        $existbefore = $DB->get_record($tablecourses, [
-            'courseid' => $courseid,
-            'learningplanid' => $learningplan,
-        ]);
-        if ($existbefore) {
-            throw new moodle_exception('error_course_exist_before', 'local_sc_learningplans');
-        }
-        if ($position == null && $required) {
-            // No position set and is required course, so calculate it.
-            $position = 1;
-            $prevcourses = $DB->get_records($tablecourses, [
+        $courselist = explode(',', $courseid);
+        foreach ($courselist as $courseid) {
+            // Check if course exist before in this learning plan.
+            $existbefore = $DB->get_record($tablecourses, [
+                'courseid' => $courseid,
                 'learningplanid' => $learningplan,
-                'isrequired' => $required,
-                'periodid' => $periodid,
             ]);
-            if ($prevcourses) {
-                $position = count($prevcourses) + 1;
+            if ($existbefore) {
+                continue;
             }
+            if ($position == null && $required) {
+                // No position set and is required course, so calculate it.
+                $courseposition = 1;
+                $prevcourses = $DB->get_records($tablecourses, [
+                    'learningplanid' => $learningplan,
+                    'isrequired' => $required,
+                    'periodid' => $periodid,
+                ]);
+                if ($prevcourses) {
+                    $courseposition = count($prevcourses) + 1;
+                }
+            }
+
+            $learningplancourses = new stdClass();
+            $learningplancourses->learningplanid = $learningplan;
+            $learningplancourses->courseid = $courseid;
+            $learningplancourses->isrequired = $required;
+            $learningplancourses->position = $courseposition;
+            $learningplancourses->credits = $credits;
+            $learningplancourses->periodid = $periodid;
+            $learningplancourses->usermodified = $USER->id;
+            $learningplancourses->timecreated = time();
+            $learningplancourses->timemodified = time();
+            $learningplancourses->id = $DB->insert_record('local_learning_courses', $learningplancourses);
+            // Increase course count.
+            $learningplanrecord->coursecount++;
         }
-
-        $learningplancourses = new stdClass();
-        $learningplancourses->learningplanid = $learningplan;
-        $learningplancourses->courseid = $courseid;
-        $learningplancourses->isrequired = $required;
-        $learningplancourses->position = $position;
-        $learningplancourses->credits = $credits;
-        $learningplancourses->periodid = $periodid;
-        $learningplancourses->usermodified = $USER->id;
-        $learningplancourses->timecreated = time();
-        $learningplancourses->timemodified = time();
-        $learningplancourses->id = $DB->insert_record('local_learning_courses', $learningplancourses);
-
-        $learningplanrecord->coursecount++;
         $learningplanrecord->updated_at = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
 

@@ -24,11 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-@error_reporting(E_ALL | E_STRICT);   // NOT FOR PRODUCTION SERVERS!
-@ini_set('display_errors', '1');         // NOT FOR PRODUCTION SERVERS!
-$CFG->debug = (E_ALL | E_STRICT);   // === DEBUG_DEVELOPER - NOT FOR PRODUCTION SERVERS!
-$CFG->debugdisplay = 1;              // NOT FOR PRODUCTION SERVERS!
-
 require_once($CFG->dirroot . '/local/sc_learningplans/external/course/save_learning_course.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/external/user/add_learning_user.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/external/period/addperiod_learning_plan.php');
