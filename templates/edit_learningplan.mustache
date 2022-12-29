@@ -1,0 +1,32 @@
+<h5 class="text-center font-weight-bold">{{#str}} edit_plan, local_sc_learningplans {{/str}}</h5>
+<div class="container">
+    <div class="row required">
+        <div class="col-sm-12 col-md-6 py-2">
+            <label class="w-100 text-dark" for="learningshortname">{{#str}} shortname, local_sc_learningplans {{/str}}</label>
+            <input required type="text" name="learningshortname" placeholder="{{#str}} shortname, local_sc_learningplans {{/str}}" id="learningshortname" class="w-100"  value='{{learningshortname}}' />
+        </div>
+
+        <div class="col-sm-12 col-md-12 py-2">
+            <label class="w-100 text-dark" for="learningname">{{#str}} plan_name, local_sc_learningplans {{/str}}</label>
+            <input required type="text" name="learningname" placeholder="{{#str}} name, local_sc_learningplans {{/str}}" id="learningname" class="w-100" value='{{learningplanname}}' />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12 py-2">
+            <label class="w-100 text-dark" for="learningname">{{#str}} title_desc_plan, local_sc_learningplans {{/str}}</label>
+            <textarea id='desc_plan' class="w-100" cols="100%">{{learningplandescription}}</textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12 py-2">
+            <label class="w-100 text-dark" for="learningname">{{#str}}plan_image, local_sc_learningplans {{/str}}</label>
+            {{{formimagpicker}}}
+        </div>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-end">
+        <button id="edit_learning_plan" class="btn btn-primary">{{#str}} save, local_sc_learningplans {{/str}}</button>
+    </div>
+</div>

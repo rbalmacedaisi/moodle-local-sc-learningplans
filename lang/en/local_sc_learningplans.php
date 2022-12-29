@@ -116,3 +116,5 @@ $string['select_one_period'] = 'Select Period';
 $string['titleconfirmmove'] = 'Move optional course to required';
 $string['msgconfirm_mmove'] = 'Are you sure to move the course {$a->cname} to required list?';
 $string['yesmmoveconfirm'] = 'Move';
+
+$string['save'] = 'Save changes';

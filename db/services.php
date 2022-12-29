@@ -84,6 +84,15 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
     ),
+
+    'local_sc_learningplans_edit_learning_plan' => array(
+        'classname'     => 'edit_learning_plan_external',
+        'methodname'    => 'edit_learning_plan',
+        'classpath'     => 'local/sc_learningplans/external/learning/edit_learning_plan.php',
+        'description'   => 'Edit learning plan',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
 );
 
 $services = array(
