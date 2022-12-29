@@ -83,7 +83,7 @@ class table_manage_learnings extends table_sql {
      */
     public function col_created_at($values) {
         // Show readable date from timestamp.
-        $date = $values->created_at;
+        $date = $values->timecreated;
         return userdate($date);
     }
 
@@ -94,7 +94,7 @@ class table_manage_learnings extends table_sql {
      */
     public function col_updated_at($values) {
         // Show readable date from timestamp.
-        $date = $values->updated_at;
+        $date = $values->timemodified;
         return userdate($date);
     }
 

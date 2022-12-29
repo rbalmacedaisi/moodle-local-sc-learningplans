@@ -74,7 +74,7 @@ class addperiod_learning_plan_external extends external_api {
         $createperiod->id = $DB->insert_record($tableperiod, $createperiod);
 
         $learningplanrecord->periodcount += 1;
-        $learningplanrecord->updated_at = time();
+        $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
         return [
             'id' => $createperiod->id,

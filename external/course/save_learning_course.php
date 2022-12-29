@@ -118,7 +118,7 @@ class save_learning_course_external extends external_api {
             // Increase course count.
             $learningplanrecord->coursecount++;
         }
-        $learningplanrecord->updated_at = time();
+        $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
 
         return [

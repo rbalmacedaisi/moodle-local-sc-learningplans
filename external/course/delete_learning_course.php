@@ -72,7 +72,7 @@ class delete_learning_course_external extends external_api {
             // Decrease the course count.
             $learningplanrecord->usermodified = $USER->id;
             $learningplanrecord->coursecount--;
-            $learningplanrecord->updated_at = time();
+            $learningplanrecord->timemodified = time();
             $DB->update_record('local_learning_plans', $learningplanrecord);
             if ($required) {
                 // Calculate the new positions.

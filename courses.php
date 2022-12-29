@@ -135,5 +135,4 @@ $templatedata = [
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('local_sc_learningplans/manage_courses', $templatedata);
 $PAGE->requires->js_call_amd('local_sc_learningplans/manage_courses', 'init', ['learningplanid' => $id]);
-//$PAGE->requires->js_call_amd('local_sc_learningplans/manage_courses_period', 'init', ['learningplanid' => $id]);
 echo $OUTPUT->footer();

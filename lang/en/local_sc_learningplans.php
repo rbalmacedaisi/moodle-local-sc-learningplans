@@ -112,3 +112,7 @@ $string['btn_save_coursepos'] = 'Save Courses Position';
 $string['add_courses_period'] = 'Add new courses';
 $string['select_credits'] = 'Select number credits';
 $string['select_one_period'] = 'Select Period';
+
+$string['titleconfirmmove'] = 'Move optional course to required';
+$string['msgconfirm_mmove'] = 'Are you sure to move the course {$a->cname} to required list?';
+$string['yesmmoveconfirm'] = 'Move';

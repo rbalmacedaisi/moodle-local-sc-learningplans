@@ -112,3 +112,7 @@ $string['btn_save_coursepos'] = 'Guardar Posiciones en Cursos';
 $string['add_courses_period'] = 'Agregar nuevos Cursos';
 $string['select_credits'] = 'Seleccione el número de créditos';
 $string['select_one_period'] = 'Seleccione un Período';
+
+$string['titleconfirmmove'] = 'Mover curso a requerido';
+$string['msgconfirm_mmove'] = '¿Realmente deseas que el curso {$a->cname} sea un curso requerido?';
+$string['yesmmoveconfirm'] = 'Mover';

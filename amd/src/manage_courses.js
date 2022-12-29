@@ -21,10 +21,10 @@ let deleteCourseAction = (learningplanid) => {
         for (const el of deleteBtns) {
             el.addEventListener('click', e => {
                 e.preventDefault();
-                const courseid = e.target.parentElement.getAttribute('course-id');
+                const course_record_id = e.target.parentElement.getAttribute('course-record-id');
                 const isrequired = e.target.parentElement.getAttribute('course-required');
                 notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
-                    callDeleteCourse(learningplanid, courseid, isrequired);
+                    callDeleteCourse(learningplanid, course_record_id, isrequired);
                 });
             });
         }
@@ -87,20 +87,20 @@ let addOptionalAction = (learningplanid) => {
 let changeOptionalToRequiredAction = (learningplanid) => {
     const addoptionalrequired = document.querySelectorAll('#addoptional_required');
     if (addoptionalrequired) {
+        const titleconfirm = Str.get_string('titleconfirmmove', 'local_sc_learningplans');
+        const yesconfirm = Str.get_string('yesmmoveconfirm', 'local_sc_learningplans');
         for (const add of addoptionalrequired) {
+            const coursename = add.getAttribute('cname');
+            const msgconfirm = Str.get_string('msgconfirm_mmove', 'local_sc_learningplans', { cname: coursename });
             add.addEventListener('click', e => {
                 e.preventDefault();
-                const addcourserequired = e.target.getAttribute('cid');
+                const course_record_id = e.target.getAttribute('course-record-id');
                 const credits = e.target.getAttribute('credits') ?? -1;
                 const periodid = e.target.getAttribute('periodid') ?? -1;
-                const coursename = e.target.getAttribute('cname');
-                if (addcourserequired) {
-                    const courseid = addcourserequired;
-                    const titleconfirm = Str.get_string('titleconfirmmove', 'local_sc_learningplans');
-                    const msgconfirm = Str.get_string('msgconfirm_mmove', 'local_sc_learningplans', { cname: coursename });
-                    const yesconfirm = Str.get_string('yesmmoveconfirm', 'local_sc_learningplans');
+                if (course_record_id) {
+                    const recordid = course_record_id;
                     notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
-                        callDeleteCourse(learningplanid, courseid, 0, false, credits, periodid);
+                        callDeleteCourse(learningplanid, recordid, 0, false, credits, periodid, e.target.getAttribute('course-id'));
                     });
                 }
             });
@@ -150,15 +150,17 @@ const callAddCourse = (learningid, periodid, courseid, isrequired, credits) => {
     });
 };
 
-const callDeleteCourse = (learningid, courseid, isrequired, notaddingcourse = true, credits = -1, periodid = -1) => {
+const callDeleteCourse = (
+    learningid, recordid, isrequired, notaddingcourse = true, credits = -1, periodid = -1, courseid = null
+) => {
     learningid = parseInt(learningid);
-    courseid = parseInt(courseid);
+    recordid = parseInt(recordid);
     isrequired = parseInt(isrequired);
     const promise = Ajax.call([{
         methodname: 'local_sc_learningplans_delete_learning_course',
         args: {
             learningplan: learningid,
-            courseid,
+            courseid: recordid,
             required: isrequired,
         }
     },]);
@@ -237,8 +239,8 @@ const updateCoursePositionAction = () => {
     }
 
     const btnupdatecourseperiodorder = document.querySelectorAll('#courseOrderInPeriod');
-    for(const btnupdate of btnupdatecourseperiodorder){
-        btnupdate.addEventListener('click', e =>{
+    for (const btnupdate of btnupdatecourseperiodorder) {
+        btnupdate.addEventListener('click', e => {
             e.preventDefault();
             let periodid = e.target.attributes.periodid.value;
             let lpid = e.target.attributes.lpid.value;

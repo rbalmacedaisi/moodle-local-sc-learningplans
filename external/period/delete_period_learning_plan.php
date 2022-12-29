@@ -65,7 +65,7 @@ class delete_period_learning_plan_external extends external_api {
         }
 
         $learningplanrecord->periodcount -= 1;
-        $learningplanrecord->updated_at = time();
+        $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
         return [
             'isdelete' => $result,

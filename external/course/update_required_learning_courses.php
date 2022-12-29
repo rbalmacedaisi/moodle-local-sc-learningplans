@@ -83,7 +83,7 @@ class update_required_learning_courses_external extends external_api {
         }
 
         $learningplanrecord->usermodified = $USER->id;
-        $learningplanrecord->updated_at = time();
+        $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
         return [
             'isupdated' => true,
