@@ -118,3 +118,14 @@ $string['msgconfirm_mmove'] = '¿Realmente deseas que el curso {$a->cname} sea u
 $string['yesmmoveconfirm'] = 'Mover';
 
 $string['save'] = 'Guardar cambios';
+
+$string['manageuser'] = 'Plan de aprendizaje - Gestión de usuarios';
+$string['id_user'] = 'Id';
+$string['name_user'] = 'Nombre';
+$string['email_user'] = 'Correo Electrónico';
+$string['roles_user'] = 'Roles';
+$string['action_user'] = 'Acciones';
+$string['bulk_users'] = 'Cargar usuarios';
+$string['search_users'] = 'Buscar usuarios';
+$string['assign_users'] = 'Asignar Usuarios';
+$string['assign_rol'] = 'Asignar Rol';

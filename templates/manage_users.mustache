@@ -52,12 +52,14 @@
             <div class="modal-body">
                 <div class="container">
                     <label class="w-100" for="learningname">{{#str}} assign_users, local_sc_learningplans {{/str}}</label>
-                    <select name="listusers" id="listusers"  required>
-                        <option value=''>{{#str}} select_user, local_sc_learningplans {{/str}}</option>
+                    <input list="users-list" name="listuser" id="listusers" class="form-control" required placeholder="{{#str}} select_user, local_sc_learningplans {{/str}}">
+                    <input list="users-list" id="listusers-hidden" type="hidden">
+                    <datalist id="users-list">
                         {{#allusers}}
-                        <option value="{{id}}">{{firstname}} {{lastname}} - {{email}}</option>
+                            <option value="{{firstname}} {{lastname}} - {{email}}" data-id="{{id}}"></option>
                         {{/allusers}}
-                    </select>
+                    </datalist>
+
                     
                     <label class="w-100 pt-4" for="learningname">{{#str}}assign_rol, local_sc_learningplans {{/str}}</label>
                     <select name="listroles" id="listroles" required>

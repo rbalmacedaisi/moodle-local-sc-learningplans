@@ -118,3 +118,14 @@ $string['msgconfirm_mmove'] = 'Are you sure to move the course {$a->cname} to re
 $string['yesmmoveconfirm'] = 'Move';
 
 $string['save'] = 'Save changes';
+
+$string['manageuser'] = 'Learning plan - Manage user';
+$string['id_user'] = 'Id';
+$string['name_user'] = 'Name';
+$string['email_user'] = 'Email';
+$string['roles_user'] = 'Roles';
+$string['action_user'] = 'Actions';
+$string['bulk_users'] = 'Bulk upload users in csv file';
+$string['search_users'] = 'Search users';
+$string['assign_users'] = 'Assign Users';
+$string['assign_rol'] = 'Assign Rol';

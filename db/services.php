@@ -93,6 +93,23 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
     ),
+
+    'local_sc_learningplans_add_learning_user' => array(
+        'classname'     => 'add_learning_user_external',
+        'methodname'    => 'add_learning_user',
+        'classpath'     => 'local/sc_learningplans/external/user/add_learning_user.php',
+        'description'   => 'Add user to learning plan',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
+    'local_sc_learningplans_delete_learning_user' => array(
+        'classname'     => 'delete_learning_user_external',
+        'methodname'    => 'delete_learning_user',
+        'classpath'     => 'local/sc_learningplans/external/user/delete_learning_user.php',
+        'description'   => 'Delete user from learning plan',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
 );
 
 $services = array(
