@@ -129,3 +129,5 @@ $string['bulk_users'] = 'Bulk upload users in csv file';
 $string['search_users'] = 'Search users';
 $string['assign_users'] = 'Assign Users';
 $string['assign_rol'] = 'Assign Rol';
+
+$string['msgconfirm_user'] = 'Are you sure you want to delete this User?<br/>Once you accept you will not be able to undo the changes.<br/><label for="checkRemoveCourses"><input type="checkbox" id="checkRemoveCourses" name="checkRemoveCourses"/> &nbsp Unenrol from courses</label>';

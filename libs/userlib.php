@@ -44,3 +44,95 @@ function sc_learningplan_get_roles() {
     }
     return $roles;
 }
+
+/**
+ * Enroll user in the first course uncompleted. Each item need to have courseid key
+ *
+ * @param array $courses
+ * @param int $userid
+ * @param int $roleid
+ * @return void
+ */
+function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid) {
+    $enrolplugin = enrol_get_plugin('manual');
+    $allcourses = get_courses();
+    // The prev courses of the first course, not exist, so the prev course is completed
+    // and the user can be enroled in the first course if is uncompleted.
+    $prevcourseiscompleted = true;
+    foreach ($courses as $course) {
+        $courseid = $course->courseid;
+        if ($prevcourseiscompleted) {
+            enrol_user($enrolplugin, $userid, $courseid, $roleid);
+        }
+        $objcourse = $allcourses[$courseid];
+        $cinfo = new completion_info($objcourse);
+        $iscomplete = $cinfo->is_course_complete($userid);
+        if (!$iscomplete) {
+            break;
+        }
+    }
+
+}
+
+/**
+ * Enroll user in all $courses. Each item need to have courseid key
+ *
+ * @param array $courses
+ * @param int $userid
+ * @param int $roleid
+ * @return void
+ */
+function enrol_user_in_all_courses($courses, $userid, $roleid) {
+    $enrolplugin = enrol_get_plugin('manual');
+    foreach ($courses as $course) {
+        $courseid = $course->courseid;
+        enrol_user($enrolplugin, $userid, $courseid, $roleid);
+    }
+}
+
+/**
+ * Enrol user in course.
+ *
+ * @param enrol_plugin $enrolplugin (Use method enrol_get_plugin)
+ * @param int $userid
+ * @param int $courseid
+ * @param int $roleid
+ * @return void
+ */
+function enrol_user($enrolplugin, $userid, $courseid, $roleid) {
+    $instance = get_manual_enrol($courseid);
+    if ($instance) {
+        $enrolplugin->enrol_user($instance, $userid, $roleid);
+    }
+}
+/**
+ * Enrol user in course.
+ *
+ * @param enrol_plugin $enrolplugin (Use method enrol_get_plugin)
+ * @param int $userid
+ * @param int $courseid
+ * @param int $roleid
+ * @return void
+ */
+function unenrol_user($enrolplugin, $userid, $courseid) {
+    $instance = get_manual_enrol($courseid);
+    if ($instance) {
+        $enrolplugin->unenrol_user($instance, $userid);
+    }
+}
+
+/**
+ * Get instance of manual enrol
+ *
+ * @param int $courseid
+ * @return stdClass instance
+ */
+function get_manual_enrol($courseid) {
+    $instances = enrol_get_instances($courseid, true);
+    foreach ($instances as $instance) {
+        if ($instance->enrol = 'manual') {
+            return $instance;
+        }
+    }
+    return false;
+}

@@ -90,6 +90,9 @@ class delete_learning_course_external extends external_api {
                     ]);
             }
         }
+        $learningplanrecord->coursecount--;
+        $learningplanrecord->timemodified = time();
+        $DB->update_record('local_learning_plans', $learningplanrecord);
         return [
             'isdelete' => $isdelete,
         ];

@@ -103,7 +103,15 @@ class table_manage_users extends table_sql {
      * @return string HTML content to go inside the td.
      */
     public function col_action_user($values) {
-        $html = 'a';
+        $icondelete = html_writer::tag('i', "", ['class' => 'lp_icon fa fa-trash fa-fw']);
+        $html = html_writer::tag('button', $icondelete, [
+            'id' => 'deleteuser',
+            'class' => 'btn deleteuser',
+            'userid' => $values->userid,
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'bottom',
+            'data-original-title' => 'Delete User',
+        ]);
         return $html;
     }
 }

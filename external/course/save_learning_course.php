@@ -108,7 +108,7 @@ class save_learning_course_external extends external_api {
             $learningplancourses->learningplanid = $learningplan;
             $learningplancourses->courseid = $courseid;
             $learningplancourses->isrequired = $required;
-            $learningplancourses->position = $courseposition;
+            $learningplancourses->position = $courseposition ?? 0;
             $learningplancourses->credits = $credits;
             $learningplancourses->periodid = $periodid;
             $learningplancourses->usermodified = $USER->id;

@@ -3,21 +3,26 @@ import * as Str from 'core/str';
 import * as Ajax from 'core/ajax';
 
 export const init = (learningplanid) => {
-    callGetUsers(learningplanid, 1, 5, null, true);
-
     addUserAction(learningplanid);
+    deleteUserAction(learningplanid);
+};
 
-    const searchUsers = document.querySelector('#searchUsers');
-    if (searchUsers) {
-        let timeout;
-        searchUsers.addEventListener('keyup', e => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                window.console.log('Buscar', e.target.value);
-                callGetUsers(learningplanid, 1, 5, e.target.value, true);
-            }, 500);
+const deleteUserAction = (learningplanid) => {
+    const deletebtn = document.querySelectorAll('.btn.deleteuser');
+    const titleconfirm = Str.get_string('titleconfirm', 'local_sc_learningplans');
+    const msgconfirm = Str.get_string('msgconfirm_user', 'local_sc_learningplans');
+    const yesconfirm = Str.get_string('yesconfirm', 'local_sc_learningplans');
+    deletebtn.forEach(el => {
+        el.addEventListener('click', e => {
+            e.preventDefault();
+            const userid = e.target.parentElement.getAttribute('userid');
+            notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
+                const removeenrol = document.querySelector('#checkRemoveCourses');
+                window.console.log(removeenrol, removeenrol.checked);
+                callDeleteUser(learningplanid, userid, removeenrol ? removeenrol.checked : false);
+            });
         });
-    }
+    });
 };
 
 const addUserAction = (learningplanid) => {
@@ -43,117 +48,6 @@ const addUserAction = (learningplanid) => {
             }
         });
     }
-};
-
-const createUserTableRow = (userid, firstname, lastname, email, rolename, learningplanid, nameperiod) => {
-    const el_tr = document.createElement('tr');
-    const el_td_userid = document.createElement('td');
-    const el_td_username = document.createElement('td');
-    const el_td_email = document.createElement('td');
-    const el_td_periodname = document.createElement('td');
-    const el_td_rolename = document.createElement('td');
-    const el_td_btn = document.createElement('td');
-    const el_btn = document.createElement('button');
-    const el_i = document.createElement('i');
-
-    el_td_userid.innerHTML = userid;
-    el_td_username.innerHTML = `${firstname} ${lastname}`;
-    el_td_email.innerHTML = email;
-    el_td_rolename.innerHTML = rolename;
-    el_btn.id = 'deleteuser';
-    el_btn.classList.add('btn');
-    el_btn.setAttribute('userid', userid);
-    el_btn.setAttribute('data-toggle', 'tooltip');
-    el_btn.setAttribute('data-placement', 'bottom');
-    el_btn.setAttribute('data-original-title', 'Delete User');
-    el_i.classList.add('lp_icon', 'fa', 'fa-trash', 'fa-fw');
-    el_btn.append(el_i);
-    el_td_btn.append(el_btn);
-    el_btn.addEventListener('click', e => {
-        e.preventDefault();
-        const userid = e.target.parentElement.getAttribute('userid');
-        const titleconfirm = Str.get_string('titleconfirm', 'local_sc_learningplans');
-        const msgconfirm = Str.get_string('msgconfirm_user', 'local_sc_learningplans');
-        const yesconfirm = Str.get_string('yesconfirm', 'local_sc_learningplans');
-        notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
-            const removeenrol = document.querySelector('#checkRemoveCourses');
-            callDeleteUser(learningplanid, userid, removeenrol ? removeenrol.checked : false);
-        });
-    });
-    el_tr.append(el_td_userid);
-    el_tr.append(el_td_username);
-    el_tr.append(el_td_email);
-    if (nameperiod != undefined) {
-        el_td_periodname.innerHTML = nameperiod;
-        el_tr.append(el_td_periodname);
-    } else {
-        el_td_periodname.remove();
-    }
-    el_tr.append(el_td_rolename);
-    el_tr.append(el_td_btn);
-    return el_tr;
-};
-
-const callGetUsers = (learningid, page, recordsperpage, search = null, renderpages = false) => {
-    learningid = parseInt(learningid);
-    page = parseInt(page);
-    recordsperpage = parseInt(recordsperpage);
-    const promise = Ajax.call([{
-        methodname: 'local_sc_learningplans_get_learning_users',
-        args: {
-            learningid,
-            page,
-            recordsperpage,
-            search
-        }
-    },]);
-
-    promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_get_learning_users', response);
-        const usersTable = document.querySelector('#usersTable tbody');
-        usersTable.innerHTML = '';
-        if (usersTable) {
-            for (const element of response.learningusers) {
-                const tr = createUserTableRow(
-                    element.userid,
-                    element.firstname,
-                    element.lastname,
-                    element.email,
-                    element.userrolename,
-                    learningid,
-                    element.nameperiod,
-                );
-                usersTable.append(tr);
-            }
-        }
-        if (renderpages) {
-            const userpaginationsc = document.querySelector('#userpaginationsc');
-            if (userpaginationsc) {
-                userpaginationsc.innerHTML = '';
-                const totalpages = Math.ceil(response.totalusers / recordsperpage);
-                for (let index = 1; index <= totalpages; index++) {
-                    const elpage = document.createElement('a');
-                    elpage.innerHTML = `${index}`;
-                    if (index == 1) {
-                        elpage.classList.add('activelp');
-                    }
-                    elpage.addEventListener('click', el => {
-                        let pageactive = document.querySelector('a.activelp');
-                        if (pageactive) {
-                            pageactive.classList.remove('activelp');
-                        }
-                        el.preventDefault();
-                        el.target.classList.add('activelp');
-                        usersTable.innerHTML = '';
-                        callGetUsers(learningid, index, recordsperpage, search, false);
-                    });
-                    userpaginationsc.append(elpage);
-                }
-            }
-        }
-    }).fail(function (response) {
-        window.console.error(response);
-    });
 };
 
 const callDeleteUser = (learningplan, userid, unenrol) => {

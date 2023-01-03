@@ -26,6 +26,9 @@ use local_sc_learningplans\event\user_lpenrolment_created;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once("$CFG->libdir/completionlib.php");
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+
 class add_learning_user_external extends external_api {
 
     public static function add_learning_user_parameters() {
@@ -87,7 +90,27 @@ class add_learning_user_external extends external_api {
         $learninguserexist->id = $DB->insert_record($tableusers, $learninguserexist);
 
         // Enrol in first course and in all optional course.
+        // Get optional courses.
+        $optionalcourses = $DB->get_records('local_learning_courses', ['learningplanid' => $learningplan, 'isrequired' => 0]);
+        enrol_user_in_all_courses($optionalcourses, $userid, $roleid);
 
+        $requiredcourses = $DB->get_records_sql('SELECT lpc.*, c.fullname FROM {local_learning_courses} lpc
+            JOIN {course} c ON (c.id = lpc.courseid)
+            WHERE lpc.learningplanid = :learningplanid AND lpc.isrequired = :isrequired
+            ORDER BY periodid, position',
+        [
+            'learningplanid' => $learningplan,
+            'isrequired' => 1
+        ]);
+        var_dump($roleid);
+        if ($roleid != 5) {
+            // Isn't student, enroll in all required courses.
+            enrol_user_in_all_courses($requiredcourses, $userid, $roleid);
+        } else {
+            enrol_user_in_first_uncomplete_course($requiredcourses, $userid, $roleid);
+        }
+        $learningplanrecord->usercount++;
+        $DB->update_record('local_learning_plans', $learningplanrecord);
         return [
             'id' => $learninguserexist->id,
         ];
