@@ -131,3 +131,7 @@ $string['assign_users'] = 'Asignar Usuarios';
 $string['assign_rol'] = 'Asignar Rol';
 
 $string['msgconfirm_user'] = 'La eliminación de usuarios de los planes de aprendizaje no se puede deshacer. Seleccione la casilla a continuación, si adicionalmente quiere eliminar la matriculación del usuario en todos los cursos<br/><input type="checkbox" id="checkRemoveCourses" name="checkRemoveCourses"/>';
+
+$string['msgconfirm'] = '¿Está seguro de querer eliminar de forma definitiva este plan de aprendizaje y toda la información relacionada?';
+
+$string['period_enrol'] = 'Periodo Actual Inscrito';

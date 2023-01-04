@@ -55,5 +55,6 @@ $table->define_baseurl("$CFG->wwwroot/local/sc_learningplans/index.php");
 $table->out(10, true);
 
 if (!$table->is_downloading()) {
+    $PAGE->requires->js_call_amd('local_sc_learningplans/manage_learningplans', 'init');
     echo $OUTPUT->footer();
 }
