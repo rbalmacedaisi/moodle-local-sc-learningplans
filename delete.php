@@ -24,12 +24,6 @@
 
 require_once(__DIR__ . '/../../config.php');
 
-// Force a debugging mode regardless the settings in the site administration
-@error_reporting(E_ALL | E_STRICT); // NOT FOR PRODUCTION SERVERS!
-@ini_set('display_errors', '1');    // NOT FOR PRODUCTION SERVERS!
-$CFG->debug = (E_ALL | E_STRICT);   // === DEBUG_DEVELOPER - NOT FOR PRODUCTION SERVERS!
-$CFG->debugdisplay = 1;             // NOT FOR PRODUCTION SERVERS!
-
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/external/user/delete_learning_user.php');

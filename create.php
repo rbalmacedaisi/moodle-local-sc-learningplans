@@ -66,15 +66,7 @@ unset($allusers[1]); // Guest user!
 $roles = sc_learningplan_get_roles();
 
 $config = get_config('local_sc_learningplans');
-$coursetemplatedata = [
-    'currentcourses' => $requiredcourses,
-    'optionalcourses' => $optionalcourses,
-];
-$usertemplatedata = [
-    'allusers' => $allusers,
-    'roles' => $roles,
-    'learningusers' => $learningusers,
-];
+
 $maintemplatedata = [
     'formimagpicker' => $formimagepicker->render(),
     'formeditor' => $formeditor->render(),

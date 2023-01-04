@@ -136,3 +136,33 @@ function get_manual_enrol($courseid) {
     }
     return false;
 }
+
+/**
+ * Logic to enroll user in courses learningplan.
+ *
+ * @param int $learningplanid
+ * @param int $userid
+ * @param int $roleid
+ * @return void
+ */
+function enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid) {
+    global $DB;
+    // Get optional courses.
+    $optionalcourses = $DB->get_records('local_learning_courses', ['learningplanid' => $learningplanid, 'isrequired' => 0]);
+    enrol_user_in_all_courses($optionalcourses, $userid, $roleid);
+
+    $requiredcourses = $DB->get_records_sql('SELECT lpc.*, c.fullname FROM {local_learning_courses} lpc
+        JOIN {course} c ON (c.id = lpc.courseid)
+        WHERE lpc.learningplanid = :learningplanid AND lpc.isrequired = :isrequired
+        ORDER BY periodid, position',
+    [
+        'learningplanid' => $learningplanid,
+        'isrequired' => 1
+    ]);
+    if ($roleid != 5) {
+        // Isn't student, enroll in all required courses.
+        enrol_user_in_all_courses($requiredcourses, $userid, $roleid);
+    } else {
+        enrol_user_in_first_uncomplete_course($requiredcourses, $userid, $roleid);
+    }
+}
