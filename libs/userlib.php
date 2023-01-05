@@ -54,6 +54,8 @@ function sc_learningplan_get_roles() {
  * @return void
  */
 function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid) {
+    global $CFG;
+    require_once("$CFG->libdir/completionlib.php");
     $enrolplugin = enrol_get_plugin('manual');
     $allcourses = get_courses();
     // The prev courses of the first course, not exist, so the prev course is completed

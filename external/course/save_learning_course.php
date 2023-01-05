@@ -22,8 +22,6 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_sc_learningplans\event\learningplan_updated;
-
 defined('MOODLE_INTERNAL') || die();
 
 class save_learning_course_external extends external_api {
@@ -91,6 +89,7 @@ class save_learning_course_external extends external_api {
             if ($existbefore) {
                 continue;
             }
+            $courseposition = $position;
             if ($position == null && $required) {
                 // No position set and is required course, so calculate it.
                 $courseposition = 1;

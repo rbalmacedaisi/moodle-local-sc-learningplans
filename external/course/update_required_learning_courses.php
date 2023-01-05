@@ -26,6 +26,8 @@ use local_sc_learningplans\event\learningplan_updated;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+
 class update_required_learning_courses_external extends external_api {
 
     public static function update_required_learning_courses_parameters() {
@@ -80,6 +82,13 @@ class update_required_learning_courses_external extends external_api {
                 'courseid' => $recordid,
                 'position' => $position
             ];
+        }
+
+        $users = $DB->get_records('local_learning_users', ['learningplanid' => $learningplan]);
+        foreach ($users as $user) {
+            $userid = $user->userid;
+            $roleid = $user->userroleid;
+            enrol_user_in_learningplan_courses($learningplan, $userid, $roleid);
         }
 
         $learningplanrecord->usermodified = $USER->id;

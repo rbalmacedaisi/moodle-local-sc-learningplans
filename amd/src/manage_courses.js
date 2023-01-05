@@ -38,17 +38,17 @@ let addCoursePeriodAction = (learningplanid) => {
             e.preventDefault();
             const courseselected = document.getElementById('selectAddCourseToLearningPlanPeriod').selectedOptions;
             const periodselected = document.getElementById('selectPeriodToLearningPlan').value;
-            const creditselected = document.getElementById('selectCredits').value;
-            let typecourse = 0;
+            const creditselected = -1;
+            let isrequired = 0;
             if (document.getElementById('required').checked) {
-                typecourse = 1;
+                isrequired = 1;
             } else {
-                typecourse = 0;
+                isrequired = 0;
             }
             if (courseselected) {
                 const datacourses = Array.prototype.slice.call(courseselected);
                 const courseid = datacourses.map(select => select.value).join(',');
-                callAddCourse(learningplanid, periodselected, courseid, typecourse, creditselected);
+                callAddCourse(learningplanid, periodselected, courseid, isrequired, creditselected);
             }
         });
     }

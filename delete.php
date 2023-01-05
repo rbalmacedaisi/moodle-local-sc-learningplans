@@ -50,7 +50,7 @@ if (!$learningplan) {
 $users = $DB->get_records('local_learning_users', ['learningplanid' => $id]);
 foreach ($users as $user) {
     $userid = $user->userid;
-    delete_learning_user_external::delete_learning_user($id, $userid, true);
+    delete_learning_user_external::delete_learning_user($id, $userid, false);
 }
 
 // Delete all courses from lp.

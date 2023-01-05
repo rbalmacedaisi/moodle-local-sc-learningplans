@@ -132,6 +132,6 @@ $string['assign_rol'] = 'Assign Rol';
 
 $string['msgconfirm_user'] = 'Are you sure you want to delete this User?<br/>Once you accept you will not be able to undo the changes.<br/><label for="checkRemoveCourses"><input type="checkbox" id="checkRemoveCourses" name="checkRemoveCourses"/> &nbsp Unenrol from courses</label>';
 
-$string['msgconfirm'] = 'Removing users from learning plans cannot be undone. Check the box below, if you additionally want to remove the users enrollment in all courses';
+$string['msgconfirm'] = 'Are you sure you want to remove this learning plan and its related content?';
 
 $string['period_enrol'] = 'Period Actually Enrol';

@@ -75,8 +75,12 @@ $learningplancourses = $DB->get_records_sql('SELECT lpc.*, c.fullname as coursen
 if ($learningplan->hasperiod == 1) {
     $hasperiod = true;
     $listperiods = $DB->get_records('local_learning_periods', array('learningplanid' => $id));
+    $listperiodcourses = [];
+    foreach ($listperiods as $period) {
+        $listperiodcourses[$period->id]['idperiod'] = $period->id;
+        $listperiodcourses[$period->id]['nameperiod'] = $period->name;
+    }
     if (!empty($learningplancourses)) {
-        $listperiodcourses = [];
         foreach ($learningplancourses as $course) {
             if (!isset($listperiods[$course->periodid]) || !isset($allcourses[$course->courseid])) {
                 continue;
