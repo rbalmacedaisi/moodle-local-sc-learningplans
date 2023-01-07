@@ -110,6 +110,15 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
     ),
+
+    'local_sc_learningplans_duplicate_learning_plan' => array(
+        'classname'     => 'duplicate_learning_plan_external',
+        'methodname'    => 'duplicate_learning_plan',
+        'classpath'     => 'local/sc_learningplans/external/learning/duplicate_learning_plan.php',
+        'description'   => 'Duplicate learning plan',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
 );
 
 $services = array(

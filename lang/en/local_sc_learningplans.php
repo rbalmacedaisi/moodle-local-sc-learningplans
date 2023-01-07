@@ -135,3 +135,7 @@ $string['msgconfirm_user'] = 'Are you sure you want to delete this User?<br/>Onc
 $string['msgconfirm'] = 'Are you sure you want to remove this learning plan and its related content?';
 
 $string['period_enrol'] = 'Period Actually Enrol';
+$string['copy'] = 'Copy';
+$string['duplicate_courses'] = 'Duplicate the courses of the learning plan (Using the same courses)';
+$string['copy_courses'] = 'Create a copy of the courses of the learning plan';
+$string['duplicate_users'] = 'Duplicate the enrolments';
