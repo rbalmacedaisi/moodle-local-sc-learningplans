@@ -1,6 +1,6 @@
 <h5 class="text-center font-weight-bold">{{#str}} title_add_users, local_sc_learningplans {{/str}}</h5>
 
-<div class="d-flex justify-content-between pt-4 content_upload_user">
+<div class="d-flex justify-content-end pt-4 content_upload_user">
     <div class="d-flex action_upload_user">
          <div class="btn_adding_user">
              {{#hasmanualenrol}}
@@ -8,15 +8,6 @@
              {{/hasmanualenrol}}
              <button id="add_new_user_" class="btn btn-primary" data-toggle="modal" data-target="#userModal">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
         </div>
-    </div>
-    
-    <div class="input-group has-search">
-        <input type='text' class="form-control mb-4 py-2 border-right-0 border" placeholder='{{#str}} search_users, local_sc_learningplans{{/str}}' id="searchUsers">
-        <span class="input-group-append">
-            <button class="btn border-left-0 border" type="button">
-                <i class="fa fa-search"></i>
-            </button>
-        </span>
     </div>
 </div>
 

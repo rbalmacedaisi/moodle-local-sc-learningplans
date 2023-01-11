@@ -54,11 +54,17 @@ class add_learning_user_external extends external_api {
                     null,
                     NULL_NOT_ALLOWED
                 ),
+                'currentperiodid'  => new external_value(
+                    PARAM_INT,
+                    'Current period id',
+                    VALUE_DEFAULT,
+                    null
+                ),
             )
         );
     }
 
-    public static function add_learning_user($learningplan, $userid, $roleid) {
+    public static function add_learning_user($learningplan, $userid, $roleid, $currentperiodid) {
         global $DB, $USER;
         $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplan]);
         if (!$learningplanrecord) {
@@ -82,7 +88,7 @@ class add_learning_user_external extends external_api {
         $learninguserexist->userid = $userid;
         $learninguserexist->userroleid = $roleid;
         $learninguserexist->userrolename = $roleshortname;
-        $learninguserexist->currentperiodid = null;
+        $learninguserexist->currentperiodid = $currentperiodid;
         $learninguserexist->usermodified = $USER->id;
         $learninguserexist->timemodified = time();
         $learninguserexist->timecreated = time();

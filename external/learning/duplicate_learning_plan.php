@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/local/sc_learningplans/external/course/save_learning_course.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/external/period/addperiod_learning_plan.php');
-// require_once($CFG->dirroot . '/local/sc_learningplans/external/user/add_learning_user.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/external/user/add_learning_user.php');
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 
@@ -94,122 +94,68 @@ class duplicate_learning_plan_external extends external_api {
 
         // Duplicate the courses (If exist, with periods).
         $withperiods = $newlearningplan->hasperiod;
-        if ($courses) {
+        if ($courses || $copycourses) {
+            $countcourses = 0;
+            $lpcourses = $DB->get_records('local_learning_courses', ['learningplanid' => $oldlearningid]);
             if ($withperiods) {
                 // Get the periods and make an array.
                 $periodcourses = [];
-                $periods = $DB->get_records('local_learning_periods', ['learningplanid' => $oldlearningid]);
-                $courses = $DB->get_records('local_learning_courses', ['learningplanid' => $oldlearningid]);
-                foreach ($periods as $period) {
+                $lpperiods = $DB->get_records('local_learning_periods', ['learningplanid' => $oldlearningid]);
+                foreach ($lpperiods as $period) {
                     $periodid = $period->id;
                     $periodcourses[$periodid] = $period;
                     $periodcourses[$periodid]->courses = [];
                 }
-                foreach ($courses as $course) {
+                foreach ($lpcourses as $course) {
                     $periodid = $course->periodid;
                     $periodcourses[$periodid]->courses[] = $course;
                 }
                 // Create the new periods with their courses.
                 foreach ($periodcourses as $periodid => $data) {
-                    $datanewperiod = addperiod_learning_plan_external::addperiod_learning_plan($newlearningplanid, $data->name, $data->months);
+                    $datanewperiod = addperiod_learning_plan_external::addperiod_learning_plan(
+                        $newlearningplanid,
+                        $data->name,
+                        $data->months
+                    );
                     $newperiodid = $datanewperiod['id'];
                     foreach ($data->courses as $datacourse) {
-                        save_learning_course_external::save_learning_course($newlearningplanid, $newperiodid, $datacourse->courseid, $datacourse->isrequired, $datacourse->credits, $datacourse->position);
-                    }
-
-                }
-            }
-        }
-        else if ($copycourses) {
-
-        }
-        // Duplicate users.
-
-        $updaterecord = false;
-        // To copy courses or users, just duplicate the record and change col learningplanid.
-        if ($users) {
-            $users = $DB->get_records('local_sc_learningplans_users', ['learningplanid' => $oldlearningid]);
-            foreach ($users as $u) {
-                unset($u->id);
-                $u->learningplanid = $newlearningplanid;
-                $DB->insert_record('local_sc_learningplans_users', $u, false, true);
-            }
-        } else {
-            $updaterecord = true;
-            $newlearningplan->usercount = 0;
-        }
-
-        if ($courses) {
-
-        } else {
-            if ($copycourses) {
-                // Get the required and optional courses from oldlearningid.
-                $learningplancourses = $DB->get_records("local_learningplans_courses", ['learningplanid' => $oldlearningid]);
-                $newlearningplan->coursecount = 0;
-                foreach ($learningplancourses as $lpcourses) {
-                    $strcourses = explode('|', $lpcourses->courses);
-                    $courses = array_flip($strcourses); // Courses id in the index keys!
-                    $isrequired = $lpcourses->required;
-                    foreach ($courses as $courseid => $v) {
-                        $course = get_course($courseid);
-                        $suffix = 'copy';
-                        // Create the course backup.
-                        $bc = new backup_controller(
-                            backup::TYPE_1COURSE,
-                            $courseid,
-                            backup::FORMAT_MOODLE,
-                            backup::INTERACTIVE_NO,
-                            backup::MODE_IMPORT, // MODE_IMPORT to avoid 'Include user completion information'.
-                            $USER->id
-                        );
-                        $backupid = $bc->get_backupid();
-                        $bc->execute_plan();
-                        // Do restore to new course with default settings.
-                        $newcourseid = restore_dbops::create_new_course(
-                            $course->fullname . $suffix,
-                            $course->shortname . $suffix,
-                            $course->category
-                        );
-                        $results        = $bc->get_results();
-                        $backupbasepath = $bc->get_plan()->get_basepath();
-                        $file = $results['backup_destination'] ?? null; // May be empty if file already moved to target location.
-                        if ($file && !file_exists($backupbasepath . '/moodle_backup.xml')) {
-                            // If the backup not exist, create it.
-                            $fp = get_file_packer('application/vnd.moodle.backup');
-                            $files = $file->extract_to_pathname($fp, $backupbasepath);
+                        if ($copycourses) {
+                            $datacourse->courseid = self::create_new_course_from_other($datacourse->courseid);
                         }
-                        // Restore the backup.
-                        $rc = new restore_controller(
-                            $backupid,
-                            $newcourseid,
-                            backup::INTERACTIVE_NO,
-                            backup::MODE_SAMESITE,
-                            $USER->id,
-                            backup::TARGET_NEW_COURSE
+                        $countcourses++;
+                        save_learning_course_external::save_learning_course(
+                            $newlearningplanid,
+                            $newperiodid,
+                            $datacourse->courseid,
+                            $datacourse->isrequired,
+                            $datacourse->credits,
+                            $datacourse->position
                         );
-                        $rc->execute_precheck();
-                        $rc->execute_plan();
-                        $rc->destroy(); // Delete the restore.
-                        $bc->destroy(); // Delete the backup.
-                        // Add the course to learningplan.
-                        save_learning_course_external::save_learning_course($newlearningplanid, $newcourseid, $isrequired);
-                        if ($isrequired) {
-                            // Avoid errors with the update records if the users condition make $updaterecord = true.
-                            $newlearningplan->coursecount++;
-                        }
-                        if ($file) {
-                            $file->delete();
-                        }
                     }
                 }
             } else {
-                $updaterecord = true;
-                $newlearningplan->coursecount = 0;
+                foreach ($lpcourses as $datacourse) {
+                    if ($copycourses) {
+                        $datacourse->courseid = self::create_new_course_from_other($datacourse->courseid);
+                    }
+                    $countcourses++;
+                    save_learning_course_external::save_learning_course(
+                        $newlearningplanid,
+                        null,
+                        $datacourse->courseid,
+                        $datacourse->isrequired,
+                        $datacourse->credits,
+                        $datacourse->position
+                    );
+                }
             }
         }
-        if ($updaterecord) {
-            $newlearningplan->id = $newlearningplanid;
-            $DB->update_record('local_learning_plans', $newlearningplan);
+        // Duplicate users.
+        if ($users) {
+            $users = $DB->get_records('local_learning_users', ['learningplanid' => $oldlearningid]);
+            foreach ($users as $u) {
+                add_learning_user_external::add_learning_user($newlearningplanid, $u->userid, $u->userroleid, $u->currentperiodid);
+            }
         }
 
         if ($fileimage) {
@@ -236,5 +182,53 @@ class duplicate_learning_plan_external extends external_api {
                 'learningplanid' => new external_value(PARAM_INT, 'Learning Plan ID')
             )
         );
+    }
+
+    public static function create_new_course_from_other($courseid) {
+        global $USER;
+        $course = get_course($courseid);
+        $suffix = 'copy ' . time();
+        // Create the course backup.
+        $bc = new backup_controller(
+            backup::TYPE_1COURSE,
+            $courseid,
+            backup::FORMAT_MOODLE,
+            backup::INTERACTIVE_NO,
+            backup::MODE_IMPORT, // MODE_IMPORT to avoid 'Include user completion information'.
+            $USER->id
+        );
+        $backupid = $bc->get_backupid();
+        $bc->execute_plan();
+        // Do restore to new course with default settings.
+        $newcourseid = restore_dbops::create_new_course(
+            $course->fullname . $suffix,
+            $course->shortname . $suffix,
+            $course->category
+        );
+        $results        = $bc->get_results();
+        $backupbasepath = $bc->get_plan()->get_basepath();
+        $file = $results['backup_destination'] ?? null; // May be empty if file already moved to target location.
+        if ($file && !file_exists($backupbasepath . '/moodle_backup.xml')) {
+            // If the backup not exist, create it.
+            $fp = get_file_packer('application/vnd.moodle.backup');
+            $files = $file->extract_to_pathname($fp, $backupbasepath);
+        }
+        // Restore the backup.
+        $rc = new restore_controller(
+            $backupid,
+            $newcourseid,
+            backup::INTERACTIVE_NO,
+            backup::MODE_SAMESITE,
+            $USER->id,
+            backup::TARGET_NEW_COURSE
+        );
+        $rc->execute_precheck();
+        $rc->execute_plan();
+        $rc->destroy(); // Delete the restore.
+        $bc->destroy(); // Delete the backup.
+        if ($file) {
+            $file->delete();
+        }
+        return $newcourseid;
     }
 }

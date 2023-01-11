@@ -130,7 +130,7 @@ class save_learning_plan_external extends external_api {
                 $userid = $user['userid'];
                 $roleid = $user['roleid'];
                 $newlearningplan->usercount++;
-                add_learning_user_external::add_learning_user($learningplanid, $userid, $roleid);
+                add_learning_user_external::add_learning_user($learningplanid, $userid, $roleid, null);
             }
         } else {
             // Only add periods.
