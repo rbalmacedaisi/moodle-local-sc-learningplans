@@ -65,11 +65,23 @@ file_prepare_draft_area(
 $entry = new stdClass;
 $entry->learningplan_image = $draftitemid;
 $formimagepicker->set_data($entry);
+
+$userprofilefields = $DB->get_records('user_info_field');
+$currentrequirements = explode(',', $learningplan->requirements);
+$currentrequirements = array_flip($currentrequirements);
+foreach ($userprofilefields as &$up) {
+    $up->checked = '';
+    if (isset($currentrequirements[$up->id])) {
+        $up->checked = 'checked';
+    }
+}
+
 $maintemplatedata = [
     'formimagpicker' => $formimagepicker->render(),
     'learningshortname' => $learningplan->shortname,
     'learningplanname' => $learningplan->name,
     'learningplandescription' => $learningplan->description,
+    'userprofilefields' => array_values($userprofilefields),
 ];
 
 echo $OUTPUT->header();

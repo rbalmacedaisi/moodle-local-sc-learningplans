@@ -35,6 +35,10 @@
     margin-left: -15px;
 }
 
+input[type=checkbox] {
+    height: inherit !important;
+}
+
 #page-local-sc_learningplans-index input,
 #page-local-sc_learningplans-index select,
 #page-local-sc_learningplans-create select,

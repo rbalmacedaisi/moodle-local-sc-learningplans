@@ -13,6 +13,10 @@ export const init = (learningid, is_siteadmin) => {
             const learningshortname = document.querySelector('#learningshortname');
             const desc_plan = document.querySelector('#desc_plan');
             const learningimage = document.querySelector('#id_learningplan_image');
+            if (window.NodeList && !NodeList.prototype.map) {
+                NodeList.prototype.map = Array.prototype.map;
+            }
+            const requirements = document.querySelectorAll('input[name=learningrequirements]:checked').map(el => el.value).join();
             const promise = Ajax.call([{
                 methodname: 'local_sc_learningplans_edit_learning_plan',
                 args: {
@@ -21,18 +25,19 @@ export const init = (learningid, is_siteadmin) => {
                     learningshortname: learningshortname.value,
                     fileimage: learningimage.value,
                     description: desc_plan.value,
+                    requirements,
                 }
-            }, ]);
+            },]);
 
-            promise[0].done(function() {
+            promise[0].done(function () {
                 window.console.log(is_siteadmin, 'local_sc_learningplans_edit_learning_plan');
-                if(!is_siteadmin) {
+                if (!is_siteadmin) {
                     window.location.href = '/';
                 }
                 else {
                     window.location.href = '/local/sc_learningplans/index.php';
                 }
-            }).fail(function(response) {
+            }).fail(function (response) {
                 window.console.error(response);
             });
         });

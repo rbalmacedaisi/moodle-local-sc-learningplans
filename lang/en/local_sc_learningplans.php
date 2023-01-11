@@ -139,3 +139,5 @@ $string['copy'] = 'Copy';
 $string['duplicate_courses'] = 'Duplicate the courses of the learning plan (Using the same courses)';
 $string['copy_courses'] = 'Create a copy of the courses of the learning plan';
 $string['duplicate_users'] = 'Duplicate the enrolments';
+
+$string['plan_requirements'] = 'Requirements';

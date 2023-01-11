@@ -38,11 +38,12 @@ class edit_learning_plan_external extends external_api {
                 'learningname' => new external_value(PARAM_TEXT, 'Name of the learning plan'),
                 'fileimage' => new external_value(PARAM_INT, 'Image itemid provide by filemanager form element'),
                 'description' => new external_value(PARAM_RAW, 'Description of the learning plan'),
+                'requirements'   => new external_value(PARAM_TEXT, 'User Profiles id'),
             )
         );
     }
 
-    public static function edit_learning_plan($learningid, $learningshortname, $learningname, $fileimage, $description) {
+    public static function edit_learning_plan($learningid, $learningshortname, $learningname, $fileimage, $description, $requirements) {
         global $DB;
         // Check if LP Exist.
         $learningplan = $DB->get_record('local_learning_plans', ['id' => $learningid]);
@@ -78,6 +79,7 @@ class edit_learning_plan_external extends external_api {
         $learningplan->shortname = $learningshortname;
         $learningplan->name = $learningname;
         $learningplan->description = $description;
+        $learningplan->requirements = $requirements;
         $learningplan->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplan);
         return [
