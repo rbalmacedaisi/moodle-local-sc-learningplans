@@ -53,27 +53,75 @@ function sc_learningplan_get_roles() {
  * @param int $roleid
  * @return void
  */
-function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid) {
-    global $CFG;
+function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $learningplanrecord, $learninguserrecord) {
+    global $CFG, $DB;
     require_once("$CFG->libdir/completionlib.php");
     $enrolplugin = enrol_get_plugin('manual');
     $allcourses = get_courses();
-    // The prev courses of the first course, not exist, so the prev course is completed
-    // and the user can be enroled in the first course if is uncompleted.
-    $prevcourseiscompleted = true;
+
+    $prevloopperiodid = null;
+    $usercurrentperiod = $learninguserrecord->currentperiodid;
+    $hasperiods = $learningplanrecord->hasperiod;
+    $enroltype = $learningplanrecord->enroltype; // 1: Manual, 2: Automatic.
+    $ismanual = false;
+    if ($enroltype == 1) {
+        // Toca poner al usuario en espera llegado el caso.
+        $ismanual = true;
+    }
+    $changeperiod = false;
+    $checkchangeperiod = false;
+    $learninguserrecord->waitingperiod = null;
+    $learninguserrecord->nextperiodid = null;
     foreach ($courses as $course) {
-        $courseid = $course->courseid;
-        if ($prevcourseiscompleted) {
-            enrol_user($enrolplugin, $userid, $courseid, $roleid);
+        $courseperiod = $course->periodid; // If null, not matter.
+        if ($hasperiods && $ismanual) {
+            // Have periods and is manual enrolment.
+            if ($usercurrentperiod == null) {
+                // El usuario no tiene asignado el periodo actual, se lo asignamos al periodo del ciclo.
+                $usercurrentperiod = $learninguserrecord->currentperiodid = $courseperiod;
+            }
+            if ($prevloopperiodid == null) {
+                // Si la variable no tiene asignado el periodo del ciclo anterior, es porq ue es el primer ciclo.
+                $prevloopperiodid = $courseperiod;
+            }
+            if ($courseperiod == $usercurrentperiod) {
+                // Ya que el periodo del ciclo actual es el mismo que el periodo actual del usuario, necesitamos verificar
+                // si el periodo en los siguientes ciclos va a cambiar.
+                $checkchangeperiod = true;
+            }
+            if ($checkchangeperiod) {
+                // Nos toca verificar si se presenta un cambio de periodo.
+                if ($prevloopperiodid != $courseperiod) {
+                    // Si la variable que viene guardando el periodo del ciclo anterior no es igual al periodo del ciclo actual
+                    // entonces asignamos un cambio de periodo y ponemos al usuario en espera
+                    // y el id del siguiente periodo, que en este caso es el periodo del ciclo actual
+                    // debemos terminar el ciclo ya que es un nuevo periodo y toca enrolar al usuario manualmente.
+                    $changeperiod = true;
+                    $learninguserrecord->waitingperiod = 1;
+                    $learninguserrecord->nextperiodid = $courseperiod;
+                    // Cuando se enrole manualmente, el currenperiodid cambiara al nexteperiodid
+                    // y se verificara el cambio de periodo solo cuando el coureseperiodid sea igual al user current periodid.
+                    break;
+                }
+            }
         }
+        $courseid = $course->courseid;
+        $learninguserrecord->currentperiodid = $courseperiod; // If null, only mean that the lp not have periods.
+        // Enrol in the course.
+        enrol_user($enrolplugin, $userid, $courseid, $roleid);
+        // Check if the course is completed.
         $objcourse = $allcourses[$courseid];
         $cinfo = new completion_info($objcourse);
         $iscomplete = $cinfo->is_course_complete($userid);
         if (!$iscomplete) {
+            // If not complete, break the loop.
             break;
         }
     }
-
+    $learninguserrecord->id = (int)$learninguserrecord->id;
+    $learninguserrecord->timemodified = time();
+    var_dump($learninguserrecord);
+    var_dump($DB->update_record('local_learning_users', $learninguserrecord));
 }
 
 /**
@@ -161,10 +209,16 @@ function enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid) {
         'learningplanid' => $learningplanid,
         'isrequired' => 1
     ]);
+
+    $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplanid]);
+    $learninguserrecord = $DB->get_record('local_learning_users', [
+        'learningplanid' => $learningplanid,
+        'userid' => $userid
+    ]);
     if ($roleid != 5) {
         // Isn't student, enroll in all required courses.
         enrol_user_in_all_courses($requiredcourses, $userid, $roleid);
     } else {
-        enrol_user_in_first_uncomplete_course($requiredcourses, $userid, $roleid);
+        enrol_user_in_first_uncomplete_course($requiredcourses, $userid, $roleid, $learningplanrecord, $learninguserrecord);
     }
 }

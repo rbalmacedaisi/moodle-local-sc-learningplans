@@ -141,3 +141,7 @@ $string['copy_courses'] = 'Create a copy of the courses of the learning plan';
 $string['duplicate_users'] = 'Duplicate the enrolments';
 
 $string['plan_requirements'] = 'Requirements';
+
+$string['pending_user'] = 'Users waiting';
+$string['nextperiodname'] = 'Next period';
+$string['enrolnextperiod'] = 'Enrol';

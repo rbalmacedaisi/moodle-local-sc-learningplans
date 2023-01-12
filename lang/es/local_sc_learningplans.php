@@ -142,3 +142,7 @@ $string['copy_courses'] = 'Copiar los cursos del plan (Crear nuevos cursos)';
 $string['duplicate_users'] = 'Duplicar los usuarios del plan';
 
 $string['plan_requirements'] = 'Requisitos';
+
+$string['pending_user'] = 'Usuarios Pendientes de Inscripción';
+$string['nextperiodname'] = 'Próximo periodo';
+$string['enrolnextperiod'] = 'Inscribir';
