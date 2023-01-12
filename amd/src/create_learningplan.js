@@ -83,6 +83,10 @@ let addLearningPlan = () => {
                     });
                 });
             }
+            if (window.NodeList && !NodeList.prototype.map) {
+                NodeList.prototype.map = Array.prototype.map;
+            }
+            const requirements = document.querySelectorAll('input[name=learningrequirements]:checked').map(el => el.value).join();
             const args = {
                 learningshortid: learningshortid.value,
                 learningname: learningname.value,
@@ -93,6 +97,7 @@ let addLearningPlan = () => {
                 description: desc_plan.value,
                 hasperiod: hasperiod,
                 enroltype: type_enrol,
+                requirements
             };
             window.console.log(args);
             const promise = Ajax.call([{

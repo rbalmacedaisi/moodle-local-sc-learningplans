@@ -114,6 +114,14 @@
             {{{formimagpicker}}}
         </div>
     </div>
+    <div class="row">
+        <label class="w-100 text-primary font-weight-bold" for="learningname">{{#str}} plan_requirements, local_sc_learningplans {{/str}}</label>
+        {{#userprofilefields}}
+            <div class="col-sm-6 col-md-6 py-2">
+                <input type="checkbox" name='learningrequirements' id='learningrequirements_{{id}}' value='{{id}}' /><label for='learningrequirements_{{id}}'>&nbsp;&nbsp;&nbsp;{{name}}</label>
+            </div>
+        {{/userprofilefields}}
+    </div>
     
    <div class="modal-footer">
             <button id="addplan" class="btn btn-primary">{{#str}} add_plan, local_sc_learningplans {{/str}}</button>

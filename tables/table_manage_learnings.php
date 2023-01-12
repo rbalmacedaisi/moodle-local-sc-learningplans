@@ -112,7 +112,6 @@ class table_manage_learnings extends table_sql {
         $duplicateicon  = html_writer::tag('i', '', array('class' => 'lp_icon fa fa-copy fa-fw'));
         $reporticon     = html_writer::tag('i', '', array('class' => 'lp_icon fa fa-bar-chart fa-fw'));
         $period         = html_writer::tag('i', '', array('class' => 'lp_icon fa fa-bars fa-fw'));
-        $requireicon    = html_writer::tag('i', '', array('class' => 'lp_icon fa fa-asterisk fa-fw'));
 
         $return = html_writer::link(
             new moodle_url('/local/sc_learningplans/users.php', ['id' => $values->id]),
@@ -177,16 +176,6 @@ class table_manage_learnings extends table_sql {
                 'data-toggle' => 'tooltip',
                 'data-placement' => 'bottom',
                 'title' => get_string('report', 'local_sc_learningplans')
-            )
-        );
-        $return .= html_writer::link(
-            new moodle_url('/local/sc_learningplans/requirements.php', ['id' => $values->id]),
-            $requireicon,
-            array(
-                'class' => 'mx-1',
-                'data-toggle' => 'tooltip',
-                'data-placement' => 'bottom',
-                'title' => get_string('requirement_title', 'local_sc_learningplans')
             )
         );
         if ($values->hasperiod != 0) {

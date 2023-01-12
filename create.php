@@ -67,6 +67,8 @@ $roles = sc_learningplan_get_roles();
 
 $config = get_config('local_sc_learningplans');
 
+$userprofilefields = $DB->get_records('user_info_field');
+
 $maintemplatedata = [
     'formimagpicker' => $formimagepicker->render(),
     'formeditor' => $formeditor->render(),
@@ -74,6 +76,7 @@ $maintemplatedata = [
     'courses' => array_values($allcourses),
     'allusers' => array_values($allusers),
     'roles' => array_values($roles),
+    'userprofilefields' => array_values($userprofilefields),
 
 ];
 echo $OUTPUT->header();

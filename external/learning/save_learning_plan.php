@@ -65,6 +65,7 @@ class save_learning_plan_external extends external_api {
                 'description' => new external_value(PARAM_RAW, 'Description of the learning plan'),
                 'hasperiod'   => new external_value(PARAM_INT, 'Check if learning plan has periods'),
                 'enroltype'  => new external_value(PARAM_INT, 'Type Enrolment if plan has periods'),
+                'requirements'   => new external_value(PARAM_TEXT, 'User Profiles id'),
             )
         );
     }
@@ -78,7 +79,8 @@ class save_learning_plan_external extends external_api {
         $fileimage,
         $description,
         $hasperiod,
-        $enroltype
+        $enroltype,
+        $requirements
         ) {
         global $DB, $USER;
         // Check if LP exist with the shortid.
@@ -103,6 +105,7 @@ class save_learning_plan_external extends external_api {
         $newlearningplan->hasperiod     = $hasperiod;
         $newlearningplan->periodcount   = $countperiod;
         $newlearningplan->enroltype     = $enroltype;
+        $newlearningplan->requirements  = $requirements;
         $newlearningplan->usermodified  = $USER->id;
         $newlearningplan->timecreated = time();
         $newlearningplan->timemodified = time();
