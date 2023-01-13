@@ -88,6 +88,7 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
                 // Ya que el periodo del ciclo actual es el mismo que el periodo actual del usuario, necesitamos verificar
                 // si el periodo en los siguientes ciclos va a cambiar.
                 $checkchangeperiod = true;
+                $prevloopperiodid = $usercurrentperiod;
             }
             if ($checkchangeperiod) {
                 // Nos toca verificar si se presenta un cambio de periodo.
@@ -104,6 +105,7 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
                     break;
                 }
             }
+            $prevloopperiodid = $courseperiod;
         }
         $courseid = $course->courseid;
         $learninguserrecord->currentperiodid = $courseperiod; // If null, only mean that the lp not have periods.
@@ -120,8 +122,7 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
     }
     $learninguserrecord->id = (int)$learninguserrecord->id;
     $learninguserrecord->timemodified = time();
-    var_dump($learninguserrecord);
-    var_dump($DB->update_record('local_learning_users', $learninguserrecord));
+    $DB->update_record('local_learning_users', $learninguserrecord);
 }
 
 /**

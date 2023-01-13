@@ -34,8 +34,30 @@ if (!has_any_capability(['local/sc_learningplans:manage', 'local/sc_learningplan
 }
 
 $id = required_param('id', PARAM_INT);
+$userid = optional_param('userid', null, PARAM_INT);
 
-// Get users pending enrol in periods.
+$learningplan = $DB->get_record('local_learning_plans', array('id' => $id));
+if (!$learningplan) {
+    redirect(new moodle_url('/local/sc_learningplans/index.php'));
+}
+
+if ($userid) {
+    $usertoaprove = $DB->get_record('local_learning_users', array(
+        'learningplanid' => $id,
+        'userid' => $userid,
+        'waitingperiod' => 1,
+    ));
+    if ($usertoaprove) {
+        $usertoaprove->currentperiodid = $usertoaprove->nextperiodid;
+        $usertoaprove->waitingperiod = null;
+        $usertoaprove->nextperiodid = null;
+        $DB->update_record('local_learning_users', $usertoaprove);
+        // Enroll in the first course of new period.
+        require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+        enrol_user_in_learningplan_courses($id, $userid, $usertoaprove->userroleid);
+    }
+}
+
 
 $PAGE->set_pagelayout('admin');
 $PAGE->set_context($context);
