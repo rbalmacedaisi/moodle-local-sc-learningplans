@@ -129,6 +129,7 @@ class delete_learning_user_external extends external_api {
                     }
                 }
             }
+            $DB->delete_records('local_learning_report', ['learningplanid' => $learningplan, 'userid' => $userid]);
         }
         $learningplanrecord->usercount--;
         $learningplanrecord->timemodified = time();

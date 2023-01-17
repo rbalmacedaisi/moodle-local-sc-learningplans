@@ -73,5 +73,24 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
+    <TABLE NAME="local_learning_report" COMMENT="Report for instructors">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid_lp" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="learningplanid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="countcurrentcourse" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="lastcurrentcourse" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Last course in progress"/>
+        <FIELD NAME="lastcurrentcoursename" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="lastcompletedcourse" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Last completed course id"/>
+        <FIELD NAME="lastcompletedcoursename" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="lpprogress" TYPE="char" LENGTH="6" NOTNULL="false" SEQUENCE="false" COMMENT="Learning Plan Progress"/>
+        <FIELD NAME="lastperiodid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="lastperiodname" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
   </TABLES>
 </XMLDB>

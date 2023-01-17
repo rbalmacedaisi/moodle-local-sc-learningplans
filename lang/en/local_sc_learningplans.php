@@ -153,3 +153,10 @@ $string['massive_created_user'] = 'User {$a->username} created.';
 $string['massive_nodata'] = 'Need upload data';
 $string['massive_done'] = 'Upload completed';
 $string['massive_update'] = 'The user {$a->username} are updated.';
+
+$string['report'] = "Learning Plan's Report";
+$string['email'] = 'Email';
+$string['currentcourse'] = 'Current Course Count';
+$string['completedcourse'] = 'Last Completed Course';
+$string['progress'] = 'Progress';
+$string['currentperiod'] = 'Current Period';

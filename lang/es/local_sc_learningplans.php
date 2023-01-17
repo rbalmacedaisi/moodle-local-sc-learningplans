@@ -154,3 +154,10 @@ $string['massive_update'] = 'Se actualizó la información del usuario {$a->user
 $string['massive_lpnotexist'] = 'El plan de aprendizaje ({$a->lpname}) no existe.';
 $string['massive_succes'] = 'El usuario {$a->username} se matriculó al plan de aprendizaje {$a->lpname}.';
 $string['massive_done'] = 'Información subida';
+
+$string['report'] = "Reporte del Plan de Aprendizaje";
+$string['email'] = 'Correo';
+$string['currentcourse'] = 'Numero de curso actual';
+$string['completedcourse'] = 'Ultimo curso completado';
+$string['progress'] = 'Progreso';
+$string['currentperiod'] = 'Periodo actual';
