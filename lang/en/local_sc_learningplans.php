@@ -145,3 +145,11 @@ $string['plan_requirements'] = 'Requirements';
 $string['pending_user'] = 'Users waiting';
 $string['nextperiodname'] = 'Next period';
 $string['enrolnextperiod'] = 'Enrol';
+
+$string['massive_lpnotexist'] = 'The learning plan {$a->lpname} not exist.';
+$string['massive_usernamenotexist'] = 'The user {$a->username} not exist, and can\'t create it.';
+$string['massive_succes'] = 'User {$a->username} enroled to learning plan {$a->lpname}.';
+$string['massive_created_user'] = 'User {$a->username} created.';
+$string['massive_nodata'] = 'Need upload data';
+$string['massive_done'] = 'Upload completed';
+$string['massive_update'] = 'The user {$a->username} are updated.';

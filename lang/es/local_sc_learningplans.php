@@ -146,3 +146,11 @@ $string['plan_requirements'] = 'Requisitos';
 $string['pending_user'] = 'Usuarios Pendientes de Inscripción';
 $string['nextperiodname'] = 'Próximo periodo';
 $string['enrolnextperiod'] = 'Inscribir';
+
+$string['massive_nodata'] = 'Necesitas subir información';
+$string['massive_usernamenotexist'] = 'El usuario ({$a->username}) no existe y no podemos crearlo.';
+$string['massive_created_user'] = 'Se creo el usuario {$a->username}.';
+$string['massive_update'] = 'Se actualizó la información del usuario {$a->username} de acuerdo con el archivo.';
+$string['massive_lpnotexist'] = 'El plan de aprendizaje ({$a->lpname}) no existe.';
+$string['massive_succes'] = 'El usuario {$a->username} se matriculó al plan de aprendizaje {$a->lpname}.';
+$string['massive_done'] = 'Información subida';
