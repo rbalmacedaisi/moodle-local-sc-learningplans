@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/external/course/save_learning_course.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/external/user/add_learning_user.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/external/period/addperiod_learning_plan.php');

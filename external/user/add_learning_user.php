@@ -26,6 +26,7 @@ use local_sc_learningplans\event\user_lpenrolment_created;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
 
 class add_learning_user_external extends external_api {
