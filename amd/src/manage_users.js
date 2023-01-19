@@ -29,6 +29,7 @@ const addUserAction = (learningplanid) => {
     const userselected = document.querySelector('#listusers');
     const itemvalue = document.querySelector('#listusers-hidden');
     const roleselected = document.querySelector('#listroles');
+    const groupselected = document.querySelector('#listgroups');
     userselected.addEventListener('change', () => {
         const val = userselected.value;
         const userList = document.querySelector(`#users-list option[value='${val}']`);
@@ -44,7 +45,11 @@ const addUserAction = (learningplanid) => {
             if (userselected && roleselected) {
                 const userid = itemvalue.value;
                 const roleid = roleselected.value;
-                callAddUser(learningplanid, userid, roleid);
+                let group = null;
+                if(groupselected) {
+                    group = groupselected.value;
+                }
+                callAddUser(learningplanid, userid, roleid, group);
             }
         });
     }
@@ -70,7 +75,7 @@ const callDeleteUser = (learningplan, userid, unenrol) => {
     });
 };
 
-const callAddUser = (learningplan, userid, roleid) => {
+const callAddUser = (learningplan, userid, roleid, group) => {
     learningplan = parseInt(learningplan);
     userid = parseInt(userid);
     roleid = parseInt(roleid);
@@ -80,6 +85,7 @@ const callAddUser = (learningplan, userid, roleid) => {
             learningplan,
             userid,
             roleid,
+            group,
         }
     },]);
 

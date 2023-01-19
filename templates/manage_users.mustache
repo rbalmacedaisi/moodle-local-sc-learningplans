@@ -59,11 +59,20 @@
                         <option value="{{id}}">{{strname}}</option>
                         {{/roles}}
                     </select>
+                    
+                    <label class="w-100 pt-4" for="listgroups">{{#str}}assign_group, local_sc_learningplans {{/str}}</label>
+                    <select name="listgroups" id="listgroups" required>
+                        <option value=''>{{#str}} select_group, local_sc_learningplans {{/str}}</option>
+                        {{#groups}}
+                        <option value="{{name}}">{{name}}</option>
+                        {{/groups}}
+                    </select>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} close_modal, local_sc_learningplans {{/str}}</button>
-                <button type="button" class="btn btn-primary" id="adduser">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} close_modal, local_sc_learningplans {{/str}}</button>
+                    <button type="button" class="btn btn-primary" id="adduser">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
+                </div>
+                </div>
             </div>
         </div>
     </div>

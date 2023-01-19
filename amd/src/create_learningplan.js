@@ -80,6 +80,7 @@ let addLearningPlan = () => {
                     users.push({
                         userid: parseInt(e.getAttribute('userid')),
                         roleid: parseInt(e.getAttribute('roleid')),
+                        group: e.getAttribute('group'),
                     });
                 });
             }
@@ -118,6 +119,7 @@ let addUsers = () => {
     const adduser = document.querySelector('#adduser');
     const listusers = document.querySelector('#listusers');
     const listroles = document.querySelector('#listroles');
+    const listgroups = document.querySelector('#listgroups');
     const listlearningusers = document.querySelector('.listlearningusers');
     if (adduser && listusers && listroles) {
         adduser.addEventListener('click', async e => {
@@ -134,6 +136,7 @@ let addUsers = () => {
             if (selectedoption) {
                 const userid = listusers.value;
                 const roleid = listroles.value;
+                const group = listgroups.value;
                 const username = selectedoption.innerHTML;
                 selectedoption.disabled = true;
                 const divcontainer = document.createElement('div');
@@ -143,6 +146,7 @@ let addUsers = () => {
                 const deletebtn = document.createElement('button');
                 deletebtn.setAttribute('roleid', roleid);
                 deletebtn.setAttribute('userid', userid);
+                deletebtn.setAttribute('group', group);
                 deletebtn.setAttribute('aria-label', 'Close');
                 deletebtn.setAttribute('type', 'button');
                 deletebtn.classList.add('close');

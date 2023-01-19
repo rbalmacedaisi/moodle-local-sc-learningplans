@@ -54,7 +54,7 @@ if ($userid) {
         $DB->update_record('local_learning_users', $usertoaprove);
         // Enroll in the first course of new period.
         require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
-        enrol_user_in_learningplan_courses($id, $userid, $usertoaprove->userroleid);
+        enrol_user_in_learningplan_courses($id, $userid, $usertoaprove->userroleid, $usertoaprove->groupname);
     }
 }
 

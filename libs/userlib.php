@@ -22,6 +22,10 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot . '/group/lib.php');
+
 /**
  * Get allowed roles for this plugin
  *
@@ -53,7 +57,7 @@ function sc_learningplan_get_roles() {
  * @param int $roleid
  * @return void
  */
-function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $learningplanrecord, $learninguserrecord) {
+function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $learningplanrecord, $learninguserrecord, $groupname) {
     global $CFG, $DB;
     require_once("$CFG->libdir/completionlib.php");
     $enrolplugin = enrol_get_plugin('manual');
@@ -110,7 +114,7 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
         $courseid = $course->courseid;
         $learninguserrecord->currentperiodid = $courseperiod; // If null, only mean that the lp not have periods.
         // Enrol in the course.
-        enrol_user($enrolplugin, $userid, $courseid, $roleid);
+        enrol_user($enrolplugin, $userid, $courseid, $roleid, $groupname);
         // Check if the course is completed.
         $objcourse = $allcourses[$courseid];
         $cinfo = new completion_info($objcourse);
@@ -133,11 +137,11 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
  * @param int $roleid
  * @return void
  */
-function enrol_user_in_all_courses($courses, $userid, $roleid) {
+function enrol_user_in_all_courses($courses, $userid, $roleid, $groupname) {
     $enrolplugin = enrol_get_plugin('manual');
     foreach ($courses as $course) {
         $courseid = $course->courseid;
-        enrol_user($enrolplugin, $userid, $courseid, $roleid);
+        enrol_user($enrolplugin, $userid, $courseid, $roleid, $groupname);
     }
 }
 
@@ -150,10 +154,16 @@ function enrol_user_in_all_courses($courses, $userid, $roleid) {
  * @param int $roleid
  * @return void
  */
-function enrol_user($enrolplugin, $userid, $courseid, $roleid) {
+function enrol_user($enrolplugin, $userid, $courseid, $roleid, $groupname) {
     $instance = get_manual_enrol($courseid);
     if ($instance) {
         $enrolplugin->enrol_user($instance, $userid, $roleid);
+        if ($groupname) {
+            $group = groups_get_group_by_name($courseid, $groupname);
+            if ($group) {
+                groups_add_member($group, $userid);
+            }
+        }
     }
 }
 /**
@@ -196,11 +206,11 @@ function get_manual_enrol($courseid) {
  * @param int $roleid
  * @return void
  */
-function enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid) {
+function enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid, $groupname) {
     global $DB;
     // Get optional courses.
     $optionalcourses = $DB->get_records('local_learning_courses', ['learningplanid' => $learningplanid, 'isrequired' => 0]);
-    enrol_user_in_all_courses($optionalcourses, $userid, $roleid);
+    enrol_user_in_all_courses($optionalcourses, $userid, $roleid, $groupname);
 
     $requiredcourses = $DB->get_records_sql('SELECT lpc.*, c.fullname FROM {local_learning_courses} lpc
         JOIN {course} c ON (c.id = lpc.courseid)
@@ -218,8 +228,10 @@ function enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid) {
     ]);
     if ($roleid != 5) {
         // Isn't student, enroll in all required courses.
-        enrol_user_in_all_courses($requiredcourses, $userid, $roleid);
+        enrol_user_in_all_courses($requiredcourses, $userid, $roleid, $groupname);
     } else {
-        enrol_user_in_first_uncomplete_course($requiredcourses, $userid, $roleid, $learningplanrecord, $learninguserrecord);
+        enrol_user_in_first_uncomplete_course($requiredcourses, $userid, $roleid, $learningplanrecord,
+        $learninguserrecord,
+        $groupname);
     }
 }

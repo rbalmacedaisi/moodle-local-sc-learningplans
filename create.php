@@ -26,6 +26,8 @@ require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/forms/createlp_form.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/courselib.php');
+require_once($CFG->dirroot . '/group/lib.php');
 require_login();
 $context = context_system::instance();
 if (!has_any_capability(['local/sc_learningplans:manage'], $context)) {
@@ -41,7 +43,7 @@ $PAGE->set_heading(get_string('pluginname', 'local_sc_learningplans'));
 
 $formimagepicker = new createlp_form_picker();
 $formeditor = new createlp_form_editor();
-
+$groups = get_groups_from_courses();
 $optionsperiod = [
     ['id' => '1', 'value' => '1'],
     ['id' => '2', 'value' => '2'],
@@ -76,6 +78,7 @@ $maintemplatedata = [
     'courses' => array_values($allcourses),
     'allusers' => array_values($allusers),
     'roles' => array_values($roles),
+    'groups' => array_values($groups),
     'userprofilefields' => array_values($userprofilefields),
 
 ];

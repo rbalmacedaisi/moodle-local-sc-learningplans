@@ -160,3 +160,6 @@ $string['currentcourse'] = 'Current Course Count';
 $string['completedcourse'] = 'Last Completed Course';
 $string['progress'] = 'Progress';
 $string['currentperiod'] = 'Current Period';
+
+$string['assign_group'] = 'Assign Group';
+$string['select_group'] = 'Select group';

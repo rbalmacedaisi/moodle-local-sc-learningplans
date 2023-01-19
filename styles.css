@@ -89,7 +89,8 @@ select#listroles {
 }
 
 #page-local-sc_learningplans-users select#listusers,
-#page-local-sc_learningplans-users select#listroles {
+#page-local-sc_learningplans-users select#listroles,
+#page-local-sc_learningplans-users select#listgroups {
     width: 412px;
     height: 34px;
     border-radius: 5px;
@@ -253,7 +254,13 @@ select#listroles {
 
 #page-local-sc_learningplans-courses #selectAddCourseToLearningPlan,
 #page-local-sc_learningplans-courses #selectAddCourseOptionalToLearningPlan {
-    width: 405px;
+    width: 70%;
+    height: 60vh;
+}
+
+#listusers {
+    width: 412px;
+    height: 34px;
 }
 
 input#addperiod,
@@ -303,6 +310,10 @@ input#type_automatic {
 
 .card-header:not(.collapsed) .rotate-icon {
     transform: rotate(180deg);
+}
+
+.v-hidden {
+    visibility: hidden;
 }
 
 #page-local-sc_learningplans-create #formCurrentCourseToLearningPlan,

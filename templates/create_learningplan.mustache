@@ -88,7 +88,19 @@
                 <option value="{{id}}">{{strname}}</option>
                 {{/roles}}
             </select>
-            <button id="adduser" class="btn btn-primary lp_button">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
+            </div>
+        </div>
+        
+        <div class="col-sm-6 col-md-6 col-sm-12 py-2">
+            <label class="w-50 v-hidden" for="listgroups">{{#str}} assign_rol, local_sc_learningplans {{/str}}</label>
+            <div class="d-flex align-items-center flex-wrap justify-content-between" class="w-50">
+                <select name="listgroups" class="w-50" id="listgroups" required class="mr-1">
+                    <option value=''>{{#str}} select_group, local_sc_learningplans {{/str}}</option>
+                    {{#groups}}
+                    <option value="{{name}}">{{name}}</option>
+                    {{/groups}}
+                </select>
+                <button id="adduser" class="btn btn-primary lp_button">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
             </div>
         </div>
 

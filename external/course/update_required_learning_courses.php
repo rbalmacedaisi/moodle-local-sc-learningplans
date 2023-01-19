@@ -88,7 +88,7 @@ class update_required_learning_courses_external extends external_api {
         foreach ($users as $user) {
             $userid = $user->userid;
             $roleid = $user->userroleid;
-            enrol_user_in_learningplan_courses($learningplan, $userid, $roleid);
+            enrol_user_in_learningplan_courses($learningplan, $userid, $roleid, $user->groupname);
         }
 
         $learningplanrecord->usermodified = $USER->id;

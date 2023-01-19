@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+
 class save_learning_course_external extends external_api {
 
     public static function save_learning_course_parameters() {
@@ -116,6 +118,12 @@ class save_learning_course_external extends external_api {
             $learningplancourses->id = $DB->insert_record('local_learning_courses', $learningplancourses);
             // Increase course count.
             $learningplanrecord->coursecount++;
+        }
+        $users = $DB->get_records('local_learning_users', ['learningplanid' => $learningplan]);
+        foreach ($users as $user) {
+            $userid = $user->userid;
+            $roleid = $user->userroleid;
+            enrol_user_in_learningplan_courses($learningplan, $userid, $roleid, $user->groupname);
         }
         $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);

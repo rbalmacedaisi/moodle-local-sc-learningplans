@@ -58,6 +58,7 @@ class save_learning_plan_external extends external_api {
                         array(
                             'userid' => new external_value(PARAM_INT, 'User ID'),
                             'roleid' => new external_value(PARAM_INT, 'Role ID'),
+                            'group'  => new external_value(PARAM_TEXT, 'Group name'),
                         ),
                     )
                 ),
@@ -132,8 +133,9 @@ class save_learning_plan_external extends external_api {
             foreach ($users as $user) {
                 $userid = $user['userid'];
                 $roleid = $user['roleid'];
+                $group  = $user['group'];
                 $newlearningplan->usercount++;
-                add_learning_user_external::add_learning_user($learningplanid, $userid, $roleid, null);
+                add_learning_user_external::add_learning_user($learningplanid, $userid, $roleid, null, $group);
             }
         } else {
             // Only add periods.

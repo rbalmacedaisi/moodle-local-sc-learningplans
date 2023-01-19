@@ -44,7 +44,8 @@ class local_sc_learningplans_observer {
                 lc.id,
                 lc.learningplanid,
                 lc.courseid,
-                lu.userroleid
+                lu.userroleid,
+                lu.groupname
             FROM {local_learning_users} lu
             JOIN {local_learning_plans} lp ON (lp.id = lu.learningplanid)
             JOIN {local_learning_courses} lc ON (lc.learningplanid = lu.learningplanid
@@ -59,7 +60,7 @@ class local_sc_learningplans_observer {
         foreach ($otherlpwithsamecourse as $otherlp) {
             $roleid = $otherlp->userroleid;
             $learningplanid = $otherlp->learningplanid;
-            enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid);
+            enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid, $otherlp->groupname);
         }
     }
 

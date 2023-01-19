@@ -60,11 +60,19 @@ class add_learning_user_external extends external_api {
                     VALUE_DEFAULT,
                     null
                 ),
+                'group'  => new external_value(
+                    PARAM_TEXT,
+                    'Group name',
+                    VALUE_DEFAULT,
+                    null,
+                    NULL_ALLOWED
+                ),
+
             )
         );
     }
 
-    public static function add_learning_user($learningplan, $userid, $roleid, $currentperiodid) {
+    public static function add_learning_user($learningplan, $userid, $roleid, $currentperiodid, $group) {
         global $DB, $USER;
         $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplan]);
         if (!$learningplanrecord) {
@@ -89,13 +97,14 @@ class add_learning_user_external extends external_api {
         $learninguserexist->userroleid = $roleid;
         $learninguserexist->userrolename = $roleshortname;
         $learninguserexist->currentperiodid = $currentperiodid;
+        $learninguserexist->groupname = $group;
         $learninguserexist->usermodified = $USER->id;
         $learninguserexist->timemodified = time();
         $learninguserexist->timecreated = time();
         $learninguserexist->id = $DB->insert_record($tableusers, $learninguserexist);
 
         // Enrol in first course and in all optional course.
-        enrol_user_in_learningplan_courses($learningplan, $userid, $roleid);
+        enrol_user_in_learningplan_courses($learningplan, $userid, $roleid, $group);
 
         $learningplanrecord->usercount++;
         $DB->update_record('local_learning_plans', $learningplanrecord);

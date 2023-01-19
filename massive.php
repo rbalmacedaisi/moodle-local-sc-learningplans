@@ -64,6 +64,7 @@ while (($linecsv = fgetcsv($file)) !== false) {
     $password   = $username; // Check if the password policy is disable (If necessary).
     $idnumber   = $username;
     $lpname     = trim($linecsv[4]);
+    $group      = $linecsv[5] ?? null;
     // Check the special chars and accents.
     $encode = mb_detect_encoding($lpname, ['UTF-8', 'ISO-8859-1'], true);
     $lpname = mb_convert_encoding($lpname, 'UTF-8', $encode);
@@ -136,7 +137,7 @@ while (($linecsv = fgetcsv($file)) !== false) {
         'userid' => $userid
     ]);
     if (!$learninguserexist) {
-        add_learning_user_external::add_learning_user($learningplans[$lpname]->id, $userid, $rolestudentid, null);
+        add_learning_user_external::add_learning_user($learningplans[$lpname]->id, $userid, $rolestudentid, null, $group);
     }
     $a = (object)[
         'username' => $username,

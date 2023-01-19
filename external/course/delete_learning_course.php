@@ -66,15 +66,13 @@ class delete_learning_course_external extends external_api {
             // Is the record id, not the course id.
             'id' => $courseid,
         ]);
+        $learningplanrecord->usermodified = $USER->id;
         if ($learningcourse) {
             $DB->delete_records('local_learning_courses', ['id' => $learningcourse->id]);
             $isdelete = true;
-            // Decrease the course count.
-            $learningplanrecord->usermodified = $USER->id;
-            $learningplanrecord->coursecount--;
-            $learningplanrecord->timemodified = time();
-            $DB->update_record('local_learning_plans', $learningplanrecord);
             if ($required) {
+                // Decrease the course count.
+                $learningplanrecord->coursecount--;
                 // Calculate the new positions.
                 $DB->execute("UPDATE {local_learning_courses}
                     SET position = position-1
@@ -90,7 +88,6 @@ class delete_learning_course_external extends external_api {
                     ]);
             }
         }
-        $learningplanrecord->coursecount--;
         $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
         return [
