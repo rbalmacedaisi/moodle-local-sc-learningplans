@@ -35,19 +35,24 @@ $learningplans = $DB->get_records('local_sc_learningplans', ['deleted' => 0]);
 
 $migratedlp = [];
 foreach ($learningplans as $lp) {
-    $migratedlp[$lp->id] = save_learning_plan_external::save_learning_plan(
-        $lp->shortid,
-        $lp->name,
-        [],
-        [],
-        [],
-        null,
-        $lp->description,
-        0,
-        0,
-        ''
-    );
-    mtrace("Se agrega el LP $lp->name con un nuevo id " . $migratedlp[$lp->id]['learningplanid'], '</br>');
+    try {
+        mtrace("Se intenta agregar el LP $lp->name con shortid $lp->shortid", '</br>');
+            $migratedlp[$lp->id] = save_learning_plan_external::save_learning_plan(
+                $lp->shortid,
+            $lp->name,
+            [],
+            [],
+            [],
+            null,
+            $lp->description,
+            0,
+            0,
+            ''
+        );
+        mtrace("::Se agrega el LP $lp->name con un nuevo id " . $migratedlp[$lp->id]['learningplanid'], '</br>');
+    } catch (\Throwable $th) {
+        mtrace("No se pudo agregar el LP $lp->name con shortid $lp->shortid: " . $th->getMessage(), '</br>');
+    }
 }
 mtrace('', '<br/>');
 

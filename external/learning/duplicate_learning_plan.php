@@ -154,7 +154,7 @@ class duplicate_learning_plan_external extends external_api {
         if ($users) {
             $users = $DB->get_records('local_learning_users', ['learningplanid' => $oldlearningid]);
             foreach ($users as $u) {
-                add_learning_user_external::add_learning_user($newlearningplanid, $u->userid, $u->userroleid, $u->currentperiodid);
+                add_learning_user_external::add_learning_user($newlearningplanid, $u->userid, $u->userroleid, $u->currentperiodid, $u->groupname);
             }
         }
 

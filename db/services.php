@@ -119,6 +119,15 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
     ),
+    
+    'local_sc_learningplans_get_course_overview' => array(
+        'classname'     => 'get_course_overview_external',
+        'methodname'    => 'get_course_overview',
+        'classpath'     => 'local/sc_learningplans/external/course/get_course_overview.php',
+        'description'   => 'Get courses to the block_sclpmyoverview',
+        'type'          => 'read',
+        'ajax'          => true,
+    ),
 );
 
 $services = array(
