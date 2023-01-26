@@ -120,7 +120,10 @@ class save_learning_course_external extends external_api {
             // Increase course count.
             $learningplanrecord->coursecount++;
         }
-        $users = $DB->get_records('local_learning_users', ['learningplanid' => $learningplan]);
+        $users = $DB->get_records_sql(
+            'SELECT llu.* FROM {local_learning_users} llu
+            JOIN {user} u ON (u.id = llu.userid)
+            WHERE llu.learningplanid = :learningplanid', ['learningplanid' => $learningplan]);
         foreach ($users as $user) {
             $userid = $user->userid;
             $roleid = $user->userroleid;
@@ -130,7 +133,7 @@ class save_learning_course_external extends external_api {
         $DB->update_record('local_learning_plans', $learningplanrecord);
 
         return [
-            'id' => $learningplancourses->id,
+            'id' => $learningplancourses->id ?? 0,
         ];
 
     }

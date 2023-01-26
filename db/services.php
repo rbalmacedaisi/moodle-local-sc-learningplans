@@ -34,6 +34,14 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
     ),
+    'local_sc_learningplans_get_data' => array(
+        'classname'     => 'get_learning_plans_external',
+        'methodname'    => 'get_learning_plans',
+        'classpath'     => 'local/sc_learningplans/external/learning/get_learning_plans.php',
+        'description'   => 'get learning plans',
+        'type'          => 'read',
+        'ajax'          => true,
+    ),
 
     'local_sc_learningplans_addperiod_learning_plan' => array(
         'classname'     => 'addperiod_learning_plan_external',
@@ -119,7 +127,7 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
     ),
-    
+
     'local_sc_learningplans_get_course_overview' => array(
         'classname'     => 'get_course_overview_external',
         'methodname'    => 'get_course_overview',

@@ -42,7 +42,7 @@ class update_required_learning_courses_external extends external_api {
                         )
                     )
                 ),
-                'periodid' => new external_value(PARAM_INT, 'ID of the period', VALUE_OPTIONAL),
+                'periodid' => new external_value(PARAM_INT, 'ID of the period', VALUE_DEFAULT),
             )
         );
     }
