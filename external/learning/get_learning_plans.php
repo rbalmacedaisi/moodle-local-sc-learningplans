@@ -126,6 +126,7 @@ class get_learning_plans_external extends external_api {
                     'rolename' => get_string( $userlpdata->userrolename, 'local_sc_learningplans'),
                     'requiredtotalcourses' => 0,
                     'requiredcoursescompleted' => 0,
+                    'optionacoursecompleted' => 0,
                     'learningplanprogress' => 0,
                     'requiredcourses' => [],
                     'optionalcourses' => [],
@@ -142,36 +143,99 @@ class get_learning_plans_external extends external_api {
 
             $courseprogress = $coursecompletiondata[$courseid]['progress'];
             $coursecompleted = $coursecompletiondata[$courseid]['completed'];
-
+            if ($userlpdata->isrequired == 1) {
+                $returnlearningplandata[$learningplanid]['requiredtotalcourses']++;
+            }
             $coursestringindex = $userlpdata->isrequired == 1 ? 'requiredcourses' : 'optionalcourses';
             $returnlearningplandata[$learningplanid][$coursestringindex][$courseid] = [
                 'fullname' => $userlpdata->coursename,
                 'courseurl' => $CFG->wwwroot . '/course/view.php?id=' .$courseid,
-                'progress' => $courseprogress ?? 0,
+                'realprogress' => $courseprogress ?? 0,
+                'showprogress' => 0,
                 'completed' => $coursecompleted ?? false,
-                'waiting' => true, // For now, all course is waiting.
+                'waiting' => true, // For now, all courses are waiting.
+                'active' => false, // For now, all courses aren't active .
+                'current' => false, // For now, all courses aren't active .
             ];
 
         }
         // Do more.
         foreach ($returnlearningplandata as &$rlp) {
-            foreach ($rlp['requiredcourses'] as $requiredcourse) {
-                $rlp['requiredtotalcourses'] ++;
-                print_r($requiredcourse);
+            foreach ($rlp['requiredcourses'] as &$requiredcourse) {
+                $requiredcourse['waiting'] = false;
+                $requiredcourse['active'] = true;
+                $requiredcourse['showprogress'] = $requiredcourse['realprogress'];
+                if ($requiredcourse['completed'] == true) {
+                    $rlp['requiredcoursescompleted'] ++;
+                } else {
+                    $requiredcourse['current'] = true;
+                    break;
+                }
+            }
+            foreach ($rlp['optionalcourses'] as &$requiredcourse) {
+                $requiredcourse['waiting'] = false;
+                $requiredcourse['active'] = true;
+                $requiredcourse['showprogress'] = $requiredcourse['realprogress'];
+                $requiredcourse['current'] = true;
+                if ($requiredcourse['completed'] == true) {
+                    $rlp['optionacoursecompleted'] ++;
+                }
+            }
+            if ($rlp['requiredtotalcourses'] > 0) {
+                $rlp['learningplanprogress'] = round($rlp['requiredcoursescompleted'] * 100 / $rlp['requiredtotalcourses'], 2);
             }
         }
-        print_r($returnlearningplandata);
-        die;
+        // print_r($returnlearningplandata);die;
+        $totallp = $DB->get_records_sql(
+            'SELECT learningplanid FROM {local_learning_users}
+                WHERE userid = :userid
+                ORDER BY learningplanid',
+                [
+                    'userid' => $USER->id
+                ]
+        );
         return [
-            'learningplanid' => $learningplanid
+            'learningplans' => $returnlearningplandata,
+            'totallp' => count($totallp),
         ];
     }
 
     public static function get_learning_plans_returns() {
+        $structurecourses = new external_multiple_structure(
+            new external_single_structure(
+                [
+                    'fullname'      => new external_value(PARAM_TEXT, 'Fullname of course'),
+                    'courseurl'     => new external_value(PARAM_RAW, 'Urlcourse'),
+                    'realprogress'  => new external_value(PARAM_RAW, 'Real progress course'),
+                    'showprogress'  => new external_value(PARAM_RAW, 'Progress to show'),
+                    'completed'     => new external_value(PARAM_BOOL, 'Completed course'),
+                    'waiting'       => new external_value(PARAM_BOOL, 'Si esta en espera o no'),
+                    'active'        => new external_value(PARAM_BOOL, 'Si es un curso activo'),
+                    'current'       => new external_value(PARAM_BOOL, 'Si es el curso actual que cursa'),
+                ]
+            ), 'Estructura de cursos', VALUE_DEFAULT
+        );
         return new external_single_structure(
             array(
-                'learningplanid' => new external_value(PARAM_INT, 'Learning Plan ID')
-            )
-        );
+                'learningplans' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'learningplanid'            => new external_value(PARAM_INT, 'Learning Plan ID'),
+                            'learningname'              => new external_value(PARAM_TEXT, 'Learning Plan Name'),
+                            'description'               => new external_value(PARAM_TEXT, 'Description'),
+                            'learningimage'             => new external_value(PARAM_RAW, 'Image Learning Plan', VALUE_DEFAULT, ''),
+                            'isstudent'                 => new external_value(PARAM_BOOL, 'Check if user is student'),
+                            'rolename'                  => new external_value(PARAM_TEXT, 'Rolename'),
+                            'requiredtotalcourses'      => new external_value(PARAM_INT, 'Total required courses'),
+                            'requiredcoursescompleted'  => new external_value(PARAM_INT, 'Total completed required courses'),
+                            'learningplanprogress'      => new external_value(PARAM_RAW, 'Progress Learning Plan'),
+                            'requiredcourses'           => $structurecourses,
+                            'optionalcourses'           => $structurecourses,
+                            )
+                        ),
+                    ),
+                    'totallp' => new external_value(PARAM_INT, 'Total learning plans')
+                )
+            );
     }
 }
