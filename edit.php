@@ -66,6 +66,11 @@ $entry = new stdClass;
 $entry->learningplan_image = $draftitemid;
 $formimagepicker->set_data($entry);
 
+$formeditor = new createlp_form_editor();
+$entry = new stdClass;
+$entry->desc_plan['text'] = $learningplan->description;
+$formeditor->set_data($entry);
+
 $userprofilefields = $DB->get_records('user_info_field');
 $currentrequirements = explode(',', $learningplan->requirements);
 $currentrequirements = array_flip($currentrequirements);
@@ -78,6 +83,7 @@ foreach ($userprofilefields as &$up) {
 
 $maintemplatedata = [
     'formimagpicker' => $formimagepicker->render(),
+    'formeditor' => $formeditor->render(),
     'learningshortname' => $learningplan->shortname,
     'learningplanname' => $learningplan->name,
     'learningplandescription' => $learningplan->description,

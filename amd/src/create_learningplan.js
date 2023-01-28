@@ -24,7 +24,7 @@ let addLearningPlan = () => {
                 return;
             }
             const learningname = document.querySelector('#learningname');
-            const desc_plan = document.querySelector('#id_desc_plan');
+            const desc_plan = document.querySelector('#id_desc_planeditable');
             const learningimage = document.querySelector('#id_learningplan_image');
             const btnscourse = document.querySelectorAll('button[courseid]');
             const btnsusers = document.querySelectorAll('button[userid]');
@@ -95,7 +95,7 @@ let addLearningPlan = () => {
                 courses,
                 users,
                 fileimage: learningimage.value,
-                description: desc_plan.value,
+                description: desc_plan.innerHTML,
                 hasperiod: hasperiod,
                 enroltype: type_enrol,
                 requirements

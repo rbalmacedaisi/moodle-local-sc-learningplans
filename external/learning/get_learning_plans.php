@@ -78,16 +78,23 @@ class get_learning_plans_external extends external_api {
                 llu.userrolename,
                 llc.courseid,
                 c.fullname coursename,
-                llc.isrequired
+                llc.isrequired,
+                llp.hasperiod,
+                llp.periodcount,
+                llperiod.name periodname,
+                llperiod.months periodmotnhs,
+                llperiod.id periodrecordid
             FROM {local_learning_users} llu
             JOIN {local_learning_plans} llp ON (llp.id = llu.learningplanid)
             JOIN {local_learning_courses} llc ON (llc.learningplanid = llp.id)
+            LEFT JOIN {local_learning_periods} llperiod ON (llc.periodid = llperiod.id)
             JOIN {course} c ON (c.id = llc.courseid)
             WHERE
                 llu.learningplanid IN ($whereinlearningplan) AND
                 llu.userid = :userid
             ORDER BY
                 llp.id,
+                llperiod.id,
                 llc.isrequired,
                 llc.position
             ",
@@ -122,14 +129,15 @@ class get_learning_plans_external extends external_api {
                     'learningname' => $userlpdata->learningname,
                     'description' => $userlpdata->description,
                     'learningimage' => $urlimg,
+                    'hasperiod' => $userlpdata->hasperiod == 1,
+                    'periodcount' => $userlpdata->periodcount,
                     'isstudent' => $userlpdata->userrolename == 'student',
                     'rolename' => get_string( $userlpdata->userrolename, 'local_sc_learningplans'),
                     'requiredtotalcourses' => 0,
                     'requiredcoursescompleted' => 0,
                     'optionacoursecompleted' => 0,
                     'learningplanprogress' => 0,
-                    'requiredcourses' => [],
-                    'optionalcourses' => [],
+                    'periodsdata' => [],
                 ];
             }
 
@@ -146,8 +154,16 @@ class get_learning_plans_external extends external_api {
             if ($userlpdata->isrequired == 1) {
                 $returnlearningplandata[$learningplanid]['requiredtotalcourses']++;
             }
+            $periodname = $returnlearningplandata[$learningplanid]['hasperiod'] ? $userlpdata->periodname : 'noperiod';
             $coursestringindex = $userlpdata->isrequired == 1 ? 'requiredcourses' : 'optionalcourses';
-            $returnlearningplandata[$learningplanid][$coursestringindex][$courseid] = [
+            if (!isset($returnlearningplandata[$learningplanid]['periodsdata'][$periodname])) {
+                $returnlearningplandata[$learningplanid]['periodsdata'][$periodname] = [
+                    'periodname' => $periodname,
+                    'requiredcourses' => [],
+                    'optionalcourses' => [],
+                ];
+            }
+            $returnlearningplandata[$learningplanid]['periodsdata'][$periodname][$coursestringindex][$courseid] = [
                 'fullname' => $userlpdata->coursename,
                 'courseurl' => $CFG->wwwroot . '/course/view.php?id=' .$courseid,
                 'realprogress' => $courseprogress ?? 0,
@@ -159,33 +175,36 @@ class get_learning_plans_external extends external_api {
             ];
 
         }
+        // print_r($returnlearningplandata);die;
         // Do more.
         foreach ($returnlearningplandata as &$rlp) {
-            foreach ($rlp['requiredcourses'] as &$requiredcourse) {
-                $requiredcourse['waiting'] = false;
-                $requiredcourse['active'] = true;
-                $requiredcourse['showprogress'] = $requiredcourse['realprogress'];
-                if ($requiredcourse['completed'] == true) {
-                    $rlp['requiredcoursescompleted'] ++;
-                } else {
-                    $requiredcourse['current'] = true;
-                    break;
+            foreach ($rlp['periodsdata'] as $periodname => &$perioddata) {
+                foreach ($perioddata['requiredcourses'] as &$requiredcourse) {
+                    $requiredcourse['waiting'] = false;
+                    $requiredcourse['active'] = true;
+                    $requiredcourse['showprogress'] = $requiredcourse['realprogress'];
+                    if ($requiredcourse['completed'] == true) {
+                        $rlp['requiredcoursescompleted'] ++;
+                    } else {
+                        $requiredcourse['current'] = true;
+                        break;
+                    }
                 }
-            }
-            foreach ($rlp['optionalcourses'] as &$requiredcourse) {
-                $requiredcourse['waiting'] = false;
-                $requiredcourse['active'] = true;
-                $requiredcourse['showprogress'] = $requiredcourse['realprogress'];
-                $requiredcourse['current'] = true;
-                if ($requiredcourse['completed'] == true) {
-                    $rlp['optionacoursecompleted'] ++;
+                foreach ($perioddata['optionalcourses'] as &$optionalcourse) {
+                    $optionalcourse['waiting'] = false;
+                    $optionalcourse['active'] = true;
+                    $optionalcourse['showprogress'] = $optionalcourse['realprogress'];
+                    $optionalcourse['current'] = true;
+                    if ($optionalcourse['completed'] == true) {
+                        $rlp['optionacoursecompleted'] ++;
+                    }
                 }
             }
             if ($rlp['requiredtotalcourses'] > 0) {
                 $rlp['learningplanprogress'] = round($rlp['requiredcoursescompleted'] * 100 / $rlp['requiredtotalcourses'], 2);
             }
         }
-        // print_r($returnlearningplandata);die;
+        //print_r($returnlearningplandata);die;
         $totallp = $DB->get_records_sql(
             'SELECT learningplanid FROM {local_learning_users}
                 WHERE userid = :userid
@@ -215,6 +234,15 @@ class get_learning_plans_external extends external_api {
                 ]
             ), 'Estructura de cursos', VALUE_DEFAULT
         );
+        $structureperiod = new external_multiple_structure(
+            new external_single_structure(
+                [
+                    'periodname'      => new external_value(PARAM_TEXT, 'Fullname of course'),
+                    'requiredcourses'           => $structurecourses,
+                    'optionalcourses'           => $structurecourses,
+                ]
+            ), 'Estructura de cursos', VALUE_DEFAULT
+        );
         return new external_single_structure(
             array(
                 'learningplans' => new external_multiple_structure(
@@ -222,15 +250,16 @@ class get_learning_plans_external extends external_api {
                         array(
                             'learningplanid'            => new external_value(PARAM_INT, 'Learning Plan ID'),
                             'learningname'              => new external_value(PARAM_TEXT, 'Learning Plan Name'),
-                            'description'               => new external_value(PARAM_TEXT, 'Description'),
+                            'description'               => new external_value(PARAM_RAW, 'Description'),
                             'learningimage'             => new external_value(PARAM_RAW, 'Image Learning Plan', VALUE_DEFAULT, ''),
                             'isstudent'                 => new external_value(PARAM_BOOL, 'Check if user is student'),
+                            'hasperiod'                 => new external_value(PARAM_BOOL, 'If LP has periods'),
+                            'periodcount'               => new external_value(PARAM_INT, 'Period count'),
                             'rolename'                  => new external_value(PARAM_TEXT, 'Rolename'),
                             'requiredtotalcourses'      => new external_value(PARAM_INT, 'Total required courses'),
                             'requiredcoursescompleted'  => new external_value(PARAM_INT, 'Total completed required courses'),
                             'learningplanprogress'      => new external_value(PARAM_RAW, 'Progress Learning Plan'),
-                            'requiredcourses'           => $structurecourses,
-                            'optionalcourses'           => $structurecourses,
+                            'periodsdata'               => $structureperiod,
                             )
                         ),
                     ),

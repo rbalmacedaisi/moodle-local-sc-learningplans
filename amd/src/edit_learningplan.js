@@ -11,7 +11,7 @@ export const init = (learningid, is_siteadmin) => {
                 return;
             }
             const learningshortname = document.querySelector('#learningshortname');
-            const desc_plan = document.querySelector('#desc_plan');
+            const desc_plan = document.querySelector('#id_desc_planeditable');
             const learningimage = document.querySelector('#id_learningplan_image');
             if (window.NodeList && !NodeList.prototype.map) {
                 NodeList.prototype.map = Array.prototype.map;
@@ -24,7 +24,7 @@ export const init = (learningid, is_siteadmin) => {
                     learningname: learningname.value,
                     learningshortname: learningshortname.value,
                     fileimage: learningimage.value,
-                    description: desc_plan.value,
+                    description: desc_plan.innerHTML,
                     requirements,
                 }
             },]);

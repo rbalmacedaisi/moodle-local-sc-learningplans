@@ -43,7 +43,14 @@ class edit_learning_plan_external extends external_api {
         );
     }
 
-    public static function edit_learning_plan($learningid, $learningshortname, $learningname, $fileimage, $description, $requirements) {
+    public static function edit_learning_plan(
+            $learningid,
+            $learningshortname,
+            $learningname,
+            $fileimage,
+            $description,
+            $requirements
+        ) {
         global $DB;
         // Check if LP Exist.
         $learningplan = $DB->get_record('local_learning_plans', ['id' => $learningid]);
@@ -75,7 +82,7 @@ class edit_learning_plan_external extends external_api {
                 array('subdirs' => 0, 'maxfiles' => 1)
             );
         }
-        $description = strip_tags($description);
+        $description = $description;
         $learningplan->shortname = $learningshortname;
         $learningplan->name = $learningname;
         $learningplan->description = $description;

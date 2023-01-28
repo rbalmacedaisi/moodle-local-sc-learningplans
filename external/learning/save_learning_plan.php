@@ -96,7 +96,7 @@ class save_learning_plan_external extends external_api {
         } else {
             $countperiod = count($periods);
         }
-        $description = strip_tags($description);
+        $description = $description;
 
         $newlearningplan = new stdClass();
         $newlearningplan->shortname     = $learningshortid;
