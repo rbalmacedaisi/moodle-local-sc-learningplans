@@ -43,7 +43,7 @@ if (!$learningplan) {
     redirect(new moodle_url('/local/sc_learningplans/index.php'));
 }
 
-$PAGE->set_pagelayout('admin');
+$PAGE->set_pagelayout('base');
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/sc_learningplans/users.php', ['id' => $learningplanid]));
 if (is_siteadmin()) {

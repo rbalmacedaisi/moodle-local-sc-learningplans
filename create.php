@@ -40,6 +40,8 @@ $PAGE->set_context($context);
 $PAGE->set_url('/local/sc_learningplans/create.php');
 $PAGE->set_title(get_string('pluginname', 'local_sc_learningplans'));
 $PAGE->set_heading(get_string('pluginname', 'local_sc_learningplans'));
+$PAGE->set_pagelayout('base');
+$PAGE->add_body_class('limitedwidth');
 
 $formimagepicker = new createlp_form_picker();
 $formeditor = new createlp_form_editor();
@@ -80,6 +82,7 @@ $maintemplatedata = [
     'roles' => array_values($roles),
     'groups' => array_values($groups),
     'userprofilefields' => array_values($userprofilefields),
+    'cancelurl' => $CFG->wwwroot.'/local/sc_learningplans/index.php'
 
 ];
 echo $OUTPUT->header();

@@ -141,7 +141,7 @@ let addUsers = () => {
                 selectedoption.disabled = true;
                 const divcontainer = document.createElement('div');
                 const div = document.createElement('div');
-                div.classList.add('lp_user_list', 'p-1', 'alert-primary');
+                div.classList.add('lp_user_list', 'p-2', 'alert-primary', 'rounded-sm', 'mb-1');
                 div.innerHTML = username;
                 const deletebtn = document.createElement('button');
                 deletebtn.setAttribute('roleid', roleid);
@@ -188,7 +188,7 @@ let addCourses = async () => {
                 const divcontainer = document.createElement('div');
                 const div = document.createElement('div');
                 div.id = `optionalcourse-${courseid}`;
-                div.classList.add('lp_course_list', 'p-1', 'alert-primary');
+                div.classList.add('lp_course_list', 'p-2', 'alert-primary', 'rounded-sm', 'mb-1');
                 div.innerHTML = coursename;
                 const deletebtn = document.createElement('button');
 
@@ -232,7 +232,7 @@ let addCourses = async () => {
                 const divcontainer = document.createElement('div');
                 const div = document.createElement('div');
                 div.id = `requiredcourse-${courseid}`;
-                div.classList.add('lp_course_list', 'p-1', 'alert-info');
+                div.classList.add('lp_course_list', 'p-2', 'alert-info', 'rounded-sm', 'mb-1');
                 div.innerHTML = coursename;
                 const deletebtn = document.createElement('button');
                 deletebtn.setAttribute('isrequired', 0);
@@ -269,6 +269,7 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
         const periodmonths = await Str.get_string('periodmonths', 'local_sc_learningplans');
 
         const divInput = document.createElement('div');
+        const divCol = document.createElement('div');
         const label = document.createElement('label');
         const input = document.createElement('input');
         addperiod.addEventListener('click', () => {
@@ -289,6 +290,7 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
 
                         const inputForName = input.cloneNode();
                         inputForName.classList.add('period_name');
+                        inputForName.classList.add('form-control');
                         inputForName.setAttribute('value', `${str_name_period_config} ${i}`);
                         inputForName.setAttribute('index', i);
                         inputForName.placeholder = `${str_name_period_config} ${i}`;
@@ -299,16 +301,31 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
                         labelForMonths.innerHTML = `&nbsp;&nbsp;${periodmonths}:&nbsp;`;
 
                         const inputForMonths = input.cloneNode();
+                        inputForMonths.classList.add('form-control');
                         inputForMonths.setAttribute('value', default_period_months);
                         inputForMonths.placeholder = default_period_months;
                         inputForMonths.setAttribute('index', i);
                         inputForMonths.id = `inputPeriodMonth${i}`;
 
+                        const div_col = divCol.cloneNode();
+                        div_col.classList.add('col-sm-6');
+                        div_col.append(labelForName);
+                        div_col.append(inputForName);
+
+                        const div_col_months = divCol.cloneNode();
+                        div_col_months.classList.add('col-sm-6');
+                        div_col_months.append(labelForMonths);
+                        div_col_months.append(inputForMonths);
+
+
                         const divToPut = divInput.cloneNode();
-                        divToPut.append(labelForName);
+                        divToPut.classList.add('row');
+                        divToPut.append(div_col);
+                        divToPut.append(div_col_months);
+                        /*divToPut.append(labelForName);
                         divToPut.append(inputForName);
                         divToPut.append(labelForMonths);
-                        divToPut.append(inputForMonths);
+                        divToPut.append(inputForMonths);*/
                         parent.append(divToPut);
                     }
                     parent_enrol.innerHTML = `<div><label class="w-100">${typeperiod}</label>

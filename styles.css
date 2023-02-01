@@ -58,8 +58,7 @@ input[type=checkbox] {
 }
 
 select#selectAddCourseToLearningPlan,
-select#selectAddCourseOptionalToLearningPlan,
-select#listroles {
+select#selectAddCourseOptionalToLearningPlan {
     width: 300px;
 }
 
@@ -111,11 +110,6 @@ select#listroles {
 .coursesoptional {
     list-style: none;
     padding: 15px;
-}
-
-#formCurrentCourseToLearningPlan,
-#formOptionalCourseToLearningPlan {
-    padding-top: 45px;
 }
 
 .actions-course {
@@ -258,11 +252,6 @@ select#listroles {
     height: 60vh;
 }
 
-#listusers {
-    width: 412px;
-    height: 34px;
-}
-
 input#addperiod,
 input#notperiod,
 input#type_manual,
@@ -286,11 +275,7 @@ input#type_automatic {
 }
 
 #listperiods div {
-    margin-top: 20px;
-}
-
-#listperiods .period_name {
-    margin-left: 15px;
+    margin-top: 15px;
 }
 
 #content-periods {
@@ -316,7 +301,25 @@ input#type_automatic {
     visibility: hidden;
 }
 
-#page-local-sc_learningplans-create #formCurrentCourseToLearningPlan,
-#page-local-sc_learningplans-create #formOptionalCourseToLearningPlan {
-    padding-top: 15px;
+#listperiods input {
+    padding: 0.375rem 0.75rem;
+    font-size: .9375rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #f8f9fa;
+    background-clip: padding-box;
+    border: 1px solid #8f959e;
+    border-radius: 0.5rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+#listperiods label {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    #page-local-sc_learningplans-create div#topofscroll {
+        max-width: 1000px;
+    }
 }

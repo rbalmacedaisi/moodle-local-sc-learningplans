@@ -1,141 +1,217 @@
-<div class="container">
-    <h5 class="text-center w-100 font-weight-bold">{{#str}} new_learning_plan, local_sc_learningplans {{/str}}</h5>
-    <div class="row required pt-4">
-        <div class="col-sm-12 col-md-6 py-2">
-            <label class="w-100 text-dark" for="learningshortid">{{#str}} shortname, local_sc_learningplans {{/str}}</label>
-            <input required type="text" name="learningshortid" placeholder="{{#str}} shortname, local_sc_learningplans {{/str}}" id="learningshortid" class="w-100" />
-        </div>
-        <div class="col-sm-12 col-md-6 py-2">
-            <label class="w-100 text-dark" for="learningname">{{#str}} plan_name, local_sc_learningplans {{/str}}</label>
-            <input required type="text" name="learningname" placeholder="{{#str}} name, local_sc_learningplans {{/str}}" id="learningname" class="w-100" />
-        </div>
-    </div>
-    
-    <div class="row required pt-4">
-        <div class="col-sm-12 col-md-12 py-2">
-            <div>
-                <label class="w-100" for="learningname">{{#str}} addingperiods, local_sc_learningplans {{/str}}</label>
-                <input type="radio" id="notperiod" name="check_period" value="0" checked>
-                <label for="notperiod">{{#str}} no {{/str}}</label>
-                <input type="radio" id="addperiod" name="check_period" value="1">
-                <label for="addperiod">{{#str}} yes {{/str}}</label>
-            </div>
-            
-            <div>
-                <label for="periodslist">{{#str}} select_periods, local_sc_learningplans {{/str}}</label>
-                <select name="list-periods" id="periodslist" disabled>
-                    {{#optionsperiod}}
-                        <option value="{{id}}">{{value}}</option>
-                    {{/optionsperiod}}
-                </select>
-                <button id="addingperiods" disabled class="btn btn-primary">{{#str}} btnaddperiods, local_sc_learningplans {{/str}}</button>
-            </div>
-            
-            <div class="col-sm-12 col-md-12" id="listperiods"></div>
-            <div class="col-sm-12 col-md-12 pt-2" id="type_enrol"></div>
-        </div>
-    </div>
-    
-    <div class="courses col-sm-12 col-md-6 py-2 p-0" id="addcourses">
-        <label class="w-100" for="learningname">{{#str}} title_add_course, local_sc_learningplans {{/str}}</label>
-        <form id='formAddCourseToLearningPlan' class="d-flex align-items-center flex-wrap">
-            <input type="hidden" name="id" value="{{learningplanid}}" />
-            <select required class="p-1" id='selectAddCourseToLearningPlan' name="selectedcourse">
-                <option class="b scm-box" value=''>{{#str}} select_course, local_sc_learningplans {{/str}}</option>
-                {{#courses}}
-                <option class="b scm-box" value='{{id}}'>{{fullname}}</option>
-                {{/courses}}
-            </select>
-            <button id="addrequired" type="submit" name='add' class="btn btn-primary lp_button mx-1">
-                {{#str}} btn_add_course, local_sc_learningplans {{/str}}
-            </button>
-            <button id="addooptional" type="submit" name='add' class="btn btn-outline-primary lp_button mx-1">{{#str}} btn_addopt_course, local_sc_learningplans {{/str}}</button>
-        </form>
-    </div>
-    
-    <div class="row" id="listcoursesplan">
-        <div class="col-md-6">
-            <label class="w-100 text-primary font-weight-bold" for="learningname">{{#str}} title_current_course, local_sc_learningplans {{/str}}</label>
-            <form id='formCurrentCourseToLearningPlan'>
-                <input type="hidden" name="id" value="{{learningplanid}}" /> 
-            </form>
-        </div>
-        <div class="col-md-6">
-            <label class="w-100 text-primary font-weight-bold" for="learningname">{{#str}} title_optional_course, local_sc_learningplans {{/str}}</label>
-            <form id='formOptionalCourseToLearningPlan'>
-                <input type="hidden" name="id" value="{{learningplanid}}" />
-            </form>
-        </div>
-    </div>
-    
-    <div class="row users" id="listusersplan">
-        <div class="col-sm-12 col-md-6 py-2">
-            <label class="w-100" for="learningname">{{#str}} title_add_users, local_sc_learningplans {{/str}}</label>
-            <select name="listusers" id="listusers" class="w-100" required>
-                <option value=''>{{#str}} select_user, local_sc_learningplans {{/str}}</option>
-                {{#allusers}}
-                <option value="{{id}}">{{firstname}} {{lastname}} - {{email}}</option>
-                {{/allusers}}
-            </select>
-        </div>
+<div class="container-fluid px-0">
+    <div class="row required">
+        <div class="col-sm-12">
+            {{! Form card to create learnin plans }}
+            <div class="card px-4 pt-2">
+                <h5 class="text-center my-3">{{#str}} new_learning_plan, local_sc_learningplans {{/str}}</h5>
+                
+                {{! Row for learning plan name fields }}
+                <div class="row mt-2">
+                    {{! Field for the short name of the learning plan }}
+                    <div class="col-sm-12 col-md-6 py-2">
+                        <label class="w-100 text-dark" for="learningshortid">{{#str}} shortname, local_sc_learningplans {{/str}}</label>
+                        <input required type="text" name="learningshortid" placeholder="{{#str}} shortname, local_sc_learningplans {{/str}}" id="learningshortid" class="form-control" />
+                    </div>
+                    {{! End Field for the short name of the learning plan }}
+                    
+                    {{! Field for the name of the learning plan }}
+                    <div class="col-sm-12 col-md-6 py-2">
+                        <label class="w-100 text-dark" for="learningname">{{#str}} plan_name, local_sc_learningplans {{/str}}</label>
+                        <input required type="text" name="learningname" placeholder="{{#str}} name, local_sc_learningplans {{/str}}" id="learningname" class="form-control" />
+                    </div>
+                    {{! End Field for the name of the learning plan }}
+                </div>
+                {{! End Row for learning plan name fields }}
 
-        <div class="col-sm-12 col-md-6 py-2">
-            <label class="w-100" for="learningname">{{#str}} title_add_users, local_sc_learningplans {{/str}}</label>
-            <div class="d-flex align-items-center flex-wrap">
-            <select name="listroles" id="listroles" required class="mr-1">
-                <option value=''>{{#str}} select_role, local_sc_learningplans {{/str}}</option>
-                {{#roles}}
-                <option value="{{id}}">{{strname}}</option>
-                {{/roles}}
-            </select>
-            </div>
-        </div>
-        
-        <div class="col-sm-6 col-md-6 col-sm-12 py-2">
-            <label class="w-50 v-hidden" for="listgroups">{{#str}} assign_rol, local_sc_learningplans {{/str}}</label>
-            <div class="d-flex align-items-center flex-wrap justify-content-between" class="w-50">
-                <select name="listgroups" class="w-50" id="listgroups" required class="mr-1">
-                    <option value=''>{{#str}} select_group, local_sc_learningplans {{/str}}</option>
-                    {{#groups}}
-                    <option value="{{name}}">{{name}}</option>
-                    {{/groups}}
-                </select>
-                <button id="adduser" class="btn btn-primary lp_button">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
-            </div>
-        </div>
+                {{! Row for the fields of the periods }}
+                <div class="row required pt-2">
+                    <div class="col-sm-12 col-md-12 py-2">
+                        <h6 class="mb-2">{{#str}} periodcount, local_sc_learningplans {{/str}}</h6>
+                        {{! Field to add periods to the leanning plan }}
+                        <div>
+                            <label class="w-100" for="learningname">{{#str}} addingperiods, local_sc_learningplans {{/str}}</label>
+                            <input type="radio" id="notperiod" name="check_period" value="0" checked>
+                            <label for="notperiod">{{#str}} no {{/str}}</label>
+                            <input type="radio" id="addperiod" name="check_period" value="1">
+                            <label for="addperiod">{{#str}} yes {{/str}}</label>
+                        </div>
+                        {{! End Field to add periods to the leanning plan }}
+                        
+                        {{! Field to select the number of leanning periods }}
+                        <div class="d-flex flex-wrap align-items-center">
+                            <label for="periodslist">{{#str}} select_periods, local_sc_learningplans {{/str}}</label>
+                            <div class="ml-2 d-flex align-items-center">
+                                <select name="list-periods" id="periodslist" disabled class="form-control w-auto d-inline-flex mr-2">
+                                    {{#optionsperiod}}
+                                    <option value="{{id}}">{{value}}</option>
+                                    {{/optionsperiod}}
+                                </select>
+                                <button id="addingperiods" disabled class="btn btn-primary">{{#str}} btnaddperiods, local_sc_learningplans {{/str}}</button>
+                            </div>
+                        </div>
+                        {{! End Field to select the number of leanning periods }}
 
-        <div class="col-sm-12 col-md-10 py-2">
-            <label class="w-100 mb-0 text-primary font-weight-bold" for="learningname">{{#str}} title_current_users, local_sc_learningplans {{/str}}</label>
-            <div class="listlearningusers">
-                <ul class="d-none">
-                </ul>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-sm-12 col-md-12 py-2">
-            <label class="w-100 text-primary font-weight-bold" for="desc_plan">{{#str}} title_desc_plan, local_sc_learningplans {{/str}}</label>
-            {{{formeditor}}}
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-sm-12 col-md-12 py-2 mx-0 pickerlp">
-            <label class="w-100 text-primary font-weight-bold" for="desc_plan">{{#str}}plan_image, local_sc_learningplans{{/str}}</label>
-            {{{formimagpicker}}}
-        </div>
-    </div>
-    <div class="row">
-        <label class="w-100 text-primary font-weight-bold" for="learningname">{{#str}} plan_requirements, local_sc_learningplans {{/str}}</label>
-        {{#userprofilefields}}
-            <div class="col-sm-6 col-md-6 py-2">
-                <input type="checkbox" name='learningrequirements' id='learningrequirements_{{id}}' value='{{id}}' /><label for='learningrequirements_{{id}}'>&nbsp;&nbsp;&nbsp;{{name}}</label>
-            </div>
-        {{/userprofilefields}}
-    </div>
-    
-   <div class="modal-footer">
-            <button id="addplan" class="btn btn-primary">{{#str}} add_plan, local_sc_learningplans {{/str}}</button>
-    </div>
+                        {{! Field for the list of periods }}
+                        <div class="col-sm-12 col-md-12" id="listperiods"></div>
+                        
+                        {{! Field for the type of enrollment }}
+                        <div class="col-sm-12 col-md-12" id="type_enrol"></div>
+                    </div>
+                </div>
+                {{! End Row for the fields of the periods}}
+                
+                {{! Row for the fields of the learning plan courses }}
+                <div class="row mt-2">
+                    <div class="courses col-sm-12 col-md-12 py-2" id="addcourses">
+                        <h6 class="mb-2">{{#str}} coursecount, local_sc_learningplans {{/str}}</h6>
+                        <label class="w-100" for="learningname">{{#str}} title_add_course, local_sc_learningplans {{/str}}</label>
+                        {{! Form to add courses }}
+                        <form id='formAddCourseToLearningPlan' class="d-flex align-items-center flex-wrap">
+                            {{! Field to select the learning plan courses }}
+                            <input type="hidden" name="id" value="{{learningplanid}}" />
+                            <select required class="form-control" id='selectAddCourseToLearningPlan' name="selectedcourse">
+                                <option class="b scm-box" value=''>{{#str}} select_course, local_sc_learningplans {{/str}}</option>
+                                {{#courses}}
+                                <option class="b scm-box" value='{{id}}'>{{fullname}}</option>
+                                {{/courses}}
+                            </select>
+                            {{! End Field to select the learning plan courses }}
 
+                            {{! Button to add required courses }}
+                            <button id="addrequired" type="submit" name='add' class="btn btn-primary lp_button mx-1">
+                                {{#str}} btn_add_course, local_sc_learningplans {{/str}}
+                            </button>
+                            {{! End Button to add required courses }}
+
+                            {{! Button to add optional courses }}
+                            <button id="addooptional" type="submit" name='add' class="btn btn-secondary lp_button mx-1">{{#str}} btn_addopt_course, local_sc_learningplans {{/str}}</button>
+                        </form>
+                        {{! End Form to add courses }}
+                    </div>
+                </div>
+                {{! End Row for the fields of the learning plan courses }}
+
+                {{! Row for the list of selected courses }}
+                <div class="row mt-2" id="listcoursesplan">
+                    {{! List of required courses }}
+                    <div class="col-sm-6 col-md-6">
+                        <label class="w-100 text-primary font-weight-bold" for="learningname">{{#str}} title_current_course, local_sc_learningplans {{/str}}</label>
+                        <form id='formCurrentCourseToLearningPlan'>
+                            <input type="hidden" name="id" value="{{learningplanid}}" /> 
+                        </form>
+                    </div>
+                    {{! End List of required courses }}
+                    
+                    {{! List of optional courses }}
+                    <div class="col-sm-6 col-md-6">
+                        <label class="w-100 text-secondary font-weight-bold" for="learningname">{{#str}} title_optional_course, local_sc_learningplans {{/str}}</label>
+                        <form id='formOptionalCourseToLearningPlan'>
+                            <input type="hidden" name="id" value="{{learningplanid}}" />
+                        </form>
+                    </div>
+                    {{! End List of optional courses }}
+                </div>
+                {{! End Row for the list of selected courses }}
+
+                {{! Row to manage users }}
+                <div class="row users mt-3" id="listusersplan">
+                    <div class="col-sm-12">
+                        <h6 class="mb-2">{{#str}} usercount, local_sc_learningplans {{/str}}</h6>
+                    </div>
+                    {{! Field to select users }}
+                    <div class="col-sm-12 col-md-6 py-2">
+                        <label class="w-100" for="learningname">{{#str}} title_add_users, local_sc_learningplans {{/str}}</label>
+                        <select name="listusers" id="listusers" class="form-control" required>
+                            <option value=''>{{#str}} select_user, local_sc_learningplans {{/str}}</option>
+                            {{#allusers}}
+                            <option value="{{id}}">{{firstname}} {{lastname}} - {{email}}</option>
+                            {{/allusers}}
+                        </select>
+                    </div>
+                    {{! End Field to select users }}
+
+                    {{! Field to select the role of the user }}
+                    <div class="col-sm-12 col-md-6 py-2">
+                        <label class="w-100" for="learningname">{{#str}} title_add_users, local_sc_learningplans {{/str}}</label>
+                        <div class="d-flex align-items-center flex-wrap">
+                            <select name="listroles" id="listroles" required class="form-control">
+                                <option value=''>{{#str}} select_role, local_sc_learningplans {{/str}}</option>
+                                {{#roles}}
+                                <option value="{{id}}">{{strname}}</option>
+                                {{/roles}}
+                            </select>
+                        </div>
+                    </div>
+                    {{! End Field to select the role of the user }}
+                    
+                    {{! Field to select user group }}
+                    <div class="col-sm-12 col-md-6 py-2">
+                        <label class="" for="listgroups">{{#str}} assign_rol, local_sc_learningplans {{/str}}</label>
+                        <div class="d-flex align-items-center flex-wrap">
+                            <select name="listgroups" class="form-control w-auto mr-2" id="listgroups" required class="form-control">
+                                <option value=''>{{#str}} select_group, local_sc_learningplans {{/str}}</option>
+                                {{#groups}}
+                                <option value="{{name}}">{{name}}</option>
+                                {{/groups}}
+                            </select>
+                            <button id="adduser" class="btn btn-primary lp_button">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
+                        </div>
+                    </div>
+                    {{! End Field to select user group }}
+
+                    {{! List of users selected within the learning plan }}
+                    <div class="col-sm-12 col-md-10 py-2">
+                        <label class="w-100 mb-0 " for="learningname">{{#str}} title_current_users, local_sc_learningplans {{/str}}</label>
+                        <div class="listlearningusers">
+                            <ul class="d-none">
+                            </ul>
+                        </div>
+                    </div>
+                    {{! End List of users selected within the learning plan }}
+                </div>
+                {{! End Row to manage users }}
+
+                {{! Field for the description of the learning plan }}
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 py-2">
+                        <label class="w-100 font-weight-bold" for="desc_plan">{{#str}} title_desc_plan, local_sc_learningplans {{/str}}</label>
+                        {{{formeditor}}}
+                    </div>
+                </div>
+                {{! End Field for the description of the learning plan }}
+
+                {{! Field for the learning plan imag }}
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 pickerlp">
+                        <label class="w-100 font-weight-bold" for="desc_plan">{{#str}}plan_image, local_sc_learningplans{{/str}}</label>
+                        {{{formimagpicker}}}
+                    </div>
+                </div>
+                {{! End Field for the learning plan imag }}
+                
+                {{! Field for learning plan requirements}}
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <label class="w-100 font-weight-bold" for="learningname">{{#str}} plan_requirements, local_sc_learningplans {{/str}}</label>
+                        <div class="row">
+                            {{#userprofilefields}}
+                            <div class="col-sm-12 col-md-4 py-2">
+                                <input type="checkbox" name='learningrequirements' id='learningrequirements_{{id}}' value='{{id}}' /><label for='learningrequirements_{{id}}'>&nbsp;&nbsp;&nbsp;{{name}}</label>
+                            </div>
+                            {{/userprofilefields}}
+                        </div>
+                    </div>
+                </div>
+                {{! End Field for learning plan requirements}}
+
+                {{! Actions }}
+                <div class="d-flex card-footer bg-transparent mt-3 px-0">
+                    <div class="spacer"></div>
+                    <a href="{{cancelurl}}" class="btn btn-secondary m-1">{{#str}} cancel, local_sc_learningplans {{/str}}</a>
+                    <button id="addplan" class="btn btn-primary m-1">{{#str}} add_plan, local_sc_learningplans {{/str}}</button>
+                </div>
+                {{! End Actions }}
+            </div>
+            {{! End Form card to create learnin plans}}
+        </div>
+    </div>

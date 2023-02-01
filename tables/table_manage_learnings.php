@@ -47,10 +47,10 @@ class table_manage_learnings extends table_sql {
         $this->sortable(false, 'id', SORT_DESC);
         $this->collapsible(false);
         $this->no_sorting('actions');
-
+        
         $this->define_columns(array_values($headerscolumns));
         $this->define_headers(array_keys($headerscolumns));
-        $this->set_attribute('class', 'learningPlansTable mt-2 shadow-sm');
+        $this->set_attribute('class', 'learningPlansTable mt-2 shadow-sm rounded-lg bg-table ');
         $this->init_sql();
     }
 

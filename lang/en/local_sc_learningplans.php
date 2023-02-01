@@ -163,3 +163,4 @@ $string['currentperiod'] = 'Current Period';
 
 $string['assign_group'] = 'Assign Group';
 $string['select_group'] = 'Select group';
+$string['cancel'] = 'Cancel';
