@@ -216,25 +216,7 @@ const updateCoursePositionAction = () => {
         let learningplanid = lpid.getAttribute('learningplanid');
         btnupdatecourseorder.addEventListener('click', e => {
             e.preventDefault();
-            const courseData = [];
-            items.forEach(function (item) {
-                let listCoursesid = item.attributes.datacourse.value;
-                let listCoursePosition = item.attributes.poscourse.value;
-                courseData.push({
-                    courseid: listCoursesid.replace('courses[', '').replace(']', ''),
-                    position: listCoursePosition,
-                });
-            });
-
-            const coursePosition = [];
-            courseData.forEach((index) => {
-                coursePosition.push({
-                    courseid: index.courseid,
-                    position: index.position,
-                    periodid: index.periodid
-                });
-            });
-            callUpdateCourse(learningplanid, coursePosition);
+            clickUpdateCourses(learningplanid);
         });
     }
 
@@ -244,27 +226,53 @@ const updateCoursePositionAction = () => {
             e.preventDefault();
             let periodid = e.target.attributes.periodid.value;
             let lpid = e.target.attributes.lpid.value;
-            const itemsPeriod = document.querySelectorAll(`li[lpid="${lpid}"][periodid="${periodid}"]`);
-            const courseData = [];
-            itemsPeriod.forEach(function (item) {
-                let listCoursesid = item.attributes.datacourse.value;
-                let listCoursePosition = item.attributes.poscourse.value;
-                courseData.push({
-                    courseid: listCoursesid.replace('courses[', '').replace(']', ''),
-                    position: listCoursePosition,
-                });
-            });
-            const coursePosition = [];
-            courseData.forEach((index) => {
-                coursePosition.push({
-                    courseid: index.courseid,
-                    position: index.position,
-                    periodid: index.periodid
-                });
-            });
-            callUpdateCourse(lpid, coursePosition, periodid);
+            clickUpdateCoursePeriod(lpid, periodid);
         });
     }
+};
+
+const clickUpdateCoursePeriod = (lpid, periodid) => {
+    const itemsPeriod = document.querySelectorAll(`li[lpid="${lpid}"][periodid="${periodid}"]`);
+    const courseData = [];
+    itemsPeriod.forEach(function (item) {
+        let listCoursesid = item.attributes.datacourse.value;
+        let listCoursePosition = item.attributes.poscourse.value;
+        courseData.push({
+            courseid: listCoursesid.replace('courses[', '').replace(']', ''),
+            position: listCoursePosition,
+        });
+    });
+    const coursePosition = [];
+    courseData.forEach((index) => {
+        coursePosition.push({
+            courseid: index.courseid,
+            position: index.position,
+            periodid: index.periodid
+        });
+    });
+    callUpdateCourse(lpid, coursePosition, periodid);
+};
+
+const clickUpdateCourses = (learningplanid) => {
+    const courseData = [];
+    items.forEach(function (item) {
+        let listCoursesid = item.attributes.datacourse.value;
+        let listCoursePosition = item.attributes.poscourse.value;
+        courseData.push({
+            courseid: listCoursesid.replace('courses[', '').replace(']', ''),
+            position: listCoursePosition,
+        });
+    });
+
+    const coursePosition = [];
+    courseData.forEach((index) => {
+        coursePosition.push({
+            courseid: index.courseid,
+            position: index.position,
+            periodid: index.periodid
+        });
+    });
+    callUpdateCourse(learningplanid, coursePosition);
 };
 
 var dragSrcEl = null;
@@ -325,6 +333,17 @@ function handleDrop(e) {
         let draggedItemAttr = dragSrcEl.attributes["datacourse"].value;
         this.setAttribute("datacourse", draggedItemAttr);
         dragSrcEl.setAttribute("datacourse", itemToReplaceAttr);
+        const lpid = document.querySelector(".coursesrequired");
+        let learningplanid = lpid.getAttribute('learningplanid');
+        let periodid = dragSrcEl.attributes['periodid']?.value;
+        if (periodid) {
+            clickUpdateCoursePeriod(learningplanid, periodid);
+        } else {
+            clickUpdateCourses(learningplanid);
+        }
+        window.console.log(learningplanid, periodid,
+            'Cambiando los cursos draggedItemAttr: ',
+            draggedItemAttr, 'itemToReplaceAttr', itemToReplaceAttr);
     }
 
     return false;

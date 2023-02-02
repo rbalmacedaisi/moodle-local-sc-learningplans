@@ -37,6 +37,7 @@ if (!has_any_capability(['local/sc_learningplans:manage', 'local/sc_learningplan
 
 
 $learningplanid = required_param('id', PARAM_INT);
+$searchuser = optional_param('searchUser', null, PARAM_TEXT);
 
 $learningplan = $DB->get_record('local_learning_plans', array('id' => $learningplanid));
 if (!$learningplan) {
@@ -91,11 +92,12 @@ $templatedata = [
     'groups' => array_values($groups),
     'learningplanid' => $learningplanid,
     'hasperiods' => $hasperiods,
-    'hasmanualenrol' => $hasmanualenrol
+    'hasmanualenrol' => $hasmanualenrol,
+    'searchUser' => $searchuser,
 ];
 
 $download = optional_param('download', '', PARAM_ALPHA);
-$table = new table_manage_users('local_learning_users', $learningplanid);
+$table = new table_manage_users('local_learning_users', $learningplanid, $searchuser);
 
 $table->is_downloading($download, 'learningplans', get_string('pluginname', 'local_sc_learningplans'));
 

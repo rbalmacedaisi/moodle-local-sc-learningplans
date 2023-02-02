@@ -11,25 +11,11 @@
     </div>
 </div>
 
-<h5>{{#str}} title_current_users, local_sc_learningplans {{/str}}</h5>
-
-<table class="flexible table table-hover shadow-sm" id="usersTable">
-  <thead>
-    <tr>
-      <th scope="col">{{#str}} id_user, local_sc_learningplans {{/str}}</th>
-      <th scope="col">{{#str}} name_user, local_sc_learningplans {{/str}}</th>
-      <th scope="col">{{#str}} email_user, local_sc_learningplans {{/str}}</th>
-      {{#hasperiods}}
-      <th scope="col">{{#str}}period_enrol, local_sc_learningplans{{/str}}</th>
-      {{/hasperiods}}
-      <th scope="col">{{#str}} roles_user, local_sc_learningplans {{/str}}</th>
-      <th scope="col">{{#str}} action_user, local_sc_learningplans {{/str}}</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
 <div id='userpaginationsc' class="d-flex justify-content-end"></div>
+
+<label for='searchUser'>{{#str}} search_user, local_sc_learningplans {{/str}}</label>
+<input id='searchUser' name='searchUser' value='{{searchUser}}' />
+<button role='button' id='searchBtn'>{{#str}} search_user_btn, local_sc_learningplans {{/str}}</button>
 
 <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog modal-dialog-centered modal-lg">
