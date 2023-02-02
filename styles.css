@@ -319,7 +319,11 @@ input#type_automatic {
 }
 
 @media (min-width: 768px) {
-    #page-local-sc_learningplans-create div#topofscroll {
+
+    #page-local-sc_learningplans-create div#topofscroll,
+    #page-local-sc_learningplans-edit div#topofscroll,
+    #page-local-sc_learningplans-duplicate div#topofscroll,
+    #page-local-sc_learningplans-courses div#topofscroll {
         max-width: 1000px;
     }
 }

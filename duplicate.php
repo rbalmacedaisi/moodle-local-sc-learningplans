@@ -46,6 +46,8 @@ if (!$learningplan) {
 $PAGE->set_url(new moodle_url('/local/sc_learningplans/duplicate.php', ['id' => $learningplanid]));
 $PAGE->set_title(get_string('duplicate_plan', 'local_sc_learningplans'));
 $PAGE->set_heading(get_string('duplicate_plan', 'local_sc_learningplans'));
+$PAGE->set_pagelayout('base');
+$PAGE->add_body_class('limitedwidth');
 
 $PAGE->navbar->add(get_string('administrationsite'), new moodle_url('/admin/search.php'));
 $PAGE->navbar->add(get_string('pluginname', 'local_sc_learningplans'), new moodle_url('/local/sc_learningplans/index.php'));
@@ -76,6 +78,7 @@ $maintemplatedata = [
     'learningshortname' => $learningplan->shortname . ' ' . get_string('copy', 'local_sc_learningplans'),
     'learningplanname' => $learningplan->name,
     'learningplandescription' => $learningplan->description,
+    'cancelurl' => $CFG->wwwroot.'/local/sc_learningplans/index.php'
 ];
 
 echo $OUTPUT->header();

@@ -34,7 +34,7 @@ if (!has_any_capability(['local/sc_learningplans:manage', 'local/sc_learningplan
     admin_externalpage_setup('local_sc_learningplans');
 }
 
-$PAGE->set_pagelayout('admin');
+
 $PAGE->set_context($context);
 
 $learningplanid = required_param('id', PARAM_INT);
@@ -43,6 +43,8 @@ $learningplan = $DB->get_record("local_learning_plans", ['id' => $learningplanid
 $PAGE->set_url(new moodle_url('/local/sc_learningplans/edit.php', ['id' => $learningplanid]));
 $PAGE->set_title(get_string('edit_plan', 'local_sc_learningplans'));
 $PAGE->set_heading(get_string('edit_plan', 'local_sc_learningplans'));
+$PAGE->set_pagelayout('base');
+$PAGE->add_body_class('limitedwidth');
 
 if (is_siteadmin()) {
     $PAGE->navbar->add(get_string('administrationsite'), new moodle_url('/admin/search.php'));
@@ -88,6 +90,7 @@ $maintemplatedata = [
     'learningplanname' => $learningplan->name,
     'learningplandescription' => $learningplan->description,
     'userprofilefields' => array_values($userprofilefields),
+    'cancelurl' => $CFG->wwwroot.'/local/sc_learningplans/index.php'
 ];
 
 echo $OUTPUT->header();

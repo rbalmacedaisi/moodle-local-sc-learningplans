@@ -1,44 +1,67 @@
-<h5 class="text-center font-weight-bold">{{#str}} duplicate_plan, local_sc_learningplans {{/str}}</h5>
-<div class="container">
+<div class="container-fluid px-0">
     <div class="row required">
-        <div class="col-sm-12 col-md-6 py-2">
-            <label class="w-100 text-dark" for="learningshortname">{{#str}} shortname, local_sc_learningplans {{/str}}</label>
-            <input required type="text" name="learningshortname" placeholder="{{#str}} shortname, local_sc_learningplans {{/str}}" id="learningshortname" class="w-100"  value='{{learningshortname}}' />
-        </div>
+        <div class="col-sm-12">
+            {{! Form card to edit learnin plans }}
+            <div class="card px-4 pt-4">
+                {{! Row for learning plan name fields }}
+                <div class="row">
+                    {{! Field for the short name of the learning plan }}
+                    <div class="col-sm-12 col-md-6 py-2">
+                        <label class="w-100 text-dark" for="learningshortname">{{#str}} shortname, local_sc_learningplans {{/str}}</label>
+                        <input required type="text" name="learningshortname" placeholder="{{#str}} shortname, local_sc_learningplans {{/str}}" id="learningshortname" class="form-control"  value='{{learningshortname}}' />
+                    </div>
+                    {{! End Field for the short name of the learning plan }}
+                    
+                    {{! Field for the name of the learning plan }}
+                    <div class="col-sm-12 col-md-6 py-2">
+                        <label class="w-100 text-dark" for="learningname">{{#str}} plan_name, local_sc_learningplans {{/str}}</label>
+                        <input required type="text" name="learningname" placeholder="{{#str}} name, local_sc_learningplans {{/str}}" id="learningname" class="form-control" value='{{learningplanname}} {{#str}} copy, local_sc_learningplans {{/str}}' />
+                    </div>
+                    {{! End Field for the name of the learning plan }}
+                </div>
+                {{! End Row for learning plan name fields }}
 
-        <div class="col-sm-12 col-md-12 py-2">
-            <label class="w-100 text-dark" for="learningname">{{#str}} plan_name, local_sc_learningplans {{/str}}</label>
-            <input required type="text" name="learningname" placeholder="{{#str}} name, local_sc_learningplans {{/str}}" id="learningname" class="w-100" value='{{learningplanname}} {{#str}} copy, local_sc_learningplans {{/str}}' />
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-sm-12 col-md-12 py-2">
-            <label class="w-100 text-dark" for="learningname">{{#str}} title_desc_plan, local_sc_learningplans {{/str}}</label>
-            <textarea id='desc_plan' class="w-100" cols="100%">{{learningplandescription}} {{#str}} copy, local_sc_learningplans {{/str}}</textarea>
-        </div>
-    </div>
+                {{! Field for the description of the learning plan }}
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 py-2">
+                        <label class="w-100" for="desc_plan">{{#str}} title_desc_plan, local_sc_learningplans {{/str}}</label>
+                        {{{formeditor}}}
+                    </div>
+                </div>
+                {{! End Field for the description of the learning plan }}
 
-    <div class="row">
-        <div class="col-sm-12 col-md-12 py-2 mx-0">
-            <label class="w-100 text-dark" for="learningname">{{#str}} plan_image, local_sc_learningplans {{/str}}</label>
-            {{{formeditor}}}
-            {{{formimage}}}
+                {{! Field for the learning plan image }}
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 py-2 mx-0">
+                        <label class="w-100 text-dark" for="learningname">{{#str}} plan_image, local_sc_learningplans {{/str}}</label>
+                        {{{formimage}}}
+                    </div>
+                </div>
+                {{! End Field for the learning plan image }}
+
+                {{! Options to duplicate }}
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 py-2">
+                        <input id='duplicate_courses' type="checkbox" checked/>&nbsp;{{#str}} duplicate_courses, local_sc_learningplans {{/str}}
+                    </div>
+                    <div class="col-sm-12 col-md-12 py-2">
+                        <input id='copy_courses' type="checkbox" disabled='true'/>&nbsp;{{#str}} copy_courses, local_sc_learningplans {{/str}}
+                    </div>
+                    <div class="col-sm-12 col-md-12 py-2">
+                        <input id='duplicate_users' type="checkbox" />&nbsp;{{#str}} duplicate_users, local_sc_learningplans {{/str}}
+                    </div>
+                </div>
+                {{! End Options to duplicate }}
+
+                {{! Actions }}
+                <div class="d-flex card-footer bg-transparent mt-3 px-0">
+                    <div class="spacer"></div>
+                    <a href="{{cancelurl}}" class="btn btn-secondary m-1">{{#str}} cancel, local_sc_learningplans {{/str}}</a>
+                    <button id="duplicate_learning_plan" class="btn btn-primary m-1">{{#str}} duplicate_plan, local_sc_learningplans {{/str}}</button>
+                </div>
+                {{! End Actions }}
+            </div>
+            {{! End Form card to edit learnin plans }}
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12 col-md-12 py-2">
-            <input id='duplicate_courses' type="checkbox" checked/>&nbsp;{{#str}} duplicate_courses, local_sc_learningplans {{/str}}
-        </div>
-        <div class="col-sm-12 col-md-12 py-2">
-            <input id='copy_courses' type="checkbox" disabled='true'/>&nbsp;{{#str}} copy_courses, local_sc_learningplans {{/str}}
-        </div>
-        <div class="col-sm-12 col-md-12 py-2">
-            <input id='duplicate_users' type="checkbox" />&nbsp;{{#str}} duplicate_users, local_sc_learningplans {{/str}}
-        </div>
-    </div>
-    <hr>
-    <div class="d-flex justify-content-end">
-        <button id="duplicate_learning_plan" class="btn btn-primary">{{#str}} duplicate_plan, local_sc_learningplans {{/str}}</button>
     </div>
 </div>
