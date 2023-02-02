@@ -5,6 +5,25 @@ import * as Ajax from 'core/ajax';
 export const init = (learningplanid) => {
     addUserAction(learningplanid);
     deleteUserAction(learningplanid);
+    searchAction();
+};
+const searchAction = () => {
+    window.console.log('searchAction');
+    const btn = document.querySelector('#searchBtn');
+    window.console.log('btn', btn);
+    if(!btn) {
+        return;
+    }
+    btn.addEventListener('click', () => {
+        const search = document.querySelector('#searchUser');
+        window.console.log('click', search);
+        if(!search) {
+            return;
+        }
+        var searchParams = new URLSearchParams(window.location.search);
+        searchParams.set("searchUser", search.value);
+        window.location.search = searchParams.toString();
+    });
 };
 
 const deleteUserAction = (learningplanid) => {

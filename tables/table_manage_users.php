@@ -34,9 +34,9 @@ class table_manage_users extends table_sql {
      * @param string $uniqueid
      * @param integer $learningplanid
      */
-    public function __construct(string $uniqueid, int $learningplanid) {
+    public function __construct(string $uniqueid, int $learningplanid, $searchuser) {
         parent::__construct($uniqueid);
-
+        $this->searchuser = $searchuser;
         $this->learningplanid = $learningplanid;
 
         // Define columns.
@@ -67,7 +67,7 @@ class table_manage_users extends table_sql {
      * @return void
      */
     protected function init_sql() {
-        $fields = 'lu.*, u.firstname, u.lastname, u.email,
+        $fields = 'u.id, lu.userid, u.firstname, u.lastname, u.email,
         r.shortname as rolename,
         u.firstnamephonetic,
         u.lastnamephonetic,
@@ -80,6 +80,30 @@ class table_manage_users extends table_sql {
 
         // Report search.
         $where = 'lu.learningplanid = :learningplanid';
+        $search = $this->searchuser;
+        if ($search) {
+            if (!function_exists('str_contains')) {
+                function str_contains($haystack, $needle) {
+                    return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+                }
+            }
+            global $DB;
+            $roles = $DB->get_records('role');
+            $roltosearch = '';
+            foreach ($roles as $rol) {
+                $strrolname = strtolower(get_string($rol->shortname, 'local_sc_learningplans'));
+                if (str_contains($strrolname, strtolower($search))) {
+                    $roltosearch .= " OR r.shortname LIKE '%$rol->shortname%' ";
+                }
+            }
+            $where .= " AND (
+                lu.userid LIKE '%$search%' OR
+                u.firstname LIKE '%$search%' OR
+                u.lastname LIKE '%$search%' OR
+                u.email LIKE '%$search%'
+                $roltosearch
+            ) ";
+        }
         $params = [
             'learningplanid' => $this->learningplanid
         ];
