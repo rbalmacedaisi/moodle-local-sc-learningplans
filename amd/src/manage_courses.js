@@ -63,7 +63,7 @@ let addRequiredAction = (learningplanid) => {
             if (courseselected) {
                 const datacourses = Array.prototype.slice.call(courseselected);
                 const courseid = datacourses.map(select => select.value).join(',');
-                callAddCourse(learningplanid, -1, courseid, 1, -1);
+                callAddCourse(learningplanid, null, courseid, 1, -1);
             }
         });
     }
@@ -78,7 +78,7 @@ let addOptionalAction = (learningplanid) => {
             if (courseselected) {
                 const datacourses = Array.prototype.slice.call(courseselected);
                 const courseid = datacourses.map(select => select.value).join(',');
-                callAddCourse(learningplanid, -1, courseid, 0, -1);
+                callAddCourse(learningplanid, null, courseid, 0, -1);
             }
         });
     }
@@ -96,7 +96,7 @@ let changeOptionalToRequiredAction = (learningplanid) => {
                 e.preventDefault();
                 const course_record_id = e.target.getAttribute('course-record-id');
                 const credits = e.target.getAttribute('credits') ?? -1;
-                const periodid = e.target.getAttribute('periodid') ?? -1;
+                const periodid = e.target.getAttribute('periodid') ?? null;
                 if (course_record_id) {
                     const recordid = course_record_id;
                     notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
@@ -151,7 +151,7 @@ const callAddCourse = (learningid, periodid, courseid, isrequired, credits) => {
 };
 
 const callDeleteCourse = (
-    learningid, recordid, isrequired, notaddingcourse = true, credits = -1, periodid = -1, courseid = null
+    learningid, recordid, isrequired, notaddingcourse = true, credits = -1, periodid = null, courseid = null
 ) => {
     learningid = parseInt(learningid);
     recordid = parseInt(recordid);
