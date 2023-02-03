@@ -1,0 +1,47 @@
+{{! Modal Add courses Period }}
+<div class="modal fade" id="addCoursesPlanPeriod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100 font-weight-bold" id="exampleModalLabel">{{#str}}add_courses_period, local_sc_learningplans{{/str}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style='visibility: hidden;'>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <div class="modal-body p-4">
+                <label for="selectAddCourseToLearningPlanPeriod">{{#str}} select_course, local_sc_learningplans {{/str}}</label>
+                <input type="hidden" name="id" value="{{learningplanid}}" />
+                <select id="selectAddCourseToLearningPlanPeriod" class="form-select w-100" multiple required size="7" name="selectedcourse">
+                    <option class="b scm-box" value=''>{{#str}} select_course, local_sc_learningplans {{/str}}</option>
+                    {{#courses}}
+                    <option class="b scm-box" value='{{id}}'>{{fullname}}</option>
+                    {{/courses}}
+                </select>
+                
+                <div class="mt-3">
+                    <label for="selectPeriodToLearningPlan">{{#str}} select_one_period, local_sc_learningplans {{/str}}</label>
+                    <select id="selectPeriodToLearningPlan" class="form-control" required name="selectedperiod">
+                        <option value=''>{{#str}} select_one_period, local_sc_learningplans {{/str}}</option>
+                        {{#listperiods}}
+                        <option class="b scm-box" value='{{id}}'>{{name}}</option>
+                        {{/listperiods}}
+                    </select>
+                </div>
+                
+                <div class="mt-3">
+                    <input type="radio" id="required" name="type_course" value="1">
+                    <label for="required" class="form-check-label">{{#str}} courses_required, local_sc_learningplans {{/str}}</label>
+                    
+                    <input type="radio" id="optional" class="ml-3" name="type_course" value="0">
+                    <label for="optional" class="form-check-label">{{#str}} courses_optional, local_sc_learningplans {{/str}}</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} close_modal, local_sc_learningplans {{/str}}</button>
+                <button  id="addcourses" type="button" class="btn btn-primary">{{#str}} btn_add_course, local_sc_learningplans {{/str}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{! End Modal Add courses Period }}

@@ -108,7 +108,8 @@ $string['msgconfirm_course'] = 'La eliminación de cursos de los planes de apren
 
 $string['edit_period'] = 'Editar periodos';
 
-$string['managecourses'] = 'Plan de aprendizaje - Gestión de cursos de  {$a->name}';
+$string['managecourses'] = 'Gestión de cursos';
+$string['lpname'] = 'Plan de aprendizaje {$a->name} ';
 $string['available_courses'] = 'Cursos Disponibles';
 $string['courses_required'] = 'Cursos Requeridos';
 $string['courses_optional'] = 'Cursos Opcionales';
@@ -174,3 +175,5 @@ $string['cancel'] = 'Cancelar';
 
 $string['search_user_btn'] = 'Buscar';
 $string['search_user'] = 'Buscar usuario:&nbsp;';
+
+$string['alert_not_course'] = 'Aún no hay cursos asignados';

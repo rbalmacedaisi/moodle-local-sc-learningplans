@@ -108,7 +108,8 @@ $string['msgconfirm_course'] = 'Are you sure you want to delete this Course?<br/
 
 $string['edit_period'] = 'Edit periods';
 
-$string['managecourses'] = 'Learning plan - Manage courses of {$a->name}';
+$string['managecourses'] = 'Manage courses';
+$string['lpname'] = 'Plan de aprendizaje {$a->name} ';
 $string['available_courses'] = 'Available Courses';
 $string['courses_required'] = 'Required Courses';
 $string['courses_optional'] = 'Optionals Courses';
@@ -173,3 +174,5 @@ $string['cancel'] = 'Cancel';
 
 $string['search_user_btn'] = 'Search';
 $string['search_user'] = 'Search user:&nbsp;';
+
+$string['alert_not_course'] = 'There are no courses assigned yet';

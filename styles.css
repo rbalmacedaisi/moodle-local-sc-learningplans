@@ -74,16 +74,14 @@ select#selectAddCourseOptionalToLearningPlan {
 
 #userModal .modal-dialog,
 #coursesRequiredModal .modal-dialog,
-#coursesOptionalModal .modal-dialog,
-#addCoursesPlanPeriod .modal-dialog {
+#coursesOptionalModal .modal-dialog {
     width: 484px;
     height: 451px;
 }
 
 #userModal .modal-body,
 #coursesRequiredModal .modal-body,
-#coursesOptionalModal .modal-body,
-#addCoursesPlanPeriod .modal-body {
+#coursesOptionalModal .modal-body {
     text-align: start;
 }
 
@@ -112,24 +110,11 @@ select#selectAddCourseOptionalToLearningPlan {
     padding: 15px;
 }
 
-.actions-course {
-    padding-right: 50px;
-}
-
 .list-courses-optional .course-icon,
 .list-courses-required .course-icon,
 .list-courses-required-period .course-icon {
-    display: inline-block;
-    border-radius: 50%;
-    box-shadow: 0 0 2px #888;
-    padding: 0.5em 0.6em;
     font-size: 18px;
     color: #fff;
-}
-
-#nav-optionalcourses-tab,
-#nav-requiredcourses-tab {
-    margin: 15px;
 }
 
 .tabs-courses .nav-link.active {
@@ -140,12 +125,6 @@ select#selectAddCourseOptionalToLearningPlan {
 .nav-tabs .nav-link {
     border-bottom: none;
     border: none;
-}
-
-.list-courses-optional .name-course,
-.list-courses-required .name-course,
-.list-courses-required-period .name-course {
-    font-size: 20px;
 }
 
 #page-local-sc_learningplans-edit input#duplicate_courses,
@@ -173,8 +152,7 @@ select#selectAddCourseOptionalToLearningPlan {
 }
 
 #page-local-sc_learningplans-index .modal-body,
-#page-local-sc_learningplans-users .modal-body,
-#page-local-sc_learningplans-courses .modal-body {
+#page-local-sc_learningplans-users .modal-body {
     text-align: center;
 }
 
@@ -196,15 +174,6 @@ select#selectAddCourseOptionalToLearningPlan {
     color: #fff;
     background-color: #007bff;
     border-color: #007bff;
-}
-
-.list-courses-optional .course-icon {
-    background-color: #999;
-}
-
-.list-courses-required .course-icon,
-.list-courses-required-period .course-icon {
-    background-color: #86d418;
 }
 
 #nav-optionalcourses-tab:focus,
@@ -246,12 +215,6 @@ select#selectAddCourseOptionalToLearningPlan {
     padding-top: 40px;
 }
 
-#page-local-sc_learningplans-courses #selectAddCourseToLearningPlan,
-#page-local-sc_learningplans-courses #selectAddCourseOptionalToLearningPlan {
-    width: 70%;
-    height: 60vh;
-}
-
 input#addperiod,
 input#notperiod,
 input#type_manual,
@@ -265,11 +228,9 @@ input#type_automatic {
     padding: 0;
 }
 
-#selectPeriodToLearningPlan,
 #selectCredits,
 #selectPeriodOptionalToLearningPlan,
-#selectOptionalCredits,
-#selectAddCourseToLearningPlanPeriod {
+#selectOptionalCredits {
     width: 360px;
     margin-top: 15px;
 }
@@ -281,11 +242,6 @@ input#type_automatic {
 #content-periods {
     width: 250px;
     margin-top: 15px;
-}
-
-.nav-link.requiredcourses,
-.nav-link.optionalcourses {
-    margin: 15px;
 }
 
 .icon-drop {
@@ -326,4 +282,84 @@ input#type_automatic {
     #page-local-sc_learningplans-courses div#topofscroll {
         max-width: 1000px;
     }
+}
+
+#notPeriodNav,
+#periodNav {
+    height: 48px;
+}
+
+[data-preset="default"] #notPeriodNav,
+[data-preset="default"] #periodNav {
+    background: var(--secondary);
+}
+
+#notPeriodNav .nav-link,
+#periodNav .nav-link {
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-radius: 0px;
+    color: #7E8BB0 !important;
+}
+
+#notPeriodNav .nav-link.active,
+#periodNav .nav-link.active {
+    color: #ffffff !important;
+    border-bottom: 4px solid var(--primary);
+    border-color: var(--primary) !important;
+}
+
+[data-preset="default"] #notPeriodNav .nav-link.active,
+[data-preset="default"] #periodNav .nav-link.active {
+    background: #2C407D !important;
+    color: #ffffff !important;
+    border-color: var(--primary) !important;
+}
+
+li.list-courses-required,
+li.list-courses-optional,
+li.list-courses-required-period {
+    height: 65px;
+}
+
+li.list-courses-required span.content-icon,
+li.list-courses-optional span.content-icon,
+li.list-courses-required-period span.content-icon {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+}
+
+li.list-courses-optional span.content-icon {
+    background-color: #999999;
+}
+
+li.list-courses-required:nth-child(odd) span.content-icon,
+li.list-courses-required-period:nth-child(odd) span.content-icon {
+    background: #86D418;
+}
+
+ul.coursesrequired li:nth-child(2n) span.content-icon {
+    background: #FB8B24 !important;
+}
+
+@media (max-width: 767.98px) {
+
+    .nav-tabs:not(.more-nav),
+    .nav-pills {
+        background: var(--secondary) !important;
+        padding: 0px !important;
+    }
+
+    .nav-tabs:not(.more-nav) .nav-link {
+        background-color: transparent !important;
+    }
+}
+
+button#addoptional_required {
+    background: #FB8B24 !important;
 }
