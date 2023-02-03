@@ -90,6 +90,12 @@ $string['student']          = 'Student';
 $string['teacher']          = 'Teacher';
 $string['editingteacher']   = 'Editing teacher';
 $string['manager']          = 'Manager';
+$string['coursecreator']    = 'coursecreator';
+$string['guest']            = 'guest';
+$string['user']             = 'user';
+$string['frontpage']        = 'frontpage';
+$string['scteachrole']      = 'scteachrole';
+$string['scmanagerrole']    = 'scmanagerrole';
 
 $string['addnewperiods'] = 'Add new Periods';
 $string['name_period'] = 'Assign name Period';
@@ -164,3 +170,6 @@ $string['currentperiod'] = 'Current Period';
 $string['assign_group'] = 'Assign Group';
 $string['select_group'] = 'Select group';
 $string['cancel'] = 'Cancel';
+
+$string['search_user_btn'] = 'Search';
+$string['search_user'] = 'Search user:&nbsp;';

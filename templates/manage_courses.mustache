@@ -27,7 +27,7 @@
                             
                                 <div class="tab-content" id="nav-tabContent">
                                     <div class="tab-pane fade show active" id="nav-requiredcourses-{{idperiod}}" role="tabpanel" aria-labelledby="nav-requiredcourses-{{idperiod}}-tab">
-                                        <ul class="coursesrequired">
+                                        <ul class="coursesrequired cr1" learningplanid="{{learningplanid}}" record-periodid="{{idperiod}}">
                                             {{#coursesrequired}}
                                             <li class="list-courses-required-period" draggable="true" datacourse="courses[{{id}}]" lpid={{learningplanid}} poscourse="{{position}}" periodid={{idperiod}}>
                                                 <i class="fa fa-book course-icon"></i>
@@ -40,9 +40,6 @@
                                             <hr>
                                             {{/coursesrequired}} 
                                         </ul>
-                                        <div class="d-flex justify-content-end">
-                                            <button id="courseOrderInPeriod" periodid="{{idperiod}}" lpid={{learningplanid}} class="btn btn-primary">{{#str}} btn_save_coursepos, local_sc_learningplans {{/str}}</button>
-                                        </div>
                                     </div>
                                     <div class="tab-pane fade" id="nav-optionalcourses-{{idperiod}}" role="tabpanel" aria-labelledby="nav-optionalcourses-{{idperiod}}">
                                         <ul class="coursesoptional">
@@ -88,7 +85,7 @@
                     
                         <form id='formCurrentCourseToLearningPlan' class="pl-4">
                             <input type="hidden" name="id" value="{{learningplanid}}" /> 
-                            <ul class="coursesrequired" learningplanid="{{learningplanid}}">
+                            <ul class="coursesrequired cr2" learningplanid="{{learningplanid}}">
                                 {{#currentcourses}}
                                 <li class="list-courses-required" draggable="true" datacourse="courses[{{id}}]" poscourse="{{position}}">
                                     <i class="fa fa-book course-icon"></i>
@@ -101,9 +98,6 @@
                                 <hr>
                                 {{/currentcourses}} 
                             </ul>
-                            <div class="d-flex justify-content-end">
-                                <button id="updatecourseorder" class="btn btn-primary">{{#str}} btn_save_coursepos, local_sc_learningplans {{/str}}</button>
-                            </div>
                         </form>
                     </div>
                     <!---End tab courses required---->
