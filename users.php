@@ -35,7 +35,6 @@ if (!has_any_capability(['local/sc_learningplans:manage', 'local/sc_learningplan
     admin_externalpage_setup('local_sc_learningplans');
 }
 
-
 $learningplanid = required_param('id', PARAM_INT);
 $searchuser = optional_param('searchUser', null, PARAM_TEXT);
 
@@ -55,7 +54,6 @@ $PAGE->navbar->add(
     get_string('manageuser', 'local_sc_learningplans'),
     new moodle_url('/local/sc_learningplans/users.php', ['id' => $learningplanid])
 );
-
 
 $hasmanualenrol = $learningplan->enroltype == 1; // If enroltype == 1 is manual enrol.
 $hasperiods = (bool) $learningplan->hasperiod;

@@ -1,21 +1,31 @@
-<h5 class="text-center font-weight-bold">{{#str}} title_add_users, local_sc_learningplans {{/str}}</h5>
-
-<div class="d-flex justify-content-end pt-4 content_upload_user">
+<div class="d-flex content_upload_user align-items-end mb-4">
+    <div>
+        <label for='searchUser'>{{#str}} search_user, local_sc_learningplans {{/str}}</label>
+        <div class="d-flex align-items-center input-group">
+            <input id='searchUser' class="form-control" name='searchUser' value='{{searchUser}}' />
+            <div class="input-group-append">
+                <button id='searchBtn' class="btn btn-primary" type="button">{{#str}} search_user_btn, local_sc_learningplans {{/str}}</button>
+            </div>
+        </div>
+        
+    </div>
+    <div class="spacer"></div>
+    
     <div class="d-flex action_upload_user">
          <div class="btn_adding_user">
-             {{#hasmanualenrol}}
-             <a id="list_users_approve" class="btn btn-primary" href="/local/sc_learningplans/usersperiod.php?id={{learningplanid}}">Usuarios en Espera</a>
-             {{/hasmanualenrol}}
-             <button id="add_new_user_" class="btn btn-primary" data-toggle="modal" data-target="#userModal">{{#str}} btn_add_user, local_sc_learningplans {{/str}}</button>
+            {{#hasmanualenrol}}
+            <a id="list_users_approve" class="btn btn-primary" href="/local/sc_learningplans/usersperiod.php?id={{learningplanid}}">
+                Usuarios en Espera
+            </a>
+            {{/hasmanualenrol}}
+            <button id="add_new_user_" class="btn btn-primary" data-toggle="modal" data-target="#userModal">
+                {{#str}} btn_add_user, local_sc_learningplans {{/str}}
+            </button>
         </div>
     </div>
 </div>
 
 <div id='userpaginationsc' class="d-flex justify-content-end"></div>
-
-<label for='searchUser'>{{#str}} search_user, local_sc_learningplans {{/str}}</label>
-<input id='searchUser' name='searchUser' value='{{searchUser}}' />
-<button role='button' id='searchBtn'>{{#str}} search_user_btn, local_sc_learningplans {{/str}}</button>
 
 <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog modal-dialog-centered modal-lg">

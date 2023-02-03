@@ -53,6 +53,7 @@ class table_manage_users extends table_sql {
         // Table configuration.
         $this->set_attribute('id', $this->uniqueid);
         $this->set_attribute('cellspacing', '0');
+        $this->set_attribute('class', 'learningPlansTable mt-2 shadow-sm rounded-lg bg-table ');
 
         $this->initialbars(false);
         $this->collapsible(false);

@@ -187,7 +187,6 @@ select#selectAddCourseOptionalToLearningPlan {
     order: 1;
 }
 
-#page-local-sc_learningplans-users .btn_adding_user,
 #page-local-sc_learningplans-users .has-search {
     padding-top: 40px;
 }
@@ -362,4 +361,8 @@ ul.coursesrequired li:nth-child(2n) span.content-icon {
 
 button#addoptional_required {
     background: #FB8B24 !important;
+}
+
+#searchUser:focus {
+    box-shadow: none !important;
 }
