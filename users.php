@@ -110,8 +110,8 @@ if (!$table->is_downloading()) {
     $PAGE->requires->js_call_amd('local_sc_learningplans/manage_users', 'init', ['learningplanid' => $learningplanid]);
 }
 
-$table->define_baseurl("$CFG->wwwroot/local/sc_learningplans/users.php");
-$table->out(10, true);
+$table->define_baseurl(new moodle_url('/local/sc_learningplans/users.php', ['id' => $learningplanid]));
+$table->out(10, false);
 
 if (!$table->is_downloading()) {
     echo $OUTPUT->footer();

@@ -42,7 +42,7 @@ class table_manage_users extends table_sql {
         // Define columns.
         $columns = [
             'id'            => get_string('id', 'local_sc_learningplans'),
-            'fullname'          => get_string('name', 'local_sc_learningplans'),
+            'fullname'      => get_string('name', 'local_sc_learningplans'),
             'email'         => get_string('email_user', 'local_sc_learningplans'),
             'roles_user'    => get_string('roles_user', 'local_sc_learningplans'),
             'action_user'   => get_string('action_user', 'local_sc_learningplans'),
@@ -54,7 +54,7 @@ class table_manage_users extends table_sql {
         $this->set_attribute('id', $this->uniqueid);
         $this->set_attribute('cellspacing', '0');
 
-        $this->initialbars(true);
+        $this->initialbars(false);
         $this->collapsible(false);
 
         // Initialize table SQL properties.
