@@ -142,6 +142,7 @@ $services = array(
     'local_sc_learningplans_services' => array(
         'functions'             => array(
             'local_sc_learningplans_save_learning_plan',
+            'local_sc_learningplans_get_data'
         ),
         'requiredcapability'    => 'local/sc_learningplans:manage',
         'restrictedusers'       => 0,
