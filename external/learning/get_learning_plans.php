@@ -106,7 +106,7 @@ class get_learning_plans_external extends external_api {
         $fs = get_file_storage();
         $context = context_system::instance();
         $coursecompletiondata = [];
-        $courseslist = get_courses();
+        $courseslist = $DB->get_records('course');
         foreach ($userlearningplans as $userlpdata) {
             $learningplanid = $userlpdata->learningplanid;
             if (!isset($returnlearningplandata[$learningplanid])) {
