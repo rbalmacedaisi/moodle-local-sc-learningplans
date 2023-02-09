@@ -42,7 +42,7 @@ class duplicate_learning_plan_external extends external_api {
                 'copycourses'   => new external_value(PARAM_BOOL, 'If duplicate the courses (Create new courses)'),
                 'users'         => new external_value(PARAM_BOOL, 'If duplicate the users'),
                 'fileimage'     => new external_value(PARAM_INT, 'Image itemid provide by filemanager form element'),
-                'description'   => new external_value(PARAM_TEXT, 'Description of the learning plan'),
+                'description'   => new external_value(PARAM_RAW, 'Description of the learning plan'),
             )
         );
     }

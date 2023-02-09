@@ -78,12 +78,14 @@ class get_learning_plans_external extends external_api {
                 llu.userrolename,
                 llc.courseid,
                 c.fullname coursename,
+                c.shortname courseshortname,
                 llc.isrequired,
                 llp.hasperiod,
                 llp.periodcount,
                 llperiod.name periodname,
                 llperiod.months periodmotnhs,
-                llperiod.id periodrecordid
+                llperiod.id periodrecordid,
+                llu.currentperiodid
             FROM {local_learning_users} llu
             JOIN {local_learning_plans} llp ON (llp.id = llu.learningplanid)
             JOIN {local_learning_courses} llc ON (llc.learningplanid = llp.id)
@@ -102,6 +104,18 @@ class get_learning_plans_external extends external_api {
                 'userid' => $USER->id,
             ]
         );
+
+        $totallp = $DB->get_records_sql(
+            'SELECT learningplanid FROM {local_learning_users}
+                WHERE userid = :userid
+                ORDER BY learningplanid',
+                [
+                    'userid' => $USER->id
+                ]
+        );
+
+        $alllp = $DB->get_records('local_learning_plans');
+
         $returnlearningplandata = [];
         $fs = get_file_storage();
         $context = context_system::instance();
@@ -124,6 +138,11 @@ class get_learning_plans_external extends external_api {
                     );
                     $urlimg = $imageurl->out(false);
                 }
+                $currentperiodid = $userlpdata->currentperiodid == -1 ? null : $userlpdata->currentperiodid;
+                $currentperiodname = null;
+                if ($currentperiodid) {
+                    $currentperiodname = isset($alllp[$currentperiodid]) ? $alllp[$currentperiodid]->name : null;
+                }
                 $returnlearningplandata[$learningplanid] = [
                     'learningplanid' => $learningplanid,
                     'learningname' => $userlpdata->learningname,
@@ -131,8 +150,11 @@ class get_learning_plans_external extends external_api {
                     'learningimage' => $urlimg,
                     'hasperiod' => $userlpdata->hasperiod == 1,
                     'periodcount' => $userlpdata->periodcount,
+                    'currentperiodid' => $currentperiodid,
+                    'currentperiodname' => $currentperiodname,
                     'isstudent' => $userlpdata->userrolename == 'student',
                     'rolename' => get_string( $userlpdata->userrolename, 'local_sc_learningplans'),
+                    'totalcourses' => 0,
                     'requiredtotalcourses' => 0,
                     'requiredcoursescompleted' => 0,
                     'optionacoursecompleted' => 0,
@@ -158,27 +180,32 @@ class get_learning_plans_external extends external_api {
             $coursestringindex = $userlpdata->isrequired == 1 ? 'requiredcourses' : 'optionalcourses';
             if (!isset($returnlearningplandata[$learningplanid]['periodsdata'][$periodname])) {
                 $returnlearningplandata[$learningplanid]['periodsdata'][$periodname] = [
+                    'id' => $learningplanid,
+                    'totalperiodcourses' => 0,
                     'periodname' => $periodname,
                     'requiredcourses' => [],
                     'optionalcourses' => [],
                 ];
             }
             $returnlearningplandata[$learningplanid]['periodsdata'][$periodname][$coursestringindex][$courseid] = [
+                'id' => $courseid,
                 'fullname' => $userlpdata->coursename,
+                'shortname' => $userlpdata->courseshortname,
                 'courseurl' => $CFG->wwwroot . '/course/view.php?id=' .$courseid,
                 'realprogress' => $courseprogress ?? 0,
                 'showprogress' => 0,
                 'completed' => $coursecompleted ?? false,
                 'waiting' => true, // For now, all courses are waiting.
-                'active' => false, // For now, all courses aren't active .
-                'current' => false, // For now, all courses aren't active .
+                'active' => false, // For now, all courses aren't active.
+                'current' => false, // For now, all courses isn't current.
             ];
 
         }
-        // print_r($returnlearningplandata);die;
         // Do more.
         foreach ($returnlearningplandata as &$rlp) {
             foreach ($rlp['periodsdata'] as $periodname => &$perioddata) {
+                $perioddata['totalperiodcourses'] += count($perioddata['requiredcourses']);
+                $rlp['totalcourses'] += count($perioddata['requiredcourses']);
                 foreach ($perioddata['requiredcourses'] as &$requiredcourse) {
                     $requiredcourse['waiting'] = false;
                     $requiredcourse['active'] = true;
@@ -190,6 +217,8 @@ class get_learning_plans_external extends external_api {
                         break;
                     }
                 }
+                $perioddata['totalperiodcourses'] += count($perioddata['optionalcourses']);
+                $rlp['totalcourses'] += count($perioddata['optionalcourses']);
                 foreach ($perioddata['optionalcourses'] as &$optionalcourse) {
                     $optionalcourse['waiting'] = false;
                     $optionalcourse['active'] = true;
@@ -204,15 +233,6 @@ class get_learning_plans_external extends external_api {
                 $rlp['learningplanprogress'] = round($rlp['requiredcoursescompleted'] * 100 / $rlp['requiredtotalcourses'], 2);
             }
         }
-        //print_r($returnlearningplandata);die;
-        $totallp = $DB->get_records_sql(
-            'SELECT learningplanid FROM {local_learning_users}
-                WHERE userid = :userid
-                ORDER BY learningplanid',
-                [
-                    'userid' => $USER->id
-                ]
-        );
         return [
             'learningplans' => $returnlearningplandata,
             'totallp' => count($totallp),
@@ -223,7 +243,9 @@ class get_learning_plans_external extends external_api {
         $structurecourses = new external_multiple_structure(
             new external_single_structure(
                 [
+                    'id'            => new external_value(PARAM_INT, 'ID of course'),
                     'fullname'      => new external_value(PARAM_TEXT, 'Fullname of course'),
+                    'shortname'     => new external_value(PARAM_TEXT, 'Shortname of course'),
                     'courseurl'     => new external_value(PARAM_RAW, 'Urlcourse'),
                     'realprogress'  => new external_value(PARAM_RAW, 'Real progress course'),
                     'showprogress'  => new external_value(PARAM_RAW, 'Progress to show'),
@@ -237,7 +259,9 @@ class get_learning_plans_external extends external_api {
         $structureperiod = new external_multiple_structure(
             new external_single_structure(
                 [
-                    'periodname'      => new external_value(PARAM_TEXT, 'Fullname of course'),
+                    'id'              => new external_value(PARAM_INT, 'ID of Period'),
+                    'totalperiodcourses' => new external_value(PARAM_INT, 'Total courses in period'),
+                    'periodname'      => new external_value(PARAM_TEXT, 'Fullname of period'),
                     'requiredcourses'           => $structurecourses,
                     'optionalcourses'           => $structurecourses,
                 ]
@@ -255,7 +279,10 @@ class get_learning_plans_external extends external_api {
                             'isstudent'                 => new external_value(PARAM_BOOL, 'Check if user is student'),
                             'hasperiod'                 => new external_value(PARAM_BOOL, 'If LP has periods'),
                             'periodcount'               => new external_value(PARAM_INT, 'Period count'),
+                            'currentperiodid'           => new external_value(PARAM_INT, 'Current Period ID'),
+                            'currentperiodname'         => new external_value(PARAM_TEXT, 'Current Period Name'),
                             'rolename'                  => new external_value(PARAM_TEXT, 'Rolename'),
+                            'totalcourses'              => new external_value(PARAM_INT, 'Total courses in LP'),
                             'requiredtotalcourses'      => new external_value(PARAM_INT, 'Total required courses'),
                             'requiredcoursescompleted'  => new external_value(PARAM_INT, 'Total completed required courses'),
                             'learningplanprogress'      => new external_value(PARAM_RAW, 'Progress Learning Plan'),
