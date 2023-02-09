@@ -114,7 +114,7 @@ class get_learning_plans_external extends external_api {
                 ]
         );
 
-        $alllp = $DB->get_records('local_learning_plans');
+        $allperiods = $DB->get_records('local_learning_periods');
 
         $returnlearningplandata = [];
         $fs = get_file_storage();
@@ -141,7 +141,7 @@ class get_learning_plans_external extends external_api {
                 $currentperiodid = $userlpdata->currentperiodid == -1 ? null : $userlpdata->currentperiodid;
                 $currentperiodname = null;
                 if ($currentperiodid) {
-                    $currentperiodname = isset($alllp[$currentperiodid]) ? $alllp[$currentperiodid]->name : null;
+                    $currentperiodname = isset($allperiods[$currentperiodid]) ? $allperiods[$currentperiodid]->name : null;
                 }
                 $returnlearningplandata[$learningplanid] = [
                     'learningplanid' => $learningplanid,
@@ -180,7 +180,7 @@ class get_learning_plans_external extends external_api {
             $coursestringindex = $userlpdata->isrequired == 1 ? 'requiredcourses' : 'optionalcourses';
             if (!isset($returnlearningplandata[$learningplanid]['periodsdata'][$periodname])) {
                 $returnlearningplandata[$learningplanid]['periodsdata'][$periodname] = [
-                    'id' => $learningplanid,
+                    'id' => $userlpdata->periodrecordid,
                     'totalperiodcourses' => 0,
                     'periodname' => $periodname,
                     'requiredcourses' => [],
