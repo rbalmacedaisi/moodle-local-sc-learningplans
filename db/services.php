@@ -41,6 +41,8 @@ $functions = array(
         'description'   => 'get learning plans',
         'type'          => 'read',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
 
     'local_sc_learningplans_addperiod_learning_plan' => array(
@@ -50,6 +52,8 @@ $functions = array(
         'description'   => 'Add periods to learning plan',
         'type'          => 'write',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
     'local_sc_learningplans_delete_period_learning_plan' => array(
         'classname'     => 'delete_period_learning_plan_external',
@@ -58,6 +62,8 @@ $functions = array(
         'description'   => 'Delete periods to Learning Plan',
         'type'          => 'write',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
     'local_sc_learningplans_edit_period_learning_plan' => array(
         'classname'     => 'edit_period_learning_plan_external',
@@ -66,6 +72,8 @@ $functions = array(
         'description'   => 'Edit periods to Learning Plan',
         'type'          => 'write',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
 
     'local_sc_learningplans_update_required_learning_courses' => array(
@@ -75,6 +83,8 @@ $functions = array(
         'description'   => 'Update courses order in the learning plan',
         'type'          => 'write',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
     'local_sc_learningplans_save_learning_course' => array(
         'classname'     => 'save_learning_course_external',
@@ -83,6 +93,8 @@ $functions = array(
         'description'   => 'Save new (optional or required) course to learning plan',
         'type'          => 'write',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
     'local_sc_learningplans_delete_learning_course' => array(
         'classname'     => 'delete_learning_course_external',
@@ -91,6 +103,8 @@ $functions = array(
         'description'   => 'Delete learning course (optional or required)',
         'type'          => 'write',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
 
     'local_sc_learningplans_edit_learning_plan' => array(
@@ -100,6 +114,8 @@ $functions = array(
         'description'   => 'Edit learning plan',
         'type'          => 'write',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
 
     'local_sc_learningplans_add_learning_user' => array(
@@ -109,6 +125,8 @@ $functions = array(
         'description'   => 'Add user to learning plan',
         'type'          => 'write',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
     'local_sc_learningplans_delete_learning_user' => array(
         'classname'     => 'delete_learning_user_external',
@@ -117,6 +135,8 @@ $functions = array(
         'description'   => 'Delete user from learning plan',
         'type'          => 'write',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
 
     'local_sc_learningplans_duplicate_learning_plan' => array(
@@ -126,6 +146,8 @@ $functions = array(
         'description'   => 'Duplicate learning plan',
         'type'          => 'write',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
 
     'local_sc_learningplans_get_course_overview' => array(
@@ -135,6 +157,8 @@ $functions = array(
         'description'   => 'Get courses to the block_sclpmyoverview',
         'type'          => 'read',
         'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
 );
 
