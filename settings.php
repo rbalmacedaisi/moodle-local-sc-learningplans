@@ -45,6 +45,54 @@ if ($hassiteconfig) {
             get_string('default_period_months_desc', 'local_sc_learningplans'),
             4,
         ));
+
+        $settingspage->add(new admin_setting_heading(
+            'local_sc_learningplans/enroledheadinguser',
+            get_string('enroledheadinguser', 'local_sc_learningplans'),
+            ''
+        ));
+        $settingspage->add(new admin_setting_configcheckbox(
+            'local_sc_learningplans/sendmailenrol',
+            get_string('sendmailenrol', 'local_sc_learningplans'),
+            get_string('sendmailenrol_desc', 'local_sc_learningplans'),
+            false
+        ));
+        $settingspage->add(new admin_setting_configtext(
+            'local_sc_learningplans/emailsubjectenrol',
+            get_string('emailsubjectenrol', 'local_sc_learningplans'),
+            get_string('emailsubjectenrol_desc', 'local_sc_learningplans'),
+            ''
+        ));
+        $settingspage->add(new admin_setting_confightmleditor(
+            'local_sc_learningplans/templatemailenrol',
+            get_string('templatemailenrol', 'local_sc_learningplans'),
+            get_string('templatemailenrol_desc', 'local_sc_learningplans'),
+            ''
+        ));
+
+        $settingspage->add(new admin_setting_heading(
+            'local_sc_learningplans/updatelpheading',
+            get_string('updatelpheading', 'local_sc_learningplans'),
+            ''
+        ));
+        $settingspage->add(new admin_setting_configcheckbox(
+            'local_sc_learningplans/sendupdatelp',
+            get_string('sendupdatelp', 'local_sc_learningplans'),
+            get_string('sendupdatelp_desc', 'local_sc_learningplans'),
+            false
+        ));
+        $settingspage->add(new admin_setting_configtext(
+            'local_sc_learningplans/emailsubjectupdatelp',
+            get_string('emailsubjectupdatelp', 'local_sc_learningplans'),
+            get_string('emailsubjectupdatelp_desc', 'local_sc_learningplans'),
+            ''
+        ));
+        $settingspage->add(new admin_setting_confightmleditor(
+            'local_sc_learningplans/templatemailupdatelp',
+            get_string('templatemailupdatelp', 'local_sc_learningplans'),
+            get_string('templatemailupdatelp_desc', 'local_sc_learningplans'),
+            ''
+        ));
     }
     $ADMIN->add('localplugins', $settingspage);
 }

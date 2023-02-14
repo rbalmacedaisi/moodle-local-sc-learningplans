@@ -117,6 +117,8 @@ class add_learning_user_external extends external_api {
             role_assign($customrole->id, $userid, $context->id);
         }
 
+        send_email_user_enroled($learningplan, $userid, $roleid);
+
         $learningplanrecord->usercount++;
         $DB->update_record('local_learning_plans', $learningplanrecord);
         return [

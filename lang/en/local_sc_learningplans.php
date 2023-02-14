@@ -176,3 +176,19 @@ $string['search_user_btn'] = 'Search';
 $string['search_user'] = 'Search user:&nbsp;';
 
 $string['alert_not_course'] = 'There are no courses assigned yet';
+
+$string['enroledheadinguser'] = 'Send email user added to LP';
+$string['sendmailenrol'] = 'Send email when user enroled in LP';
+$string['sendmailenrol_desc'] = 'Send to the user a notification when is enroled in any LP';
+$string['emailsubjectenrol'] = 'Custom subject';
+$string['emailsubjectenrol_desc'] = 'Custom email subject';
+$string['templatemailenrol'] = 'Custom email template when user enrol in LP';
+$string['templatemailenrol_desc'] = '{{fullusername}}: User full name<br/>{{lpname}}: LP Name<br/>{{firstcoursename}}: First course name<br/>{{firsturlcourse}}: First url course';
+
+$string['updatelpheading'] = 'Email when update';
+$string['sendupdatelp'] = 'Send email when LP is updated';
+$string['sendupdatelp_desc'] = 'Send to the user a notification when LP is updated';
+$string['emailsubjectupdatelp'] = 'Custom subject';
+$string['emailsubjectupdatelp_desc'] = 'Custom email subject';
+$string['templatemailupdatelp'] = 'Custom email template when LP is updated';
+$string['templatemailupdatelp_desc'] = '{{fullusername}}: User full name<br/>{{lpname}}: LP Name<br/>{{firstcoursename}}: First course name<br/>{{firsturlcourse}}: First url course';

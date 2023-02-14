@@ -27,6 +27,7 @@ use local_sc_learningplans\event\learningplan_updated;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/learningplanlib.php');
 
 class update_required_learning_courses_external extends external_api {
 
@@ -94,6 +95,7 @@ class update_required_learning_courses_external extends external_api {
         $learningplanrecord->usermodified = $USER->id;
         $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
+        send_email_lp_updated($learningplan);
         return [
             'isupdated' => true,
             'neworder' => $returnorder

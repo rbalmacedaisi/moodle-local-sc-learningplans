@@ -177,3 +177,18 @@ $string['search_user_btn'] = 'Buscar';
 $string['search_user'] = 'Buscar usuario:&nbsp;';
 
 $string['alert_not_course'] = 'Aún no hay cursos asignados';
+$string['enroledheadinguser'] = 'Correo de matriculación';
+$string['sendmailenrol'] = 'Enviar correo al matricular un usuario en un plan de aprendizaje';
+$string['sendmailenrol_desc'] = 'Enviar la notificación al correo del usuario cuando es matriculado en un plan de aprendizaje';
+$string['emailsubjectenrol'] = 'Asunto personalizado';
+$string['emailsubjectenrol_desc'] = 'Asunto personalizado del correo';
+$string['templatemailenrol'] = 'Plantilla de correo personalizada cuando un usuario es matriculado';
+$string['templatemailenrol_desc'] = '{{fullusername}}: Nombre completo de usuario<br/>{{lpname}}: Nombre del plan de aprendizaje<br/>{{firstcoursename}}: Nombre del primer curso<br/>{{firsturlcourse}}: Enlace del primer curso';
+
+$string['updatelpheading'] = 'Correo de actualización';
+$string['sendupdatelp'] = 'Enviar correo cuando un plan de aprendizaje se actualice';
+$string['sendupdatelp_desc'] = 'Enviar notificación al correo usuario cuando se actualiza un plan de aprendizaje';
+$string['emailsubjectupdatelp'] = 'Asunto personalizado';
+$string['emailsubjectupdatelp_desc'] = 'Asunto personalizado del correo';
+$string['templatemailupdatelp'] = 'Plantilla de correo cuando el plan de aprendizaje es actualizado';
+$string['templatemailupdatelp_desc'] = '{{fullusername}}: Nombre completo de usuario<br/>{{lpname}}: Nombre del plan de aprendizaje<br/>{{firstcoursename}}: Nombre del primer curso<br/>{{firsturlcourse}}: Enlace del primer curso';

@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/learningplanlib.php');
 
 class save_learning_course_external extends external_api {
 
@@ -131,7 +132,7 @@ class save_learning_course_external extends external_api {
         }
         $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
-
+        send_email_lp_updated($learningplan);
         return [
             'id' => $learningplancourses->id ?? 0,
         ];

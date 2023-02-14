@@ -22,11 +22,10 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_sc_learningplans\event\learningplan_updated;
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/learningplanlib.php');
 
 class edit_learning_plan_external extends external_api {
 
@@ -89,6 +88,7 @@ class edit_learning_plan_external extends external_api {
         $learningplan->requirements = $requirements;
         $learningplan->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplan);
+        send_email_lp_updated($learningid);
         return [
             'learningplanid' => $learningid
         ];

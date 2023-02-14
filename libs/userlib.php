@@ -235,3 +235,95 @@ function enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid, $
         $groupname);
     }
 }
+
+/**
+ * Send email when user enrol in LP.
+ */
+function send_email_user_enroled($learningplanid, $userid, $roleid) {
+    $config = get_config('local_sc_learningplans');
+    if ($config->sendmailenrol) {
+        global $DB, $PAGE;
+        $role = $DB->get_record('role', ['id' => $roleid]);
+        if ($role &&  $role->shortname == 'student') { // Student, send the email.
+            $templatehtml   = $config->templatemailenrol;
+            $subject        = $config->emailsubjectenrol;
+            $user           = core_user::get_user($userid);
+            $fullusername   = fullname($user);
+            list($lpname, $firstcoursename, $firsturlcourse) = get_replace_lpdata($learningplanid);
+            $templatehtml = replace_template_html_email(
+                $templatehtml,
+                $fullusername,
+                $lpname,
+                $firstcoursename,
+                $firsturlcourse
+            );
+            try {
+                $context = context_system::instance();
+                $PAGE->set_context($context); // Need context to correct use of email_to_user function.
+                email_to_user($user, core_user::get_noreply_user(), $subject, strip_tags($templatehtml), $templatehtml);
+            } catch (\Throwable $th) {
+                // Some error, trycatch to not stop the execution.
+                mtrace($th->getMessage());
+            }
+        }
+    }
+}
+
+/**
+ * Get the data to replace in the html template
+ *
+ * @param int $learningplanid
+ * @return array of data
+ */
+function get_replace_lpdata($learningplanid) {
+    global $DB;
+    $learningplan = $DB->get_record('local_learning_plans', ['id' => $learningplanid]);
+    $lpname = 'N/A';
+    if ($learningplan) {
+        $lpname = $learningplan->name;
+    }
+    $requiredcourses = $DB->get_records_sql('SELECT * FROM {local_learning_courses}
+    WHERE learningplanid = :learningplanid AND isrequired = :isrequired
+    ORDER BY position ASC',
+    [
+        'learningplanid' => $learningplanid,
+        'isrequired' => 1
+    ]);
+    $firstcoursename = 'N/A';
+    $firsturlcourse = new moodle_url('/');
+    if ($requiredcourses) {
+        foreach ($requiredcourses as $firstcourse) {
+            $firstcourse = $DB->get_record('course', ['id' => $firstcourse->courseid]);
+            if ($firstcourse) {
+                $firstcoursename = $firstcourse->fullname;
+                $firsturlcourse = new moodle_url('/course/view.php', ['id' => $firstcourse->id]);
+                break;
+            }
+        }
+    }
+    return [
+        $lpname,
+        $firstcoursename,
+        $firsturlcourse,
+    ];
+}
+
+/**
+ * Replace comodin in the template
+ *
+ * @param string $templatehtml
+ * @param string $fullusername
+ * @param string $lpname
+ * @param string $firstcoursename
+ * @param string $firsturlcourse
+ * @return string replaced template
+ */
+function replace_template_html_email($templatehtml, $fullusername, $lpname, $firstcoursename, $firsturlcourse) {
+    $replaces = [
+        '{{fullusername}}'      => $fullusername,
+        '{{lpname}}'            => $lpname,
+        '{{firstcoursename}}'   => $firstcoursename,
+        '{{firsturlcourse}}'    => $firsturlcourse,
+    ];
+    return str_replace(array_keys($replaces), array_values($replaces), $templatehtml);
+}
