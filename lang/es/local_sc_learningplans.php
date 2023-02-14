@@ -164,7 +164,7 @@ $string['massive_done'] = 'Información subida';
 
 $string['report'] = "Reporte del Plan de Aprendizaje";
 $string['email'] = 'Correo';
-$string['currentcourse'] = 'Numero de curso actual';
+$string['currentcourse'] = 'Nombre de curso actual';
 $string['completedcourse'] = 'Ultimo curso completado';
 $string['progress'] = 'Progreso';
 $string['currentperiod'] = 'Periodo actual';
