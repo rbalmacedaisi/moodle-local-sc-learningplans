@@ -107,6 +107,16 @@ class add_learning_user_external extends external_api {
         // Enrol in first course and in all optional course.
         enrol_user_in_learningplan_courses($learningplan, $userid, $roleid, $group);
 
+        // Now, if the role is manager, enrol the user in role system to give capabilities!
+        $context = context_system::instance();
+        if ($roleshortname == 'manager') { // The role is manager. Add to this plugin custom manager role!
+            $customrole = $DB->get_record('role', ['shortname' => 'scmanagerrole']);
+            role_assign($customrole->id, $userid, $context->id);
+        } else if ($roleshortname != 'student') { // If not student and not manager, add custom teacher role!
+            $customrole = $DB->get_record('role', ['shortname' => 'scteachrole']);
+            role_assign($customrole->id, $userid, $context->id);
+        }
+
         $learningplanrecord->usercount++;
         $DB->update_record('local_learning_plans', $learningplanrecord);
         return [
