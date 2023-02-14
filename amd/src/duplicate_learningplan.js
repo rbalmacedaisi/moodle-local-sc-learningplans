@@ -18,7 +18,7 @@ export const init = (learningid) => {
                 learningshortname.reportValidity();
                 return;
             }
-            const desc_plan = document.querySelector('#desc_plan');
+            const desc_plan = document.querySelector('#id_desc_planeditable');
             const learningimage = document.querySelector('#id_learningplan_image');
             const duplicate_users = document.querySelector('#duplicate_users');
             const promise = Ajax.call([{
@@ -28,7 +28,7 @@ export const init = (learningid) => {
                     learningshortname: learningshortname.value,
                     learningname: learningname.value,
                     fileimage: learningimage.value,
-                    description: desc_plan.value,
+                    description: desc_plan.innerHTML,
                     courses: duplicate_courses.checked,
                     copycourses: copy_courses.checked,
                     users: duplicate_users.checked,
