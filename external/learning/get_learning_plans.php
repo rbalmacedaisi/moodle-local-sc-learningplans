@@ -98,7 +98,8 @@ class get_learning_plans_external extends external_api {
                 llp.id,
                 llperiod.id,
                 llc.isrequired,
-                llc.position
+                llc.position,
+                llc.id
             ",
             [
                 'userid' => $USER->id,

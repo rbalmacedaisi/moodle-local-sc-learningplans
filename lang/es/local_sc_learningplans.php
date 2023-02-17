@@ -47,7 +47,7 @@ $string['edit_plan']            = 'Editar plan de aprendizaje';
 $string['duplicate_plan']       = 'Duplicar plan';
 $string['report']               = "Reporte del Plan de Aprendizaje";
 $string['requirement_title']    = 'Agregar nuevo requerimiento';
-$string['manage_periods']       = 'Gestión de Periods';
+$string['manage_periods']       = 'Gestión de Periodos';
 $string['title_current_users']  = 'Usuarios actuales';
 
 $string['new_learning_plan'] = 'Nuevo plan de aprendizaje';
