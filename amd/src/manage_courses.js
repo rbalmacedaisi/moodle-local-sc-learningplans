@@ -21,8 +21,8 @@ let deleteCourseAction = (learningplanid) => {
         for (const el of deleteBtns) {
             el.addEventListener('click', e => {
                 e.preventDefault();
-                const course_record_id = e.target.parentElement.getAttribute('course-record-id');
-                const isrequired = e.target.parentElement.getAttribute('course-required');
+                const course_record_id = el.parentElement.getAttribute('course-record-id');
+                const isrequired = el.parentElement.getAttribute('course-required');
                 notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
                     callDeleteCourse(learningplanid, course_record_id, isrequired);
                 });
@@ -94,13 +94,13 @@ let changeOptionalToRequiredAction = (learningplanid) => {
             const msgconfirm = Str.get_string('msgconfirm_mmove', 'local_sc_learningplans', { cname: coursename });
             add.addEventListener('click', e => {
                 e.preventDefault();
-                const course_record_id = e.target.getAttribute('course-record-id');
-                const credits = e.target.getAttribute('credits') ?? -1;
-                const periodid = e.target.getAttribute('periodid') ?? null;
+                const course_record_id = add.getAttribute('course-record-id');
+                const credits = add.getAttribute('credits') ?? -1;
+                const periodid = add.getAttribute('periodid') ?? null;
                 if (course_record_id) {
                     const recordid = course_record_id;
                     notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
-                        callDeleteCourse(learningplanid, recordid, 0, false, credits, periodid, e.target.getAttribute('course-id'));
+                        callDeleteCourse(learningplanid, recordid, 0, false, credits, periodid, add.getAttribute('course-id'));
                     });
                 }
             });
@@ -224,8 +224,8 @@ const updateCoursePositionAction = () => {
     for (const btnupdate of btnupdatecourseperiodorder) {
         btnupdate.addEventListener('click', e => {
             e.preventDefault();
-            let periodid = e.target.attributes.periodid.value;
-            let lpid = e.target.attributes.lpid.value;
+            let periodid = btnupdate.attributes.periodid.value;
+            let lpid = btnupdate.attributes.lpid.value;
             clickUpdateCoursePeriod(lpid, periodid);
         });
     }
