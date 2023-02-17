@@ -21,8 +21,8 @@ let deleteCourseAction = (learningplanid) => {
         for (const el of deleteBtns) {
             el.addEventListener('click', e => {
                 e.preventDefault();
-                const course_record_id = el.parentElement.getAttribute('course-record-id');
-                const isrequired = el.parentElement.getAttribute('course-required');
+                const course_record_id = el.getAttribute('course-record-id');
+                const isrequired = el.getAttribute('course-required');
                 notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
                     callDeleteCourse(learningplanid, course_record_id, isrequired);
                 });
