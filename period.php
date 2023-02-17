@@ -33,7 +33,7 @@ if (!has_any_capability(['local/sc_learningplans:manage', 'local/sc_learningplan
     admin_externalpage_setup('local_sc_learningplans');
 }
 
-$PAGE->set_pagelayout('admin');
+$PAGE->set_pagelayout('base');
 $PAGE->set_context($context);
 
 $learningplanid = required_param('id', PARAM_INT);
