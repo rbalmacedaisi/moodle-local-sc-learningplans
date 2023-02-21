@@ -25,20 +25,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-    'local/sc_learningplans:manage' => array(
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW,
-        ),
-    ),
     'local/sc_learningplans:teach' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
-            'manager'           => CAP_ALLOW,
-            'editingteacher'    => CAP_ALLOW,
-            'coursecreator'     => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
         ),
     ),
 );

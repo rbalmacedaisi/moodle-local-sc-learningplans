@@ -30,10 +30,7 @@ require_once("$CFG->dirroot/local/sc_learningplans/tables/table_manage_learnings
 require_login();
 
 $context = context_system::instance();
-if (!has_any_capability(['local/sc_learningplans:manage', 'local/sc_learningplans:teach'], $context)) {
-    // If not have capability, then check if is admin.
-    admin_externalpage_setup('local_sc_learningplans');
-}
+admin_externalpage_setup('local_sc_learningplans');
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_url('/local/sc_learningplans/index.php');

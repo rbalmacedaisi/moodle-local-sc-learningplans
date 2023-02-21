@@ -28,13 +28,11 @@ function xmldb_local_sc_learningplans_install() {
     $existingroles = $DB->get_record('role', ['shortname' => 'scteachrole']);
     // Install the roles system.
     if (!$existingroles) {
-        $scteachrole = create_role('SC Learning Plan Teacher Role', 'scteachrole', '', 'editingteacher');
-        $scmanagerrole = create_role('SC Learning Plan Manager Role', 'scmanagerrole', '', 'manager');
+        $scteachrole = create_role('SC Learning Plan Teacher Role', 'scteachrole', '', 'teacher');
 
         // Now is the correct moment to install capabilities - after creation of legacy roles, but before assigning of roles!
         update_capabilities('local_sc_learningplans');
         // Set up the context levels where you can assign each role!
         set_role_contextlevels($scteachrole, [CONTEXT_SYSTEM]);
-        set_role_contextlevels($scmanagerrole, [CONTEXT_SYSTEM]);
     }
 }

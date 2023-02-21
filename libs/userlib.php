@@ -36,8 +36,8 @@ function sc_learningplan_get_roles() {
     $roles = $DB->get_records('role');
     foreach ($roles as $key => &$role) {
         if (
-            $role->shortname != 'manager' &&
-            $role->shortname != 'editingteacher' &&
+            // $role->shortname != 'manager' &&
+            // $role->shortname != 'editingteacher' &&
             $role->shortname != 'teacher' &&
             $role->shortname != 'student'
         ) {

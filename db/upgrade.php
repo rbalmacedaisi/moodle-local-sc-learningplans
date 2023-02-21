@@ -148,5 +148,19 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         // Sc_learningplans savepoint reached.
         upgrade_plugin_savepoint(true, 2023011900, 'local', 'sc_learningplans');
     }
+    if ($oldversion < 2023022000) {
+        $managerole = $DB->get_record('role', ['shortname' => 'scmanagerrole']);
+        if ($managerole) {
+            delete_role($managerole->id);
+        }
+        $techrole = $DB->get_record('role', ['shortname' => 'scteachrole']);
+        if ($techrole) {
+            $techrole->archetype = 'teacher'; 
+            $DB->update_record('role', $techrole);
+        }
+        update_capabilities('local_sc_learningplans');
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023022000, 'local', 'sc_learningplans');
+    }
     return true;
 }

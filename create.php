@@ -30,10 +30,7 @@ require_once($CFG->dirroot . '/local/sc_learningplans/libs/courselib.php');
 require_once($CFG->dirroot . '/group/lib.php');
 require_login();
 $context = context_system::instance();
-if (!has_any_capability(['local/sc_learningplans:manage'], $context)) {
-    // If not have capability, then check if is admin!
-    admin_externalpage_setup('local_sc_learningplans');
-}
+admin_externalpage_setup('local_sc_learningplans');
 $context = context_system::instance();
 $PAGE->set_context($context);
 

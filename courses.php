@@ -28,10 +28,7 @@ require_once($CFG->libdir . '/adminlib.php');
 require_login();
 
 $context = context_system::instance();
-if (!has_any_capability(['local/sc_learningplans:manage'], $context)) {
-    // If not have capability, then check if is admin!
-    admin_externalpage_setup('local_sc_learningplans');
-}
+admin_externalpage_setup('local_sc_learningplans');
 
 $id = required_param('id', PARAM_INT);
 global $DB;
