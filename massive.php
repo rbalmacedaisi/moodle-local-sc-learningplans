@@ -99,7 +99,6 @@ while (($linecsv = fgetcsv($file)) !== false) {
         $user->firstname = $firstname;
         $user->lastname  = $lastname;
         $user->idnumber  = $idnumber;
-        // $user->password  = $password;
         $otheruseremail = $DB->get_record_sql(
             'SELECT * FROM {user} WHERE email = :email AND id <> :userid LIMIT 1',
             [
