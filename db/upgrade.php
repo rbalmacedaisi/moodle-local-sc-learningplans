@@ -163,7 +163,7 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2023022000, 'local', 'sc_learningplans');
     }
     if ($oldversion < 2023022001) {
-        $counts = $DB->get_records_sql('SELECT count(c.id) count, lp.*, lc.learningplanid FROM {local_learning_courses} lc
+        $counts = $DB->get_records_sql('SELECT lp.*, lc.learningplanid, count(c.id) count FROM {local_learning_courses} lc
         LEFT JOIN {course} c ON (c.id = lc.courseid)
         LEFT JOIN {local_learning_plans} lp ON (lp.id = lc.learningplanid)
         WHERE lc.isrequired = 1
