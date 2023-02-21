@@ -99,7 +99,7 @@ while (($linecsv = fgetcsv($file)) !== false) {
         $user->firstname = $firstname;
         $user->lastname  = $lastname;
         $user->idnumber  = $idnumber;
-        $user->password  = $password;
+        // $user->password  = $password;
         $otheruseremail = $DB->get_record_sql(
             'SELECT * FROM {user} WHERE email = :email AND id <> :userid LIMIT 1',
             [
@@ -111,7 +111,7 @@ while (($linecsv = fgetcsv($file)) !== false) {
             // If not exist other account with the email, then update it.
             $user->email  = $email;
         }
-        user_update_user($user, true);
+        user_update_user($user, false);
         // User exist, get the id.
         $userid = $user->id;
         $a = (object)[
