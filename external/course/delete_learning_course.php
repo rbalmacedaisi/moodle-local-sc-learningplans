@@ -71,7 +71,7 @@ class delete_learning_course_external extends external_api {
             $DB->delete_records('local_learning_courses', ['id' => $learningcourse->id]);
             $isdelete = true;
             if ($required) {
-                // Decrease the course count.
+                // Decrease the course count if is required.
                 $learningplanrecord->coursecount--;
                 // Calculate the new positions.
                 $DB->execute("UPDATE {local_learning_courses}

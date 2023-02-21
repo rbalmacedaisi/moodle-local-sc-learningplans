@@ -155,12 +155,27 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         }
         $techrole = $DB->get_record('role', ['shortname' => 'scteachrole']);
         if ($techrole) {
-            $techrole->archetype = 'teacher'; 
+            $techrole->archetype = 'teacher';
             $DB->update_record('role', $techrole);
         }
         update_capabilities('local_sc_learningplans');
         // Sc_learningplans savepoint reached.
         upgrade_plugin_savepoint(true, 2023022000, 'local', 'sc_learningplans');
+    }
+    if ($oldversion < 2023022001) {
+        $counts = $DB->get_records_sql('SELECT count(c.id) count, lp.*, lc.learningplanid FROM {local_learning_courses} lc
+        LEFT JOIN {course} c ON (c.id = lc.courseid)
+        LEFT JOIN {local_learning_plans} lp ON (lp.id = lc.learningplanid)
+        WHERE lc.isrequired = 1
+        GROUP BY lc.learningplanid');
+        foreach ($counts as &$count) {
+            $count->coursecount = $count->count;
+            unset($count->learningplanid);
+            unset($count->count);
+            $DB->update_record('local_learning_plans', $count);
+        }
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023022001, 'local', 'sc_learningplans');
     }
     return true;
 }
