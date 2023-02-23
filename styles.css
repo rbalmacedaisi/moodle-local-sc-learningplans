@@ -85,9 +85,9 @@ select#selectAddCourseOptionalToLearningPlan {
     text-align: start;
 }
 
-#page-local-sc_learningplans-users select#listusers,
-#page-local-sc_learningplans-users select#listroles,
-#page-local-sc_learningplans-users select#listgroups {
+#userModal select#listusers,
+#userModal select#listroles,
+#userModal select#listgroups { 
     width: 412px;
     height: 34px;
     border-radius: 5px;

@@ -136,7 +136,7 @@ while (($linecsv = fgetcsv($file)) !== false) {
         'userid' => $userid
     ]);
     if (!$learninguserexist) {
-        add_learning_user_external::add_learning_user($learningplans[$lpname]->id, $userid, $rolestudentid, null, $group);
+        add_learning_user_external::add_learning_user($learningplans[$lpname]->id, $userid, $rolestudentid, null, trim($group));
     }
     $a = (object)[
         'username' => $username,
