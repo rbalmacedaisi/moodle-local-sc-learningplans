@@ -38,6 +38,7 @@ class update_required_learning_courses_external extends external_api {
                 'courseorder' => new external_multiple_structure(
                     new external_single_structure(
                         array(
+                            'recordid' => new external_value(PARAM_INT, 'ID of the record'),
                             'courseid' => new external_value(PARAM_INT, 'ID of the course'),
                             'position' => new external_value(PARAM_INT, 'Position of the course'),
                         )
@@ -63,13 +64,14 @@ class update_required_learning_courses_external extends external_api {
         $returnorder = [];
         $periodwhere = '';
         if ($periodid) {
-            $periodwhere = ' AND periodid = :periodid ';
+            //$periodwhere = ' AND periodid = :periodid ';
         }
         foreach ($courseorder as $val) {
-            $recordid = (int) $val['courseid'];
+            $recordid = (int) $val['recordid'];
+            $courseid = (int) $val['courseid'];
             $position = (int) $val['position'];
             $DB->execute("UPDATE {local_learning_courses}
-                SET position = :position
+                SET position = :position, courseid = :courseid, periodid = :periodid
                 WHERE learningplanid = :learningplanid
                 AND id = :recordid
                 $periodwhere",
@@ -78,9 +80,11 @@ class update_required_learning_courses_external extends external_api {
                     'position' => $position,
                     'recordid' => $recordid,
                     'periodid' => $periodid,
+                    'courseid' => $courseid
                 ]);
             $returnorder[] = [
-                'courseid' => $recordid,
+                'recordid' => $recordid,
+                'courseid' => $courseid,
                 'position' => $position
             ];
         }
@@ -110,6 +114,7 @@ class update_required_learning_courses_external extends external_api {
                     new external_single_structure(
                         array(
                             'courseid' => new external_value(PARAM_INT, 'ID of the course'),
+                            'recordid' => new external_value(PARAM_INT, 'ID of the record'),
                             'position' => new external_value(PARAM_INT, 'Position of the course'),
                         )
                     )

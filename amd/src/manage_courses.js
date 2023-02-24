@@ -109,7 +109,7 @@ let changeOptionalToRequiredAction = (learningplanid) => {
 };
 
 
-const callUpdateCourse = (learningid, courseorder, periodid = null) => {
+const callUpdateCourse = (learningid, courseorder, periodid = null, reload = true) => {
     learningid = parseInt(learningid);
     const promise = Ajax.call([{
         methodname: 'local_sc_learningplans_update_required_learning_courses',
@@ -122,7 +122,9 @@ const callUpdateCourse = (learningid, courseorder, periodid = null) => {
 
     promise[0].done(function (response) {
         window.console.log('local_sc_learningplans_update_required_learning_courses', response);
-        location.reload();
+        if(reload) {
+            location.reload();
+        }
     }).fail(function (response) {
         window.console.error(response);
     });
@@ -231,42 +233,48 @@ const updateCoursePositionAction = () => {
     }
 };
 
-const clickUpdateCoursePeriod = (lpid, periodid) => {
+const clickUpdateCoursePeriod = (lpid, periodid, reload) => {
     const itemsPeriod = document.querySelectorAll(`li[lpid="${lpid}"][periodid="${periodid}"]`);
     const courseData = [];
     itemsPeriod.forEach(function (item) {
-        let listCoursesid = item.attributes.datacourse.value;
+        let listRecordID = item.attributes.datacourse.value;
         let listCoursePosition = item.attributes.poscourse.value;
+        let listCourseID = item.attributes.courseid.value;
         courseData.push({
-            courseid: listCoursesid.replace('courses[', '').replace(']', ''),
+            recordid: listRecordID.replace('courses[', '').replace(']', ''),
             position: listCoursePosition,
+            courseid: listCourseID,
         });
     });
     const coursePosition = [];
     courseData.forEach((index) => {
         coursePosition.push({
+            recordid: index.recordid,
             courseid: index.courseid,
             position: index.position,
             periodid: index.periodid
         });
     });
-    callUpdateCourse(lpid, coursePosition, periodid);
+    callUpdateCourse(lpid, coursePosition, periodid, reload);
 };
 
 const clickUpdateCourses = (learningplanid) => {
     const courseData = [];
     items.forEach(function (item) {
-        let listCoursesid = item.attributes.datacourse.value;
+        let listRecordID = item.attributes.datacourse.value;
         let listCoursePosition = item.attributes.poscourse.value;
+        let listCourseID = item.attributes.courseid.value;
         courseData.push({
-            courseid: listCoursesid.replace('courses[', '').replace(']', ''),
+            recordid: listRecordID.replace('courses[', '').replace(']', ''),
             position: listCoursePosition,
+            courseid: listCourseID,
         });
     });
 
     const coursePosition = [];
     courseData.forEach((index) => {
         coursePosition.push({
+            recordid: index.recordid,
             courseid: index.courseid,
             position: index.position,
             periodid: index.periodid
@@ -329,19 +337,29 @@ function handleDrop(e) {
     if (dragSrcEl != this) {
         dragSrcEl.innerHTML = this.innerHTML;
         this.innerHTML = e.dataTransfer.getData('text/html');
+
         let itemToReplaceAttr = this.attributes["datacourse"].value;
+        let itemToReplaceCourseAttr = this.attributes["courseid"].value;
         let draggedItemAttr = dragSrcEl.attributes["datacourse"].value;
+        let draggedItemCourseAttr = dragSrcEl.attributes["courseid"].value;
         this.setAttribute("datacourse", draggedItemAttr);
+        this.setAttribute("courseid", draggedItemCourseAttr);
         dragSrcEl.setAttribute("datacourse", itemToReplaceAttr);
+        dragSrcEl.setAttribute("courseid", itemToReplaceCourseAttr);
         const lpid = document.querySelector(".coursesrequired");
         let learningplanid = lpid.getAttribute('learningplanid');
-        let periodid = dragSrcEl.attributes['periodid']?.value;
-        if (periodid) {
-            clickUpdateCoursePeriod(learningplanid, periodid);
+        let havePeriod = dragSrcEl.attributes['periodid']?.value;
+        if (havePeriod) {
+            const allPeriodsRequired = document.querySelectorAll('.coursesrequired');
+            allPeriodsRequired.forEach(el => {
+                const periodid = el.getAttribute('record-periodid');
+                window.console.log(periodid);
+                clickUpdateCoursePeriod(learningplanid, periodid, false);
+            });
         } else {
             clickUpdateCourses(learningplanid);
         }
-        window.console.log(learningplanid, periodid,
+        window.console.log(learningplanid, havePeriod,
             'Cambiando los cursos draggedItemAttr: ',
             draggedItemAttr, 'itemToReplaceAttr', itemToReplaceAttr);
     }

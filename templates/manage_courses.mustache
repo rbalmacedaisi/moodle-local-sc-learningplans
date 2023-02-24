@@ -57,7 +57,7 @@
                                         {{! List of required courses }}
                                         <ul class="coursesrequired cr1 mb-0" learningplanid="{{learningplanid}}" record-periodid="{{idperiod}}">
                                             {{#coursesrequired}}
-                                            <li class="list-courses-required-period d-flex border-bottom align-items-center" draggable="true" datacourse="courses[{{id}}]" lpid={{learningplanid}} poscourse="{{position}}" periodid={{idperiod}}>
+                                            <li class="list-courses-required-period d-flex border-bottom align-items-center" draggable="true" datacourse="courses[{{id}}]" lpid={{learningplanid}} poscourse="{{position}}" periodid={{idperiod}} courseid="{{courseid}}">
                                                 {{! Course icon}}
                                                 <span class="content-icon">
                                                     <i class="fa fa-book course-icon"></i>
@@ -183,7 +183,7 @@
                             {{! List of required courses }}
                             <ul class="coursesrequired cr2 mb-0" learningplanid="{{learningplanid}}">
                                 {{#currentcourses}}
-                                <li class="list-courses-required d-flex border-bottom align-items-center" draggable="true" datacourse="courses[{{id}}]" poscourse="{{position}}">
+                                <li class="list-courses-required d-flex border-bottom align-items-center" draggable="true" datacourse="courses[{{id}}]" poscourse="{{position}}" courseid="{{courseid}}">
                                     {{! Course icon}}
                                     <span class="content-icon">
                                         <i class="fa fa-book course-icon"></i>
