@@ -63,9 +63,6 @@ class update_required_learning_courses_external extends external_api {
         }
         $returnorder = [];
         $periodwhere = '';
-        if ($periodid) {
-            //$periodwhere = ' AND periodid = :periodid ';
-        }
         foreach ($courseorder as $val) {
             $recordid = (int) $val['recordid'];
             $courseid = (int) $val['courseid'];
