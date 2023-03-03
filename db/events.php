@@ -30,4 +30,8 @@ $observers = array(
         'eventname' => 'core\event\course_completed',
         'callback' => 'local_sc_learningplans_observer::user_course_completed',
     ),
+    array(
+        'eventname' => 'core\event\user_deleted',
+        'callback' => 'local_sc_learningplans_observer::user_deleted',
+    ),
 );

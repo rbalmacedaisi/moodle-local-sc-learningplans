@@ -177,5 +177,20 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         // Sc_learningplans savepoint reached.
         upgrade_plugin_savepoint(true, 2023022001, 'local', 'sc_learningplans');
     }
+    if ($oldversion < 2023030200) {
+
+        $learningdeleteduser = $DB->get_records_sql(
+            "SELECT lu.*, u.firstname, u.lastname, u.email, u.deleted
+                FROM {local_learning_users} lu
+                JOIN {user} u ON (u.id = lu.userid AND u.deleted = 1)
+            "
+        );
+        foreach ($learningdeleteduser as $value) {
+            $DB->delete_records('local_learning_users', ['userid' => $value->userid]);
+        }
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023030200, 'local', 'sc_learningplans');
+    }
+
     return true;
 }
