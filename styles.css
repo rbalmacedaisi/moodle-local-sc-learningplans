@@ -72,6 +72,10 @@ select#selectAddCourseOptionalToLearningPlan {
     max-width: 100%;
 }
 
+.learningPlansTable .lp_icon {
+    color: #88B13B;
+}
+
 #userModal .modal-dialog,
 #coursesRequiredModal .modal-dialog,
 #coursesOptionalModal .modal-dialog {
