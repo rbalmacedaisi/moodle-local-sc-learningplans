@@ -21,8 +21,8 @@ let deleteCourseAction = (learningplanid) => {
         for (const el of deleteBtns) {
             el.addEventListener('click', e => {
                 e.preventDefault();
-                const course_record_id = e.target.parentElement.getAttribute('course-record-id');
-                const isrequired = e.target.parentElement.getAttribute('course-required');
+                const course_record_id = el.getAttribute('course-record-id');
+                const isrequired = el.getAttribute('course-required');
                 notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
                     callDeleteCourse(learningplanid, course_record_id, isrequired);
                 });
@@ -94,13 +94,13 @@ let changeOptionalToRequiredAction = (learningplanid) => {
             const msgconfirm = Str.get_string('msgconfirm_mmove', 'local_sc_learningplans', { cname: coursename });
             add.addEventListener('click', e => {
                 e.preventDefault();
-                const course_record_id = e.target.getAttribute('course-record-id');
-                const credits = e.target.getAttribute('credits') ?? -1;
-                const periodid = e.target.getAttribute('periodid') ?? null;
+                const course_record_id = add.getAttribute('course-record-id');
+                const credits = add.getAttribute('credits') ?? -1;
+                const periodid = add.getAttribute('periodid') ?? null;
                 if (course_record_id) {
                     const recordid = course_record_id;
                     notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
-                        callDeleteCourse(learningplanid, recordid, 0, false, credits, periodid, e.target.getAttribute('course-id'));
+                        callDeleteCourse(learningplanid, recordid, 0, false, credits, periodid, add.getAttribute('course-id'));
                     });
                 }
             });
@@ -109,7 +109,7 @@ let changeOptionalToRequiredAction = (learningplanid) => {
 };
 
 
-const callUpdateCourse = (learningid, courseorder, periodid = null) => {
+const callUpdateCourse = (learningid, courseorder, periodid = null, reload = true) => {
     learningid = parseInt(learningid);
     const promise = Ajax.call([{
         methodname: 'local_sc_learningplans_update_required_learning_courses',
@@ -122,7 +122,9 @@ const callUpdateCourse = (learningid, courseorder, periodid = null) => {
 
     promise[0].done(function (response) {
         window.console.log('local_sc_learningplans_update_required_learning_courses', response);
-        location.reload();
+        if(reload) {
+            location.reload();
+        }
     }).fail(function (response) {
         window.console.error(response);
     });
@@ -224,49 +226,55 @@ const updateCoursePositionAction = () => {
     for (const btnupdate of btnupdatecourseperiodorder) {
         btnupdate.addEventListener('click', e => {
             e.preventDefault();
-            let periodid = e.target.attributes.periodid.value;
-            let lpid = e.target.attributes.lpid.value;
+            let periodid = btnupdate.attributes.periodid.value;
+            let lpid = btnupdate.attributes.lpid.value;
             clickUpdateCoursePeriod(lpid, periodid);
         });
     }
 };
 
-const clickUpdateCoursePeriod = (lpid, periodid) => {
+const clickUpdateCoursePeriod = (lpid, periodid, reload) => {
     const itemsPeriod = document.querySelectorAll(`li[lpid="${lpid}"][periodid="${periodid}"]`);
     const courseData = [];
     itemsPeriod.forEach(function (item) {
-        let listCoursesid = item.attributes.datacourse.value;
+        let listRecordID = item.attributes.datacourse.value;
         let listCoursePosition = item.attributes.poscourse.value;
+        let listCourseID = item.attributes.courseid.value;
         courseData.push({
-            courseid: listCoursesid.replace('courses[', '').replace(']', ''),
+            recordid: listRecordID.replace('courses[', '').replace(']', ''),
             position: listCoursePosition,
+            courseid: listCourseID,
         });
     });
     const coursePosition = [];
     courseData.forEach((index) => {
         coursePosition.push({
+            recordid: index.recordid,
             courseid: index.courseid,
             position: index.position,
             periodid: index.periodid
         });
     });
-    callUpdateCourse(lpid, coursePosition, periodid);
+    callUpdateCourse(lpid, coursePosition, periodid, reload);
 };
 
 const clickUpdateCourses = (learningplanid) => {
     const courseData = [];
     items.forEach(function (item) {
-        let listCoursesid = item.attributes.datacourse.value;
+        let listRecordID = item.attributes.datacourse.value;
         let listCoursePosition = item.attributes.poscourse.value;
+        let listCourseID = item.attributes.courseid.value;
         courseData.push({
-            courseid: listCoursesid.replace('courses[', '').replace(']', ''),
+            recordid: listRecordID.replace('courses[', '').replace(']', ''),
             position: listCoursePosition,
+            courseid: listCourseID,
         });
     });
 
     const coursePosition = [];
     courseData.forEach((index) => {
         coursePosition.push({
+            recordid: index.recordid,
             courseid: index.courseid,
             position: index.position,
             periodid: index.periodid
@@ -329,19 +337,29 @@ function handleDrop(e) {
     if (dragSrcEl != this) {
         dragSrcEl.innerHTML = this.innerHTML;
         this.innerHTML = e.dataTransfer.getData('text/html');
+
         let itemToReplaceAttr = this.attributes["datacourse"].value;
+        let itemToReplaceCourseAttr = this.attributes["courseid"].value;
         let draggedItemAttr = dragSrcEl.attributes["datacourse"].value;
+        let draggedItemCourseAttr = dragSrcEl.attributes["courseid"].value;
         this.setAttribute("datacourse", draggedItemAttr);
+        this.setAttribute("courseid", draggedItemCourseAttr);
         dragSrcEl.setAttribute("datacourse", itemToReplaceAttr);
+        dragSrcEl.setAttribute("courseid", itemToReplaceCourseAttr);
         const lpid = document.querySelector(".coursesrequired");
         let learningplanid = lpid.getAttribute('learningplanid');
-        let periodid = dragSrcEl.attributes['periodid']?.value;
-        if (periodid) {
-            clickUpdateCoursePeriod(learningplanid, periodid);
+        let havePeriod = dragSrcEl.attributes['periodid']?.value;
+        if (havePeriod) {
+            const allPeriodsRequired = document.querySelectorAll('.coursesrequired');
+            allPeriodsRequired.forEach(el => {
+                const periodid = el.getAttribute('record-periodid');
+                window.console.log(periodid);
+                clickUpdateCoursePeriod(learningplanid, periodid, false);
+            });
         } else {
             clickUpdateCourses(learningplanid);
         }
-        window.console.log(learningplanid, periodid,
+        window.console.log(learningplanid, havePeriod,
             'Cambiando los cursos draggedItemAttr: ',
             draggedItemAttr, 'itemToReplaceAttr', itemToReplaceAttr);
     }

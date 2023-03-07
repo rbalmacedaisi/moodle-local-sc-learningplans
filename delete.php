@@ -33,9 +33,7 @@ require_once($CFG->dirroot . '/local/sc_learningplans/external/period/delete_per
 require_login();
 
 $context = context_system::instance();
-if (!has_any_capability(['local/sc_learningplans:manage'], $context)) {
-    admin_externalpage_setup('local_sc_learningplans');
-}
+admin_externalpage_setup('local_sc_learningplans');
 
 $id = required_param('id', PARAM_INT);
 $back = required_param('b', PARAM_RAW);

@@ -30,10 +30,7 @@ require_once("$CFG->dirroot/local/sc_learningplans/tables/table_manage_users.php
 
 require_login();
 $context = context_system::instance();
-if (!has_any_capability(['local/sc_learningplans:manage', 'local/sc_learningplans:teach'], $context)) {
-    // If not have capability, then check if is admin.
-    admin_externalpage_setup('local_sc_learningplans');
-}
+admin_externalpage_setup('local_sc_learningplans');
 
 $learningplanid = required_param('id', PARAM_INT);
 $searchuser = optional_param('searchUser', null, PARAM_TEXT);

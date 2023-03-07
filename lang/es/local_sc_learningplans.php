@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Learning Plans';
-$string['plugincustomfields'] = 'Campos personalizados Learning Plans';
+$string['pluginname'] = 'Planes de aprendizajes';
+$string['plugincustomfields'] = 'Campos personalizados Planes de aprendizaje';
 
 $string['sc_learningplans:manage']  = 'Manager - learning plans in local sc_learningplans';
 $string['sc_learningplans:teach']   = 'Teacher - learning plans in local sc_learningplans';

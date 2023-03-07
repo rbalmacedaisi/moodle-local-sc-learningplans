@@ -64,4 +64,16 @@ class local_sc_learningplans_observer {
         }
     }
 
+    /**
+     * Triggered when 'user_deleted' event is triggered.
+     *
+     * @param \core\event\user_deleted $event
+     */
+    public static function user_deleted(\core\event\user_deleted  $event) {
+        global $DB;
+        $userid = $event->objectid;
+
+        return $DB->delete_records('local_learning_users', ['userid' => $userid]);
+    }
+
 }

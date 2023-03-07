@@ -148,5 +148,49 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         // Sc_learningplans savepoint reached.
         upgrade_plugin_savepoint(true, 2023011900, 'local', 'sc_learningplans');
     }
+    if ($oldversion < 2023022000) {
+        $managerole = $DB->get_record('role', ['shortname' => 'scmanagerrole']);
+        if ($managerole) {
+            delete_role($managerole->id);
+        }
+        $techrole = $DB->get_record('role', ['shortname' => 'scteachrole']);
+        if ($techrole) {
+            $techrole->archetype = 'teacher';
+            $DB->update_record('role', $techrole);
+        }
+        update_capabilities('local_sc_learningplans');
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023022000, 'local', 'sc_learningplans');
+    }
+    if ($oldversion < 2023022001) {
+        $counts = $DB->get_records_sql('SELECT lp.*, lc.learningplanid, count(c.id) count FROM {local_learning_courses} lc
+        LEFT JOIN {course} c ON (c.id = lc.courseid)
+        LEFT JOIN {local_learning_plans} lp ON (lp.id = lc.learningplanid)
+        WHERE lc.isrequired = 1
+        GROUP BY lc.learningplanid');
+        foreach ($counts as &$count) {
+            $count->coursecount = $count->count;
+            unset($count->learningplanid);
+            unset($count->count);
+            $DB->update_record('local_learning_plans', $count);
+        }
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023022001, 'local', 'sc_learningplans');
+    }
+    if ($oldversion < 2023030200) {
+
+        $learningdeleteduser = $DB->get_records_sql(
+            "SELECT lu.*, u.firstname, u.lastname, u.email, u.deleted
+                FROM {local_learning_users} lu
+                JOIN {user} u ON (u.id = lu.userid AND u.deleted = 1)
+            "
+        );
+        foreach ($learningdeleteduser as $value) {
+            $DB->delete_records('local_learning_users', ['userid' => $value->userid]);
+        }
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023030200, 'local', 'sc_learningplans');
+    }
+
     return true;
 }

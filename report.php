@@ -29,7 +29,7 @@ require_once("$CFG->dirroot/local/sc_learningplans/tables/report_lp_table.php");
 require_login();
 
 $context = context_system::instance();
-if (!has_any_capability(['local/sc_learningplans:manage', 'local/sc_learningplans:teach'], $context)) {
+if (!has_any_capability(['local/sc_learningplans:teach'], $context)) {
     // If not have capability, then check if is admin.
     admin_externalpage_setup('local_sc_learningplans');
 }
