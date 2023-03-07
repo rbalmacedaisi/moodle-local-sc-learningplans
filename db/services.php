@@ -160,6 +160,16 @@ $functions = array(
         'loginrequired' => true,
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
+    'local_sc_learningplans_get_active_learning_plans'=> array(
+        'classname'     => 'get_active_learning_plans_external',
+        'methodname'    => 'get_active_learning_plans',
+        'classpath'     => 'local/sc_learningplans/external/learning/get_active_learning_plans.php',
+        'description'   => 'Get the active learning plans',
+        'type'          => 'read',
+        'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    ),
 );
 
 $services = array(

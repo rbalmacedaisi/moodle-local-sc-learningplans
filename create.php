@@ -45,6 +45,7 @@ $PAGE->add_body_class('limitedwidth');
 
 $formimagepicker = new createlp_form_picker();
 $formeditor = new createlp_form_editor();
+
 $groups = get_groups_from_courses();
 $optionsperiod = [
     ['id' => '1', 'value' => '1'],
@@ -73,6 +74,8 @@ $config = get_config('local_sc_learningplans');
 
 $userprofilefields = $DB->get_records('user_info_field');
 
+$handler = local_sc_learningplans\customfield\learningplan_handler::create();
+
 $maintemplatedata = [
     'formimagpicker' => $formimagepicker->render(),
     'formeditor' => $formeditor->render(),
@@ -82,9 +85,10 @@ $maintemplatedata = [
     'roles' => array_values($roles),
     'groups' => array_values($groups),
     'userprofilefields' => array_values($userprofilefields),
-    'cancelurl' => $CFG->wwwroot.'/local/sc_learningplans/index.php'
-
+    'cancelurl' => $CFG->wwwroot.'/local/sc_learningplans/index.php',
+    'customfields' => array_values($handler->get_custom_fields_for_learning_plan())
 ];
+
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('local_sc_learningplans/create_learningplan', $maintemplatedata);
 $PAGE->requires->js_call_amd('local_sc_learningplans/create_learningplan', 'init', [

@@ -68,6 +68,14 @@ class save_learning_plan_external extends external_api {
                 'hasperiod'   => new external_value(PARAM_INT, 'Check if learning plan has periods'),
                 'enroltype'  => new external_value(PARAM_INT, 'Type Enrolment if plan has periods'),
                 'requirements'   => new external_value(PARAM_TEXT, 'User Profiles id'),
+                'customfields' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'id' => new external_value(PARAM_TEXT, 'Id of the custom field'),
+                            'value' => new external_value(PARAM_TEXT, 'Value of the custom field'),
+                        ),
+                    )
+                ),
             )
         );
     }
@@ -82,21 +90,21 @@ class save_learning_plan_external extends external_api {
         $description,
         $hasperiod,
         $enroltype,
-        $requirements
+        $requirements,
+        $customfields
         ) {
         global $DB, $USER;
         // Check if LP exist with the shortid.
         $learningplanexist = $DB->record_exists('local_learning_plans', ['shortname' => $learningshortid]);
+    
         if ($learningplanexist) {
             throw new moodle_exception('errorlearningplanexist', 'local_sc_learningplans');
         }
-
         if ($hasperiod == 0) {
             $countperiod = 0;
         } else {
             $countperiod = count($periods);
         }
-        $description = $description;
 
         $newlearningplan = new stdClass();
         $newlearningplan->shortname     = $learningshortid;
@@ -112,7 +120,11 @@ class save_learning_plan_external extends external_api {
         $newlearningplan->timecreated = time();
         $newlearningplan->timemodified = time();
         $learningplanid = $DB->insert_record('local_learning_plans', $newlearningplan);
+        
         $newlearningplan->id = $learningplanid;
+        
+        
+        $learningplanduration = 0;
         if ($hasperiod == 0) {
             // Not periods, so the request data have courses and users.
             $pos = 0;
@@ -143,6 +155,7 @@ class save_learning_plan_external extends external_api {
             foreach ($periods as $period) {
                 $name = $period['name'];
                 $months = $period['months'];
+                $learningplanduration = $learningplanduration + $months;
                 addperiod_learning_plan_external::addperiod_learning_plan($learningplanid, $name, $months);
             }
         }
@@ -161,7 +174,25 @@ class save_learning_plan_external extends external_api {
         }
         $newlearningplan->updated_at = time();
         $DB->update_record('local_learning_plans', $newlearningplan);
-
+        
+        //Save learning plan custom fields-------------
+        if(!empty($customfields) || $learningplanduration){
+            
+            //Init the handler
+            $handler = local_sc_learningplans\customfield\learningplan_handler::create();
+            $customfieldstobecreated = new stdClass();
+            $customfieldstobecreated->id=$learningplanid;
+            
+            $learningplanduration? $customfieldstobecreated->customfield_careerduration= $learningplanduration: null;
+            foreach ($customfields as $customfield) {
+                $id = $customfield['id'];
+                $value = $customfield['value'];
+                $customfieldstobecreated->{'customfield_'.$id}= $value;
+            }
+            $handler->instance_form_save($customfieldstobecreated);
+        }
+        //End save learning plan custom fields-------------
+        
         return [
             'learningplanid' => $learningplanid
         ];

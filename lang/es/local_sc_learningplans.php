@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Learning Plans';
+$string['plugincustomfields'] = 'Campos personalizados Learning Plans';
 
 $string['sc_learningplans:manage']  = 'Manager - learning plans in local sc_learningplans';
 $string['sc_learningplans:teach']   = 'Teacher - learning plans in local sc_learningplans';
@@ -47,14 +48,15 @@ $string['edit_plan']            = 'Editar plan de aprendizaje';
 $string['duplicate_plan']       = 'Duplicar plan';
 $string['report']               = "Reporte del Plan de Aprendizaje";
 $string['requirement_title']    = 'Agregar nuevo requerimiento';
-$string['manage_periods']       = 'Gestión de Periods';
+$string['manage_periods']       = 'Gestión de Períodos';
 $string['title_current_users']  = 'Usuarios actuales';
 
 $string['new_learning_plan'] = 'Nuevo plan de aprendizaje';
 $string['plan_name'] = 'Nombre del plan de aprendizaje';
-$string['addingperiods'] = 'Desea agregar Periodos';
+$string['addingperiods'] = 'Desea agregar Períodos';
 $string['select_periods'] = 'Seleccione el número de períodos:';
 $string['btnaddperiods'] = 'Añadir periodos';
+$string['not_periods'] = 'No se han agregado períodos';
 $string['title_add_course'] = 'Agregar nuevo curso';
 $string['select_course'] = 'Selecciona un curso';
 $string['btn_add_course'] = 'Agregar';
@@ -63,13 +65,21 @@ $string['title_current_course'] = 'Cursos obligatorios';
 $string['title_optional_course'] = 'Cursos opcionales';
 $string['delete_current_course'] = 'Eliminar curso';
 $string['title_add_users'] = 'Gestionar usuarios';
+$string['title_add_roles'] = 'Gestionar roles';
+$string['title_add_groups'] = 'Gestionar grupos';
+$string['title_career_name'] = 'Nombre carrera';
+$string['title_career_cost'] = 'Costo carrera';
+$string['title_career_duration'] = 'Duración carrera (semanas)';
+
 $string['add_user_lp'] = 'Agregar nuevos usuarios';
 $string['select_user'] = 'Selecciona un usuario';
 $string['select_role'] = 'Selecciona un rol';
+$string['select_career_name'] = 'Selecciona una carrera';
 $string['btn_add_user'] = 'Agregar';
 $string['title_desc_plan'] = 'Descripción del Plan';
 $string['plan_image'] = 'Imagen del plan';
 $string['add_plan'] = 'Añadir plan de aprendizaje';
+$string['career_info'] = 'Información de la carrera';
 
 $string['bulk_users'] = 'Cargar usuarios';
 
@@ -192,3 +202,16 @@ $string['emailsubjectupdatelp'] = 'Asunto personalizado';
 $string['emailsubjectupdatelp_desc'] = 'Asunto personalizado del correo';
 $string['templatemailupdatelp'] = 'Plantilla de correo cuando el plan de aprendizaje es actualizado';
 $string['templatemailupdatelp_desc'] = '{{fullusername}}: Nombre completo de usuario<br/>{{lpname}}: Nombre del plan de aprendizaje<br/>{{firstcoursename}}: Nombre del primer curso<br/>{{firsturlcourse}}: Enlace del primer curso';
+
+$string['customfield_regexpattern'] = 'Expresion regular campo personalizado';
+$string['customfield_datatype'] = 'Tipo de dato campo personzalizado';
+$string['customfieldsettings'] = 'Configuraciones para campos personalizados del learning plan.';
+$string['datatypenumber'] = 'Número';
+$string['datatypetext'] = 'Texto';
+$string['datatypeemail'] = 'Correo electrónico';
+
+$string['Informacion_carrera'] = 'Información carrera';
+$string['Campos_prueba'] = 'Campos test';
+$string['careercost'] = 'Costo carrera';
+$string['careerduration'] = 'Duración carrera (meses)';
+$string['careername'] = 'Nombre carrera';

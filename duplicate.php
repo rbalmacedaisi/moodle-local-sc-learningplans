@@ -72,6 +72,7 @@ $entry->learningplan_image = $draftitemid;
 $formiamge->set_data($entry);
 $entry->desc_plan['text'] = $learningplan->description . ' ' . get_string('copy', 'local_sc_learningplans');
 $formeditor->set_data($entry);
+
 $maintemplatedata = [
     'formeditor' => $formeditor->render(),
     'formimage' => $formiamge->render(),

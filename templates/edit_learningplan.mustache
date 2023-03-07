@@ -53,6 +53,37 @@
                     </div>
                 </div>
                 {{! End Field for learning plan requirements}}
+                
+                {{!Learning plan custom fields section}}
+                {{#customfields}}
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <h6 class="mb-2">{{name}}</h6>
+                    </div>
+                    {{#fields}}
+                        {{#select}}
+                        <div class="col-sm-12 col-md-6 py-2">
+                            <label class="w-100" for="{{shortname}}">{{name}}</label>
+                            <select  name="{{shortname}}" id="{{shortname}}" class="form-control customfield" {{required}}>
+                                <option value=''>{{#str}} select_career_name, local_sc_learningplans {{/str}}</option>
+                                {{#options}}
+                                <option {{selected}} value="{{id}}">{{value}}</option>
+                                {{/options}}
+                            </select>
+                        </div>
+                        {{/select}}
+                        
+                        {{#text}}
+                        <div class="col-sm-12 col-md-6 py-2">
+                            <label class="w-100" for="{{shortname}}">{{name}}</label>
+                            <input pattern="{{regex}}" {{disabled}} {{required}} type="{{datatype}}" name="{{shortname}}" placeholder="{{name}}" id="{{shortname}}" class="form-control customfield" value="{{value}}"/>
+                        </div>
+                        {{/text}}
+                        
+                    {{/fields}}
+                </div>
+                {{/customfields}}
+                {{!End learning plan custom fields section}}
 
                 {{! Actions }}
                 <div class="d-flex card-footer bg-transparent mt-3 px-0">

@@ -50,7 +50,6 @@ class createlp_form_editor extends moodleform {
         $mform = $this->_form;
         $mform->addElement('editor', 'desc_plan');
         $mform->setType('desc_plan', PARAM_RAW);
-
         $mform->disable_form_change_checker();
     }
 }

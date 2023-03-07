@@ -42,12 +42,10 @@ class get_learning_plans_external extends external_api {
 
     public static function get_learning_plans($page, $resultperpage) {
         global $DB, $USER, $CFG;
-
         if ($page > 0) {
             // Is required that the first page start with 0, not with 1 to get the correct values.
             $page--;
         }
-
         $limitfrom = $page * $resultperpage;
         $limitnum  = $resultperpage;
 
@@ -61,12 +59,13 @@ class get_learning_plans_external extends external_api {
             $limitfrom,
             $limitnum
         );
+        
         $wherein = [];
-        foreach ($lptolimit as $lpuser) {
+        foreach ($lptolimit as $lpuser) {   
             $wherein[] = $lpuser->learningplanid;
         }
         $whereinlearningplan = implode(',', $wherein);
-
+        
         $userlearningplans = $DB->get_records_sql(
             "SELECT
                 CONCAT(llu.id, llc.id),

@@ -30,7 +30,7 @@ if ($hassiteconfig) {
         get_string('pluginname', 'local_sc_learningplans'),
         new moodle_url('/local/sc_learningplans/index.php')
     ));
-
+    $ADMIN->add("courses", new admin_externalpage('learningplans_customfield', get_string('plugincustomfields', 'local_sc_learningplans'),new moodle_url('/local/sc_learningplans/customfield.php')));
     $settingspage = new admin_settingpage('local_sc_learningplans_settings', get_string('pluginname', 'local_sc_learningplans'));
     if ($ADMIN->fulltree) {
         $settingspage->add(new admin_setting_configtext(

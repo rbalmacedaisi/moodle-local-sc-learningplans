@@ -45,7 +45,7 @@ class addperiod_learning_plan_external extends external_api {
                 ),
                 'vigency'  => new external_value(
                     PARAM_INT,
-                    'ID of the role related to the suer',
+                    'ID of the role related to the user',
                     VALUE_REQUIRED,
                     null,
                     NULL_NOT_ALLOWED
@@ -76,6 +76,21 @@ class addperiod_learning_plan_external extends external_api {
         $learningplanrecord->periodcount += 1;
         $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
+        
+        //Edit the career custom field based on the remaining periods
+        $periods = $DB->get_records("local_learning_periods", ['learningplanid' => $learningplanid]);
+        $careerduration = 0;
+        foreach($periods as $p){
+            $careerduration += intval($p->months);
+        }
+        
+        $handler = local_sc_learningplans\customfield\learningplan_handler::create();
+        $customfieldstobeupdated = new stdClass();
+        $customfieldstobeupdated->id=$learningplanid;
+        $customfieldstobeupdated->customfield_careerduration = $careerduration;
+        $handler->instance_form_save($customfieldstobeupdated);
+        //Edit the career custom field based on the remaining periods
+        
         return [
             'id' => $createperiod->id,
         ];

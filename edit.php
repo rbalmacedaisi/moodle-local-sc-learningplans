@@ -56,6 +56,7 @@ $PAGE->navbar->add(
 );
 // Prepare the filemanager with the selected image.
 $formimagepicker = new createlp_form_picker();
+
 $draftitemid = file_get_submitted_draft_itemid('learningplan_image');
 file_prepare_draft_area(
     $draftitemid,
@@ -82,6 +83,7 @@ foreach ($userprofilefields as &$up) {
         $up->checked = 'checked';
     }
 }
+$handler = local_sc_learningplans\customfield\learningplan_handler::create();
 
 $maintemplatedata = [
     'formimagpicker' => $formimagepicker->render(),
@@ -90,7 +92,8 @@ $maintemplatedata = [
     'learningplanname' => $learningplan->name,
     'learningplandescription' => $learningplan->description,
     'userprofilefields' => array_values($userprofilefields),
-    'cancelurl' => $CFG->wwwroot.'/local/sc_learningplans/index.php'
+    'cancelurl' => $CFG->wwwroot.'/local/sc_learningplans/index.php',
+    'customfields' => array_values($handler->get_custom_fields_for_learning_plan($learningplanid))
 ];
 
 echo $OUTPUT->header();

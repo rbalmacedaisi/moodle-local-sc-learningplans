@@ -170,7 +170,25 @@ class duplicate_learning_plan_external extends external_api {
                 array('subdirs' => 0, 'maxfiles' => 1)
             );
         }
-
+        
+        
+        //Duplicate the custom fields of the learning plan----------------------------
+        $handler = local_sc_learningplans\customfield\learningplan_handler::create();
+        $learningplan_customfields = $handler->get_instance_data($oldlearningid);
+        if(!empty($learningplan_customfields)) {
+            $customfieldstobeduplicated = new stdClass();
+            $customfieldstobeduplicated->id=$newlearningplanid;
+            
+            foreach ($learningplan_customfields as $customfield) {
+                if (empty($customfield->get_value())) {
+                    continue;
+                }
+                $customfieldstobeduplicated->{'customfield_'.$customfield->get_field()->get('shortname')} = $customfield->get_value();
+            }
+            $handler->instance_form_save($customfieldstobeduplicated);
+        }
+        //End custom fields duplicate------------------------------
+        
         return [
             'learningplanid' => $newlearningplanid
         ];

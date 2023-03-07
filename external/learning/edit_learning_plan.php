@@ -38,6 +38,14 @@ class edit_learning_plan_external extends external_api {
                 'fileimage' => new external_value(PARAM_INT, 'Image itemid provide by filemanager form element'),
                 'description' => new external_value(PARAM_RAW, 'Description of the learning plan'),
                 'requirements'   => new external_value(PARAM_TEXT, 'User Profiles id'),
+                'customfields' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'id' => new external_value(PARAM_TEXT, 'Id of the custom field'),
+                            'value' => new external_value(PARAM_TEXT, 'Value of the custom field'),
+                        ),
+                    )
+                ),
             )
         );
     }
@@ -48,7 +56,8 @@ class edit_learning_plan_external extends external_api {
             $learningname,
             $fileimage,
             $description,
-            $requirements
+            $requirements,
+            $customfields
         ) {
         global $DB;
         // Check if LP Exist.
@@ -88,6 +97,23 @@ class edit_learning_plan_external extends external_api {
         $learningplan->requirements = $requirements;
         $learningplan->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplan);
+        
+        //Save learning plan custom fields-------------
+        if(!empty($customfields)){
+            
+            //Init the handler
+            $handler = local_sc_learningplans\customfield\learningplan_handler::create();
+            $customfieldstobeupdated= new stdClass();
+            $customfieldstobeupdated->id=$learningid;
+            foreach ($customfields as $customfield) {
+                $id = $customfield['id'];
+                $value = $customfield['value'];
+                $customfieldstobeupdated->{'customfield_'.$id}= $value;
+            }
+            $handler->instance_form_save($customfieldstobeupdated);
+        }
+        //End save learning plan custom fields-------------
+        
         send_email_lp_updated($learningid);
         return [
             'learningplanid' => $learningid

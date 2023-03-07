@@ -132,7 +132,7 @@
 
                     {{! Field to select the role of the user }}
                     <div class="col-sm-12 col-md-6 py-2">
-                        <label class="w-100" for="learningname">{{#str}} title_add_users, local_sc_learningplans {{/str}}</label>
+                        <label class="w-100" for="learningname">{{#str}} title_add_roles, local_sc_learningplans {{/str}}</label>
                         <div class="d-flex align-items-center flex-wrap">
                             <select name="listroles" id="listroles" required class="form-control">
                                 <option value=''>{{#str}} select_role, local_sc_learningplans {{/str}}</option>
@@ -146,7 +146,7 @@
                     
                     {{! Field to select user group }}
                     <div class="col-sm-12 col-md-6 py-2">
-                        <label class="" for="listgroups">{{#str}} assign_rol, local_sc_learningplans {{/str}}</label>
+                        <label class="" for="listgroups">{{#str}} title_add_groups, local_sc_learningplans {{/str}}</label>
                         <div class="d-flex align-items-center flex-wrap">
                             <select name="listgroups" class="form-control w-auto mr-2" id="listgroups" required class="form-control">
                                 <option value=''>{{#str}} select_group, local_sc_learningplans {{/str}}</option>
@@ -203,6 +203,38 @@
                     </div>
                 </div>
                 {{! End Field for learning plan requirements}}
+                
+                
+                {{!Learning plan custom fields section}}
+                {{#customfields}}
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <h6 class="mb-2">{{name}}</h6>
+                    </div>
+                    {{#fields}}
+                        {{#select}}
+                        <div class="col-sm-12 col-md-6 py-2">
+                            <label class="w-100" for="{{shortname}}">{{name}}</label>
+                            <select name="{{shortname}}" id="{{shortname}}" class="form-control customfield" {{required}}>
+                                <option value=''>{{#str}} select_career_name, local_sc_learningplans {{/str}}</option>
+                                {{#options}}
+                                <option value="{{id}}">{{value}}</option>
+                                {{/options}}
+                            </select>
+                        </div>
+                        {{/select}}
+                        
+                        {{#text}}
+                        <div class="col-sm-12 col-md-6 py-2">
+                            <label class="w-100" for="{{shortname}}">{{name}}</label>
+                            <input pattern="{{regex}}" {{required}} type="{{datatype}}" name="{{shortname}}" placeholder="{{name}}" id="{{shortname}}" class="form-control customfield" />
+                        </div>
+                        {{/text}}
+                        
+                    {{/fields}}
+                </div>
+                {{/customfields}}
+                {{!End learning plan custom fields section}}
 
                 {{! Actions }}
                 <div class="d-flex card-footer bg-transparent mt-3 px-0">

@@ -39,7 +39,6 @@ if (!has_any_capability(['local/sc_learningplans:manage'], $context)) {
 
 $id = required_param('id', PARAM_INT);
 $back = required_param('b', PARAM_RAW);
-var_dump($id);
 $learningplan = $DB->get_record('local_learning_plans', array('id' => $id));
 if (!$learningplan) {
     redirect(new moodle_url('/local/sc_learningplans/index.php'));
@@ -70,5 +69,9 @@ foreach ($periods as $period) {
 
 // Delete lp.
 $DB->delete_records('local_learning_plans', ['id' => $id]);
+
+// Delete lp custom fields
+$handler = local_sc_learningplans\customfield\learningplan_handler::create();
+$handler->delete_instance($id);
 
 redirect($back);

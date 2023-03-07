@@ -1,6 +1,43 @@
 import * as Ajax from 'core/ajax';
 import * as Str from 'core/str';
 
+//Get name and shortname of the custom field
+const learningshortid = document.getElementById('learningshortid');
+const plannameelement = document.getElementById('learningname');
+const btnadd = document.getElementById('addplan');
+
+//Get period items to be used
+const addperiod = document.getElementById('addperiod');
+const notperiod = document.getElementById('notperiod');
+const optperiod = document.getElementById('periodslist');
+const addingperiods = document.getElementById('addingperiods');
+const parent = document.getElementById('listperiods');
+const parent_enrol = document.getElementById('type_enrol');
+
+//Get courses items to be used
+const addcourses = document.getElementById('addcourses');
+const listcoursesplan =document.getElementById('listcoursesplan');
+const addrequired = document.getElementById('addrequired');
+const addoptional = document.getElementById('addooptional');
+const requiredlist = document.getElementById('formCurrentCourseToLearningPlan');
+const optionallist = document.getElementById('formOptionalCourseToLearningPlan');
+const selectedcourse = document.getElementById('selectAddCourseToLearningPlan');
+
+//Get user items to be used
+const listusersplan=document.getElementById('listusersplan');
+const adduser = document.getElementById('adduser');
+const listusers = document.getElementById('listusers');
+const listroles = document.getElementById('listroles');
+const listgroups = document.getElementById('listgroups');
+
+//Get plan items to be used
+const learningimage = document.getElementById('id_learningplan_image');
+
+//Get custom fields items to be used
+const careercost = document.getElementById('careercost');
+const careerduration = document.getElementById('careerduration');
+const careername = document.getElementById('careername');
+
 export const init = (str_name_period_config, default_period_months) => {
     addLearningPlan();
     addUsers();
@@ -9,50 +46,40 @@ export const init = (str_name_period_config, default_period_months) => {
 };
 
 let addLearningPlan = () => {
-    const btnadd = document.querySelector('#addplan');
     if (btnadd) {
         btnadd.addEventListener('click', e => {
             e.preventDefault();
-            const learningshortid = document.querySelector('#learningshortid');
+            let desc_plan =document.getElementById('id_desc_planeditable');
             if (!learningshortid.validity.valid) {
                 learningshortid.reportValidity();
                 return;
             }
-            const plannameelement = document.querySelector('#learningname');
-            if (!plannameelement.validity.valid) {
+            else if (!plannameelement.validity.valid) {
                 plannameelement.reportValidity();
                 return;
             }
-            const learningname = document.querySelector('#learningname');
-            const desc_plan = document.querySelector('#id_desc_planeditable');
-            const learningimage = document.querySelector('#id_learningplan_image');
+            else if (!careercost.validity.valid) {
+                careercost.reportValidity();
+                return;
+            }
+            else if (!careerduration.validity.valid) {
+                careerduration.reportValidity();
+                return;
+            }
+            else if (!careername.validity.valid) {
+                careername.reportValidity();
+                return;
+            }
             const btnscourse = document.querySelectorAll('button[courseid]');
             const btnsusers = document.querySelectorAll('button[userid]');
             const listperiods = document.querySelectorAll('.period_name');
+            const type_enrol_manual = document.getElementById("type_manual");
+            const type_enrol_automatic = document.getElementById("type_automatic");
+            const hasperiod = addperiod.checked ? 1 : 0;
+            const type_enrol = setTypeEnrol(type_enrol_manual,type_enrol_automatic);
             const periods = [];
             const courses = [];
             const users = [];
-            const type_enrol_manual = document.getElementById("type_manual");
-            const type_enrol_automatic = document.getElementById("type_automatic");
-            let hasperiod = 0;
-            let type_enrol = 0;
-            if (type_enrol_manual !== null) {
-                if (type_enrol_manual.checked) {
-                    type_enrol = 1;
-                }
-            } else {
-                type_enrol = 0;
-            }
-            if (type_enrol_automatic !== null) {
-                if (type_enrol_automatic.checked) {
-                    type_enrol = 2;
-                }
-            } else {
-                type_enrol = 0;
-            }
-            if (document.getElementById('addperiod').checked) {
-                hasperiod = 1;
-            }
             listperiods.forEach(e => {
                 const index = e.getAttribute('index');
                 const name = e.value == '' ? index : e.value;
@@ -84,13 +111,17 @@ let addLearningPlan = () => {
                     });
                 });
             }
-            if (window.NodeList && !NodeList.prototype.map) {
-                NodeList.prototype.map = Array.prototype.map;
+            if (window.NodeList && !window.NodeList.prototype.map) {
+                window.NodeList.prototype.map = Array.prototype.map;
             }
             const requirements = document.querySelectorAll('input[name=learningrequirements]:checked').map(el => el.value).join();
+            const customfields = [];
+            document.getElementsByClassName('customfield').forEach(({id,value}) => {
+                value? customfields.push({id,value}):undefined;
+            });
             const args = {
                 learningshortid: learningshortid.value,
-                learningname: learningname.value,
+                learningname: plannameelement.value,
                 periods,
                 courses,
                 users,
@@ -98,16 +129,16 @@ let addLearningPlan = () => {
                 description: desc_plan.innerHTML,
                 hasperiod: hasperiod,
                 enroltype: type_enrol,
-                requirements
+                requirements,
+                customfields
             };
-            window.console.log(args);
             const promise = Ajax.call([{
                 methodname: 'local_sc_learningplans_save_learning_plan',
                 args
             },]);
             promise[0].done(function (response) {
                 window.console.log('local_sc_learningplans_save_learning_plan', response);
-                location.href = '/local/sc_learningplans/index.php';
+                window.location.href = '/local/sc_learningplans/index.php';
             }).fail(function (response) {
                 window.console.error(response);
             });
@@ -116,10 +147,7 @@ let addLearningPlan = () => {
 };
 
 let addUsers = () => {
-    const adduser = document.querySelector('#adduser');
-    const listusers = document.querySelector('#listusers');
-    const listroles = document.querySelector('#listroles');
-    const listgroups = document.querySelector('#listgroups');
+
     const listlearningusers = document.querySelector('.listlearningusers');
     if (adduser && listusers && listroles) {
         adduser.addEventListener('click', async e => {
@@ -169,9 +197,6 @@ let addUsers = () => {
 };
 
 let addCourses = async () => {
-    const selectedcourse = document.querySelector('#selectAddCourseToLearningPlan');
-    const addrequired = document.querySelector('#addrequired');
-    const requiredlist = document.querySelector('#formCurrentCourseToLearningPlan');
     if (addrequired && requiredlist) {
         addrequired.addEventListener('click', async e => {
             e.preventDefault();
@@ -213,9 +238,6 @@ let addCourses = async () => {
             }
         });
     }
-
-    const addoptional = document.querySelector('#addooptional');
-    const optionallist = document.querySelector('#formOptionalCourseToLearningPlan');
     if (addoptional && optionallist) {
         addoptional.addEventListener('click', async e => {
             e.preventDefault();
@@ -259,7 +281,6 @@ let addCourses = async () => {
 };
 
 let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
-    const addperiod = document.querySelector('#addperiod');
     if (addperiod) {
         const periodname = await Str.get_string('periodname', 'local_sc_learningplans');
         //const period = await Str.get_string('period', 'local_sc_learningplans');
@@ -267,27 +288,26 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
         const manual = await Str.get_string('manual', 'local_sc_learningplans');
         const auto = await Str.get_string('auto', 'local_sc_learningplans');
         const periodmonths = await Str.get_string('periodmonths', 'local_sc_learningplans');
-
         const divInput = document.createElement('div');
         const divCol = document.createElement('div');
         const label = document.createElement('label');
         const input = document.createElement('input');
         addperiod.addEventListener('click', () => {
-            let addingperiods = document.getElementById('addingperiods');
             addingperiods.disabled = false;
-            let optperiod = document.getElementById('periodslist');
             optperiod.disabled = false;
-            let parent = document.getElementById('listperiods');
-            let parent_enrol = document.getElementById('type_enrol');
             if (addingperiods) {
                 addingperiods.addEventListener('click', () => {
                     parent.innerHTML = '';
-                    let value = optperiod.options[optperiod.selectedIndex].value;
+                    //Disabled the careerduration customfield, the duration will be calculated based on the periods
+                    careerduration.value = null;
+                    careerduration.disabled = true;
+                    // The next line was causing an error
+                    // let value = optperiod.isoptions[optperiod.selectedIndex].value; 
+                    let value =  optperiod.value;
                     for (let i = 1; i <= value; i++) {
                         const labelForName = label.cloneNode();
                         labelForName.setAttribute('for', `period_${i}`);
                         labelForName.innerHTML = `${periodname} ${i}:&nbsp;`;
-
                         const inputForName = input.cloneNode();
                         inputForName.classList.add('period_name');
                         inputForName.classList.add('form-control');
@@ -295,11 +315,9 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
                         inputForName.setAttribute('index', i);
                         inputForName.placeholder = `${str_name_period_config} ${i}`;
                         inputForName.id = `inputPeriodName${i}`;
-
                         const labelForMonths = label.cloneNode();
                         labelForMonths.setAttribute('for', `period_months_${i}`);
                         labelForMonths.innerHTML = `&nbsp;&nbsp;${periodmonths}:&nbsp;`;
-
                         const inputForMonths = input.cloneNode();
                         inputForMonths.classList.add('form-control');
                         inputForMonths.setAttribute('value', default_period_months);
@@ -334,29 +352,43 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
                                               <input type="radio" id="type_automatic" name="enrol_period" value="2">
                                               <label for="css">${auto}</label></div>`;
 
+                    const listperiods = document.querySelectorAll('.period_name');
+                    let months = 0;
+                    listperiods.forEach(e => {
+                        const index = e.getAttribute('index');
+                        const monthsElement = document.querySelector(`#inputPeriodMonth${index}`);
+                        let monthsvalue = monthsElement && monthsElement.value == '' ? 0 : parseInt(monthsElement.value);
+                        months += monthsvalue;
+                    });
                 });
-                document.getElementById('addcourses').classList.remove("d-block");
-                document.getElementById('listcoursesplan').classList.remove("d-block");
-                document.getElementById('listusersplan').classList.remove("d-block");
-                document.getElementById('addcourses').classList.add("d-none");
-                document.getElementById('listcoursesplan').classList.add("d-none");
-                document.getElementById('listusersplan').classList.add("d-none");
+                addcourses.classList.remove("d-block");
+                addcourses.classList.add("d-none");
+                listcoursesplan.classList.remove("d-block");
+                listcoursesplan.classList.add("d-none");
+                listusersplan.classList.remove("d-block");
+                listusersplan.classList.add("d-none");
             }
         });
     }
-    const notperiod = document.querySelector('#notperiod');
     if (notperiod) {
         notperiod.addEventListener('click', () => {
-            document.getElementById('listperiods').innerHTML = '';
-            document.getElementById('type_enrol').innerHTML = '';
-            let addingperiods = document.getElementById('addingperiods');
+            //Enable the careerduration customfield
+            careerduration.disabled = false;
+            parent.innerHTML = '';
+            parent_enrol.innerHTML = '';
             addingperiods.disabled = true;
-            document.getElementById('addcourses').classList.remove("d-none");
-            document.getElementById('listcoursesplan').classList.remove("d-none");
-            document.getElementById('listusersplan').classList.remove("d-none");
-            document.getElementById('addcourses').classList.add("d-block");
-            document.getElementById('listcoursesplan').classList.add("d-block");
-            document.getElementById('listusersplan').classList.add("d-block");
+            addcourses.classList.remove("d-none");
+            addcourses.classList.add("d-block");
+            listcoursesplan.classList.remove("d-none");
+            listcoursesplan.classList.add("d-block");
+            listusersplan.classList.remove("d-none");
+            listusersplan.classList.add("d-block");
         });
     }
+};
+
+const setTypeEnrol = (type_enrol_manual,type_enrol_automatic) => {
+    if (type_enrol_manual && type_enrol_manual.checked) {return 1;}
+    else if (type_enrol_automatic && type_enrol_automatic.checked) {return 2;}
+    return 0;
 };

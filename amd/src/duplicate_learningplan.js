@@ -37,7 +37,7 @@ export const init = (learningid) => {
 
             promise[0].done(function (response) {
                 window.console.log('local_sc_learningplans_duplicate_learning_plan', response);
-                location.href = '/local/sc_learningplans/index.php';
+                window.location.href = '/local/sc_learningplans/index.php';
             }).fail(function (response) {
                 window.console.error(response);
             });

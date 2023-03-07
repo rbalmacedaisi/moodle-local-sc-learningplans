@@ -5,18 +5,22 @@ export const init = (learningid, is_siteadmin) => {
     if (btneditplan) {
         btneditplan.addEventListener('click', e => {
             e.preventDefault();
-            const learningname = document.querySelector('#learningname');
+            const learningname = document.getElementById('learningname');
             if (!learningname.validity.valid) {
                 learningname.reportValidity();
                 return;
             }
-            const learningshortname = document.querySelector('#learningshortname');
-            const desc_plan = document.querySelector('#id_desc_planeditable');
-            const learningimage = document.querySelector('#id_learningplan_image');
-            if (window.NodeList && !NodeList.prototype.map) {
-                NodeList.prototype.map = Array.prototype.map;
+            const learningshortname = document.getElementById('learningshortname');
+            const desc_plan = document.getElementById('id_desc_planeditable');
+            const learningimage = document.getElementById('id_learningplan_image');
+            if (window.NodeList && !window.NodeList.prototype.map) {
+                window.NodeList.prototype.map = Array.prototype.map;
             }
             const requirements = document.querySelectorAll('input[name=learningrequirements]:checked').map(el => el.value).join();
+            const customfields = [];
+            document.getElementsByClassName('customfield').forEach(({id,value}) => {
+                value? customfields.push({id,value}):undefined;
+            });
             const promise = Ajax.call([{
                 methodname: 'local_sc_learningplans_edit_learning_plan',
                 args: {
@@ -26,6 +30,7 @@ export const init = (learningid, is_siteadmin) => {
                     fileimage: learningimage.value,
                     description: desc_plan.innerHTML,
                     requirements,
+                    customfields
                 }
             },]);
 

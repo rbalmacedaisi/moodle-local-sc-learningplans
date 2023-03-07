@@ -366,3 +366,16 @@ button#addoptional_required {
 #searchUser:focus {
     box-shadow: none !important;
 }
+
+#careercost::-webkit-outer-spin-button,
+#careercost::-webkit-inner-spin-button,
+#careerduration::-webkit-outer-spin-button,
+#careerduration::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+#careercost[type=number], #careerduration[type=number] {
+  -moz-appearance: textfield;
+}

@@ -67,6 +67,20 @@ class edit_period_learning_plan_external extends external_api {
         $period->usermodified = $USER->id;
         $period->timemodified = time();
         $DB->update_record('local_learning_periods', $period);
+        
+        //Edit the career custom field based on the remaining periods
+        $periods = $DB->get_records("local_learning_periods", ['learningplanid' => $period->learningplanid]);
+        $careerduration = 0;
+        foreach($periods as $p){
+            $careerduration += intval($p->months);
+        }
+        
+        $handler = local_sc_learningplans\customfield\learningplan_handler::create();
+        $customfieldstobeupdated = new stdClass();
+        $customfieldstobeupdated->id=$period->learningplanid;
+        $customfieldstobeupdated->customfield_careerduration = $careerduration;
+        $handler->instance_form_save($customfieldstobeupdated);
+        //End Edit the career custom field based on the remaining periods
 
         return [
             'periodid' => $periodid

@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Learning Plans';
+$string['plugincustomfields'] = 'Learning Plans Custom Fields';
 
 $string['sc_learningplans:manage'] = 'Manager - learning plans in local sc_learningplans';
 $string['sc_learningplans:teach'] = 'Teacher - learning plans in local sc_learningplans';
@@ -55,6 +56,7 @@ $string['plan_name'] = 'Learning Plan Name';
 $string['addingperiods'] = 'You want to add Periods';
 $string['select_periods'] = 'Select the number of periods';
 $string['btnaddperiods'] = 'Add Periods';
+$string['not_periods'] = 'No periods added yet';
 $string['title_add_course'] = 'Add new course';
 $string['select_course'] = 'Select Course';
 $string['btn_add_course'] = 'Add';
@@ -62,14 +64,21 @@ $string['btn_addopt_course'] = 'Add Optional';
 $string['title_current_course'] = 'Current courses';
 $string['title_optional_course'] = 'Optional courses';
 $string['delete_current_course'] = 'Delete course';
+$string['title_add_roles'] = 'Manage roles';
 $string['title_add_users'] = 'Manage users';
+$string['title_add_groups'] = 'Manage groups';
+$string['title_career_name'] = 'Career name';
+$string['title_career_cost'] = 'Career cost';
+$string['title_career_duration'] = 'Career duration (weeks)';
 $string['add_user_lp'] = 'Add new users in Learning Plan';
 $string['select_user'] = 'Select User';
 $string['select_role'] = 'Select Rol';
+$string['select_career_name'] = 'Select Career name';
 $string['btn_add_user'] = 'Add users';
 $string['title_desc_plan'] = 'Plan description';
 $string['plan_image'] = 'Plan Image';
 $string['add_plan'] = 'Add learning plan';
+$string['career_info'] = 'Career information';
 
 $string['bulk_users'] = 'Bulk upload users in csv file';
 
@@ -192,3 +201,17 @@ $string['emailsubjectupdatelp'] = 'Custom subject';
 $string['emailsubjectupdatelp_desc'] = 'Custom email subject';
 $string['templatemailupdatelp'] = 'Custom email template when LP is updated';
 $string['templatemailupdatelp_desc'] = '{{fullusername}}: User full name<br/>{{lpname}}: LP Name<br/>{{firstcoursename}}: First course name<br/>{{firsturlcourse}}: First url course';
+
+$string['customfield_regexpattern'] = 'Custom field regex pattern';
+$string['customfield_datatype'] = 'Custom field data type';
+$string['customfieldsettings'] = 'Learning plan custom field configuration';
+$string['datatypenumber'] = 'Number';
+$string['datatypetext'] = 'Text';
+$string['datatypeemail'] = 'Email';
+
+$string['Informacion_carrera'] = 'Career information';
+$string['Campos_prueba'] = 'Campos test';
+$string['careercost'] = 'Career cost';
+$string['careerduration'] = 'Career duration (months)';
+$string['careername'] = 'Career name';
+

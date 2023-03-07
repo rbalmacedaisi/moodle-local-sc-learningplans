@@ -40,6 +40,7 @@ $learningplanid = required_param('id', PARAM_INT);
 
 // Check if plan has periods.
 $periods = $DB->get_records("local_learning_periods", ['learningplanid' => $learningplanid]);
+
 $hasperiods = false;
 if (!empty($periods)) {
     $hasperiods = true;
