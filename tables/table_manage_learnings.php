@@ -117,7 +117,7 @@ class table_manage_learnings extends table_sql {
             new moodle_url('/local/sc_learningplans/users.php', ['id' => $values->id]),
             $usericon,
             array(
-                'class' => 'mx-1',
+                'class' => 'mr-1',
                 'data-toggle' => 'tooltip',
                 'data-placement' => 'bottom',
                 'title' => get_string(
@@ -131,7 +131,7 @@ class table_manage_learnings extends table_sql {
             new moodle_url('/local/sc_learningplans/courses.php', ['id' => $values->id]),
             $courseicon,
             array(
-                'class' => 'mx-1',
+                'class' => 'mr-1',
                 'data-toggle' => 'tooltip',
                 'data-placement' => 'bottom',
                 'title' => get_string('manage_courses', 'local_sc_learningplans')
@@ -141,7 +141,7 @@ class table_manage_learnings extends table_sql {
             new moodle_url('/local/sc_learningplans/edit.php', ['id' => $values->id]),
             $editicon,
             array(
-                'class' => 'mx-1',
+                'class' => 'mr-1',
                 'data-toggle' => 'tooltip',
                 'data-placement' => 'bottom',
                 'title' => get_string('edit_plan', 'local_sc_learningplans')
@@ -151,7 +151,7 @@ class table_manage_learnings extends table_sql {
             new moodle_url('/local/sc_learningplans/duplicate.php', ['id' => $values->id]),
             $duplicateicon,
             array(
-                'class' => 'mx-1',
+                'class' => 'mr-1',
                 'data-toggle' => 'tooltip',
                 'data-placement' => 'bottom',
                 'title' => get_string('duplicate_plan', 'local_sc_learningplans')
@@ -162,7 +162,7 @@ class table_manage_learnings extends table_sql {
             'deleteLearningPlan',
             [
                 'learning-plan-id' => $values->id,
-                'class' => 'mx-1',
+                'class' => 'mr-1',
                 'data-toggle' => 'tooltip',
                 'data-placement' => 'bottom',
                 'title' => get_string('delete_learningplan', 'local_sc_learningplans')
@@ -172,7 +172,7 @@ class table_manage_learnings extends table_sql {
             new moodle_url('/local/sc_learningplans/report.php', ['id' => $values->id]),
             $reporticon,
             array(
-                'class' => 'mx-1',
+                'class' => 'mr-1',
                 'data-toggle' => 'tooltip',
                 'data-placement' => 'bottom',
                 'title' => get_string('report', 'local_sc_learningplans')
@@ -183,7 +183,7 @@ class table_manage_learnings extends table_sql {
                 new moodle_url('/local/sc_learningplans/period.php', ['id' => $values->id]),
                 $period,
                 array(
-                    'class' => 'mx-1',
+                    'class' => 'mr-1',
                     'data-toggle' => 'tooltip',
                     'data-placement' => 'bottom',
                     'title' => get_string('manage_periods', 'local_sc_learningplans')
