@@ -62,7 +62,7 @@ $roles = sc_learningplan_get_roles();
 $groups = get_groups_from_courses($learningplanid);
 
 $learningusers = $DB->get_records_sql(
-    "SELECT lu.*, u.firstname, u.lastname, u.email
+    "SELECT lu.*, u.firstname, u.lastname, u.email, u.deleted
         FROM {local_learning_users} lu
         JOIN {user} u ON (u.id = lu.userid)
         WHERE lu.learningplanid = :learningplanid",
@@ -70,6 +70,7 @@ $learningusers = $DB->get_records_sql(
         'learningplanid' => $learningplanid
     ]
 );
+
 
 foreach ($learningusers as &$user) {
     $userid = $user->userid;
