@@ -23,6 +23,8 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/learningplanlib.php');
+
 function xmldb_local_sc_learningplans_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
@@ -190,6 +192,22 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         }
         // Sc_learningplans savepoint reached.
         upgrade_plugin_savepoint(true, 2023030200, 'local', 'sc_learningplans');
+    }
+
+    if ($oldversion < 2023032204) {
+
+        $learningdeleteduser = $DB->get_records_sql(
+            "SELECT lr.*, u.firstname, u.lastname, u.email, u.deleted
+                FROM {local_learning_report} lr
+                JOIN {user} u ON (u.id = lr.userid AND u.deleted = 1)
+            "
+        );
+        foreach ($learningdeleteduser as $value) {
+            $DB->delete_records('local_learning_report', ['userid' => $value->userid]);
+        }
+        learning_plans_recount_users();
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023032204, 'local', 'sc_learningplans');
     }
 
     return true;

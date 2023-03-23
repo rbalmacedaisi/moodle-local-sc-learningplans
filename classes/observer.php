@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/completionlib.php");
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/learningplanlib.php');
 
 class local_sc_learningplans_observer {
     /**
@@ -72,8 +73,9 @@ class local_sc_learningplans_observer {
     public static function user_deleted(\core\event\user_deleted  $event) {
         global $DB;
         $userid = $event->objectid;
-
-        return $DB->delete_records('local_learning_users', ['userid' => $userid]);
+        $DB->delete_records('local_learning_report', ['userid' => $userid]); // Delete from report.
+        $DB->delete_records('local_learning_users', ['userid' => $userid]); // Delete from lp users.
+        learning_plans_recount_users();
     }
 
 }
