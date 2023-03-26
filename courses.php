@@ -24,6 +24,7 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/courselib.php');
 
 require_login();
 
@@ -90,6 +91,7 @@ if ($learningplan->hasperiod == 1) {
                 $listperiodcourses[$period->id]['nameperiod'] = $period->name;
             }
             if ($course->isrequired == 1) {
+                $course->relatedcourses = get_related_courses($course->id, true);
                 $listperiodcourses[$period->id]['coursesrequired'][] = $course;
             } else {
                 $listperiodcourses[$period->id]['coursesoptional'][] = $course;
@@ -103,6 +105,7 @@ if ($learningplan->hasperiod == 1) {
             continue;
         }
         if ($course->isrequired == 1) {
+            $course->relatedcourses = get_related_courses($course->id, true);
             $requiredcourses[] = $course;
         } else {
             $optionalcourses[] = $course;

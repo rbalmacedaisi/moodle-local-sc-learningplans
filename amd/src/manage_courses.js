@@ -10,6 +10,124 @@ export const init = (learningplanid) => {
     changeOptionalToRequiredAction(learningplanid);
 
     updateCoursePositionAction();
+
+    actionAddCourseRelations();
+};
+
+let actionAddCourseRelations = () => {
+    const allBtn = document.querySelectorAll('#btnAddRelationCourse');
+    allBtn.forEach(element => {
+        element.addEventListener('click', () => {
+            const recordid = element.getAttribute('course-record-id');
+            window.lastRecordId = recordid;
+            callGetPossibleRelations(recordid);
+        });
+    });
+    const allRemoveBtn = document.querySelectorAll('#btnDeleteRelationCourse');
+    allRemoveBtn.forEach(element => {
+        element.addEventListener('click', () => {
+            const recordid = element.getAttribute('course-record-id');
+            window.lastRecordId = recordid;
+            callGetPossibleRelations(recordid, true);
+        });
+    });
+
+    const closerelation = document.querySelector('#closerelation');
+    if (closerelation) {
+        closerelation.addEventListener('click', () => {
+            const modal = document.getElementById('coursesRelatedModal');
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+        });
+    }
+
+    const addrelation = document.querySelector('#addrelation');
+    if (addrelation) {
+        addrelation.addEventListener('click', () => {
+            const select = document.querySelector('#selectCourseToRelated');
+            if (select) {
+                const selectedOptions = select.selectedOptions;
+                const selectedValues = [];
+                for (let i = 0; i < selectedOptions.length; i++) {
+                    selectedValues.push(selectedOptions[i].value);
+                }
+                const records = selectedValues.join(',');
+                const recordid = window.lastRecordId;
+                if (window.getToRemove) {
+                    callRemoveRelations(recordid, records);
+                } else {
+                    callAddRelations(recordid, records);
+                }
+            }
+        });
+    }
+};
+
+const callRemoveRelations = (recordid, records) => {
+    const promise = Ajax.call([{
+        methodname: 'local_sc_learningplans_del_course_relations',
+        args: {
+            recordid,
+            records,
+        }
+    },]);
+
+    promise[0].done(function (response) {
+        window.console.log('local_sc_learningplans_del_course_relations', response);
+        location.reload();
+    }).fail(function (response) {
+        window.console.error(response);
+    });
+};
+
+const callAddRelations = (recordid, records) => {
+    const promise = Ajax.call([{
+        methodname: 'local_sc_learningplans_add_course_relations',
+        args: {
+            recordid,
+            records,
+        }
+    },]);
+
+    promise[0].done(function (response) {
+        window.console.log('local_sc_learningplans_add_course_relations', response);
+        location.reload();
+    }).fail(function (response) {
+        window.console.error(response);
+    });
+};
+
+const callGetPossibleRelations = (recordid, getToRemove = false) => {
+    recordid = parseInt(recordid);
+    const promise = Ajax.call([{
+        methodname: 'local_sc_learningplans_get_possible_relations',
+        args: {
+            recordid,
+        }
+    },]);
+
+    promise[0].done(function (response) {
+        window.console.log('local_sc_learningplans_get_possible_relations', response);
+        const selectCourses = document.querySelector('#selectCourseToRelated');
+        selectCourses.innerHTML = '';
+        window.getToRemove = getToRemove;
+        let dataCourses = response.courses;
+        if (getToRemove) {
+            dataCourses = response.current;
+        }
+        dataCourses.forEach(element => {
+            const newElement = document.createElement("option");
+            newElement.value = element.recordid;
+            newElement.append(element.coursename);
+            selectCourses.append(newElement);
+        });
+
+        const modal = document.getElementById('coursesRelatedModal');
+        modal.classList.add('show');
+        modal.style.display = 'block';
+    }).fail(function (response) {
+        window.console.error(response);
+    });
 };
 
 let deleteCourseAction = (learningplanid) => {

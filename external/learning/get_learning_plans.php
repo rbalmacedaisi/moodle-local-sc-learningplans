@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/externallib.php');
 require_once("$CFG->libdir/completionlib.php");
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/courselib.php');
 
 use core_completion\progress;
 
@@ -70,6 +71,7 @@ class get_learning_plans_external extends external_api {
         $userlearningplans = $DB->get_records_sql(
             "SELECT
                 CONCAT(llu.id, llc.id),
+                llc.id courserecordid,
                 llu.id learninguserid,
                 llu.learningplanid,
                 llp.name learningname,
@@ -190,6 +192,7 @@ class get_learning_plans_external extends external_api {
             }
             $returnlearningplandata[$learningplanid]['periodsdata'][$periodname][$coursestringindex][$courseid] = [
                 'id' => $courseid,
+                'crid' => $userlpdata->courserecordid,
                 'fullname' => $userlpdata->coursename,
                 'shortname' => $userlpdata->courseshortname,
                 'courseurl' => $CFG->wwwroot . '/course/view.php?id=' .$courseid,
@@ -232,6 +235,23 @@ class get_learning_plans_external extends external_api {
             }
             if ($rlp['requiredtotalcourses'] > 0) {
                 $rlp['learningplanprogress'] = round($rlp['requiredcoursescompleted'] * 100 / $rlp['requiredtotalcourses'], 2);
+            }
+        }
+        // Verify and mark courses related to the first course.
+        foreach ($returnlearningplandata as &$rlp) {
+            foreach ($rlp['periodsdata'] as $periodname => &$perioddata) {
+                $firstcourse = true;
+                $CFG->checkActiveRelatedCourses = [];
+                foreach ($perioddata['requiredcourses'] as &$requiredcourse) {
+                    if ($firstcourse) {
+                        mark_active_related_courses($requiredcourse['crid']);
+                        $requiredcourse['active'] = true;
+                        $firstcourse = false;
+                    }
+                    if(isset($CFG->checkActiveRelatedCourses[$requiredcourse['crid']])) {
+                        $requiredcourse['active'] = true;
+                    }
+                }
             }
         }
         return [

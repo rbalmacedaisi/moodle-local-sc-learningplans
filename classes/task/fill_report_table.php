@@ -25,6 +25,8 @@
 
 namespace local_sc_learningplans\task;
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/learningplanlib.php');
 
 /**

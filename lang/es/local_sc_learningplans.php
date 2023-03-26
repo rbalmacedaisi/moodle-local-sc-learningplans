@@ -192,3 +192,7 @@ $string['emailsubjectupdatelp'] = 'Asunto personalizado';
 $string['emailsubjectupdatelp_desc'] = 'Asunto personalizado del correo';
 $string['templatemailupdatelp'] = 'Plantilla de correo cuando el plan de aprendizaje es actualizado';
 $string['templatemailupdatelp_desc'] = '{{fullusername}}: Nombre completo de usuario<br/>{{lpname}}: Nombre del plan de aprendizaje<br/>{{firstcoursename}}: Nombre del primer curso<br/>{{firsturlcourse}}: Enlace del primer curso';
+
+$string['add_relation_course'] = 'Agregar correlación';
+$string['remove_relation_course'] = 'Eliminar relación';
+$string['related_courses'] = 'Cursos relacionados';

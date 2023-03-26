@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/group/lib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/courselib.php');
 
 /**
  * Get allowed roles for this plugin
@@ -58,6 +59,8 @@ function sc_learningplan_get_roles() {
  * @return void
  */
 function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $learningplanrecord, $learninguserrecord, $groupname) {
+    global $CFG;
+    $CFG->alreadyRelated = [];
     global $CFG, $DB;
     require_once("$CFG->libdir/completionlib.php");
     $enrolplugin = enrol_get_plugin('manual');
@@ -115,6 +118,7 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
         $learninguserrecord->currentperiodid = $courseperiod; // If null, only mean that the lp not have periods.
         // Enrol in the course.
         enrol_user($enrolplugin, $userid, $courseid, $roleid, $groupname);
+        enrol_user_in_related_courses($course->id, $enrolplugin, $userid, $roleid, $groupname);
         // Check if the course is completed.
         $objcourse = $allcourses[$courseid];
         $cinfo = new completion_info($objcourse);
@@ -127,6 +131,20 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
     $learninguserrecord->id = (int)$learninguserrecord->id;
     $learninguserrecord->timemodified = time();
     $DB->update_record('local_learning_users', $learninguserrecord);
+}
+
+function enrol_user_in_related_courses($recordid, $enrolplugin, $userid, $roleid, $groupname) {
+    global $CFG;
+    if (isset($CFG->alreadyRelated[$recordid])) {
+        return;
+    }
+    $CFG->alreadyRelated[$recordid] = true;
+    $relations = get_related_courses($recordid);
+    foreach ($relations as $reldata) {
+        $courseid = $reldata->destination_courseid;
+        enrol_user($enrolplugin, $userid, $courseid, $roleid, $groupname);
+        enrol_user_in_related_courses($reldata->destination_record_id, $enrolplugin, $userid, $roleid, $groupname);
+    }
 }
 
 /**
