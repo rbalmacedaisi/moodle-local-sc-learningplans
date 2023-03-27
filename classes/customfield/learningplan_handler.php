@@ -132,8 +132,6 @@ class learningplan_handler extends \core_customfield\handler {
     public function get_custom_fields_for_learning_plan($itemid = 0):array{
         global $DB;
         $learningplan = $DB->get_record('local_learning_plans', ['id' => $itemid]);
-        // var_dump($learningplan->hasperiod);
-        // die();
         $categoryarray = [];
         $customfields = $this->get_instance_data($itemid);
         foreach ($customfields as $customfield) {

@@ -170,6 +170,36 @@ $functions = array(
         'loginrequired' => true,
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
+    'local_sc_learningplans_get_learning_plan_periods'=> array(
+        'classname'     => 'get_learning_plan_periods_external',
+        'methodname'    => 'get_learning_plan_periods',
+        'classpath'     => 'local/sc_learningplans/external/period/get_learning_plan_periods.php',
+        'description'   => 'Get the learning plan periods',
+        'type'          => 'read',
+        'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    ),
+    'local_sc_learningplans_get_learning_plan_courses'=> array(
+        'classname'     => 'get_learning_plan_courses_external',
+        'methodname'    => 'get_learning_plan_courses',
+        'classpath'     => 'local/sc_learningplans/external/course/get_learning_plan_courses.php',
+        'description'   => 'Get the learning plan courses',
+        'type'          => 'read',
+        'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    ),
+    'local_sc_learningplans_get_learning_plan_teachers'=> array(
+        'classname'     => 'get_learning_plan_teachers_external',
+        'methodname'    => 'get_learning_plan_teachers',
+        'classpath'     => 'local/sc_learningplans/external/user/get_learning_plan_teachers.php',
+        'description'   => 'Get the learning plan courses teachers',
+        'type'          => 'read',
+        'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    ),
 );
 
 $services = array(

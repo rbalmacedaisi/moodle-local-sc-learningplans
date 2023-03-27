@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/learningplanlib.php');
+require_once("$CFG->libdir/externallib.php");
 
 class get_active_learning_plans_external extends external_api {
 
@@ -43,10 +44,12 @@ class get_active_learning_plans_external extends external_api {
         $availablecareers = [];
         foreach($learningplans as $learningplan){
 
+            //Get the learning plan custom fields
             $handler = local_sc_learningplans\customfield\learningplan_handler::create();
             $learningplan_customfields = $handler->get_custom_fields_for_learning_plan($learningplan->id);
             $careerinfo = $learningplan_customfields['Informacion_carrera']['fields'];
             
+            $learningplanName = $learningplan->name;
             $career_name = null;
             $career_formattedinfo = [];
             foreach($careerinfo as $careerfield){
@@ -63,17 +66,18 @@ class get_active_learning_plans_external extends external_api {
                 }
                 $career_formattedinfo[$careerfield['shortname']] = $careerfield['value'];
             }
+            $career_formattedinfo['careername'] = $career_name;
             $career_formattedinfo['lpid'] = $learningplan->id;
             $career_formattedinfo['timecreated'] = $learningplan->timecreated;
-            if(!array_key_exists($career_name,$availablecareers)){
-                $availablecareers[$career_name]= $career_formattedinfo;
+            if(!array_key_exists($learningplanName,$availablecareers)){
+                $availablecareers[$learningplanName]= $career_formattedinfo;
                 continue;
             }
-            $already_added_lp_timecreated = $availablecareers[$career_name]['timecreated'];
+            $already_added_lp_timecreated = $availablecareers[$learningplanName]['timecreated'];
             if($already_added_lp_timecreated > $career_formattedinfo['timecreated']){
                 continue;
             }
-            $availablecareers[$career_name]= $career_formattedinfo;
+            $availablecareers[$learningplanName]= $career_formattedinfo;
             
         }
         return [

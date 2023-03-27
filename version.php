@@ -26,5 +26,5 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_sc_learningplans';
 $plugin->release = '1.0.0';
-$plugin->version = 2023030601;
+$plugin->version = 2023030605;
 $plugin->requires = 2020061500;
