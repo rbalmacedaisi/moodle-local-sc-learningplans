@@ -67,3 +67,22 @@ function send_email_lp_updated($learningplanid) {
         }
     }
 }
+
+/**
+ * Count users from LP and save it.
+ */
+function learning_plans_recount_users() {
+    global $DB;
+    $counts = $DB->get_records_sql('SELECT lp.*, lu.learningplanid, count(u.id) count 
+        FROM {local_learning_plans} lp
+        LEFT JOIN {local_learning_users} lu ON (lp.id = lu.learningplanid)
+        LEFT JOIN {user} u ON (u.id = lu.userid AND u.deleted = 0)
+        GROUP BY lu.learningplanid');
+
+    foreach ($counts as &$count) {
+        $count->usercount = $count->count;
+        unset($count->learningplanid);
+        unset($count->count);
+        $DB->update_record('local_learning_plans', $count);
+    }
+}

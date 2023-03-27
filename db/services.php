@@ -160,6 +160,17 @@ $functions = array(
         'loginrequired' => true,
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
+    'local_sc_learningplans_get_possible_relations' => array(
+        'classname'     => 'get_possible_relations_external',
+        'methodname'    => 'get_possible_relations',
+        'classpath'     => 'local/sc_learningplans/external/course/get_possible_relations.php',
+        'description'   => 'Get possible course to be relations',
+        'type'          => 'read',
+        'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    ),
+        
     'local_sc_learningplans_get_active_learning_plans'=> array(
         'classname'     => 'get_active_learning_plans_external',
         'methodname'    => 'get_active_learning_plans',
@@ -170,6 +181,19 @@ $functions = array(
         'loginrequired' => true,
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
+        
+    'local_sc_learningplans_add_course_relations' => array(
+        'classname'     => 'add_course_relations_external',
+        'methodname'    => 'add_course_relations',
+        'classpath'     => 'local/sc_learningplans/external/course/add_course_relations.php',
+        'description'   => 'add relations',
+        'type'          => 'write',
+        'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    ),
+        
+        
     'local_sc_learningplans_get_learning_plan_periods'=> array(
         'classname'     => 'get_learning_plan_periods_external',
         'methodname'    => 'get_learning_plan_periods',
@@ -180,6 +204,17 @@ $functions = array(
         'loginrequired' => true,
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
+    'local_sc_learningplans_del_course_relations' => array(
+        'classname'     => 'del_course_relations_external',
+        'methodname'    => 'del_course_relations',
+        'classpath'     => 'local/sc_learningplans/external/course/del_course_relations.php',
+        'description'   => 'add relations',
+        'type'          => 'write',
+        'ajax'          => true,
+        'loginrequired' => true,
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    ),
+        
     'local_sc_learningplans_get_learning_plan_courses'=> array(
         'classname'     => 'get_learning_plan_courses_external',
         'methodname'    => 'get_learning_plan_courses',
@@ -206,7 +241,10 @@ $services = array(
     'local_sc_learningplans_services' => array(
         'functions'             => array(
             'local_sc_learningplans_save_learning_plan',
-            'local_sc_learningplans_get_data'
+            'local_sc_learningplans_get_data',
+            'local_sc_learningplans_get_possible_relations',
+            'local_sc_learningplans_add_course_relations',
+            'local_sc_learningplans_del_course_relations',
         ),
         'requiredcapability'    => 'local/sc_learningplans:manage',
         'restrictedusers'       => 0,

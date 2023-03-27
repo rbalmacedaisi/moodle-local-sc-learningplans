@@ -70,11 +70,14 @@
 
                                                 {{! Actions for courses }}
                                                 <div class="actions-course">
+                                                    <div class="btn" id="btnAddRelationCourse" course-record-id="{{id}}" course-id="{{courseid}}">{{#str}}add_relation_course, local_sc_learningplans{{/str}}</div>
+                                                    <div class="btn" id="btnDeleteRelationCourse" course-record-id="{{id}}" course-id="{{courseid}}">{{#str}}remove_relation_course, local_sc_learningplans{{/str}}</div>
                                                     <i class="fa fa-arrows-alt"></i>
                                                     <button id="btndeletecourse" course-record-id="{{id}}" course-id="{{courseid}}" course-required="1" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{#str}}delete_current_course, local_sc_learningplans{{/str}}">
                                                         <i class="lp_icon fa fa-trash fa-fw"></i>
                                                     </button>
                                                 </div>
+                                                <small>{{#str}}related_courses, local_sc_learningplans{{/str}}: {{relatedcourses}}</small>
                                                 {{! End Actions for courses }}
                                             </li>
                                             {{/coursesrequired}} 
@@ -196,9 +199,12 @@
                                     
                                     {{! Actions for courses }}
                                     <div class="actions-course">
+                                        <div class="btn" id="btnAddRelationCourse" course-record-id="{{id}}" course-id="{{courseid}}">{{#str}}add_relation_course, local_sc_learningplans{{/str}}</div>
+                                        <div class="btn" id="btnDeleteRelationCourse" course-record-id="{{id}}" course-id="{{courseid}}">{{#str}}remove_relation_course, local_sc_learningplans{{/str}}</div>
                                         <i class="fa fa-arrows-alt"></i>
                                         <button id="btndeletecourse" course-record-id="{{id}}" course-id="{{courseid}}" course-required="1" class="btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{#str}}delete_current_course, local_sc_learningplans{{/str}}"><i class="lp_icon fa fa-trash fa-fw"></i></button>
                                     </div>
+                                    <small>{{#str}}related_courses, local_sc_learningplans{{/str}}: {{relatedcourses}}</small>
                                     {{! End Actions for courses }}
                                 </li>
                                 {{/currentcourses}} 

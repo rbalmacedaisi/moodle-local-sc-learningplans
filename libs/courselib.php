@@ -98,3 +98,45 @@ function get_groups_by_course($courseid) {
     return $grouplist;
 }
 
+/**
+ * Get the related courses from course recordid, not course id.
+ */
+function get_related_courses($recordid, $returnnames = false) {
+    global $DB;
+    $relations = $DB->get_records_sql(
+        "SELECT
+            lrl.*,
+            coursedest.fullname as destination_coursename,
+            coursedest.id as destination_courseid
+        FROM {local_learningplan_rel_cours} lrl
+        JOIN {local_learning_courses} lcdest ON (lcdest.id = lrl.destination_record_id)
+        LEFT JOIN {course} coursedest ON (coursedest.id = lcdest.courseid)
+        WHERE lrl.origin_record_id = :origin_record_id",
+        [
+            'origin_record_id' => $recordid
+        ]
+    );
+    if ($returnnames) {
+        $coursesnames = [];
+        foreach ($relations as $rel) {
+            $coursesnames[] = $rel->destination_coursename ?? 'N/A';
+        }
+        return implode(', ', $coursesnames);
+    }
+    return $relations;
+}
+
+/**
+ * Check all related courses and save in $CFG->checkActiveRelatedCourses var.
+ */
+function mark_active_related_courses($recordid) {
+    global $CFG;
+    if (isset($CFG->checkActiveRelatedCourses[$recordid])) {
+        return;
+    }
+    $CFG->checkActiveRelatedCourses[$recordid] = true;
+    $relations = get_related_courses($recordid);
+    foreach ($relations as $reldata) {
+        mark_active_related_courses($reldata->destination_record_id);
+    }
+}

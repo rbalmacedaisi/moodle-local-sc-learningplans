@@ -25,6 +25,9 @@
 
 namespace local_sc_learningplans\task;
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/learningplanlib.php');
 
 /**
  * An example of a scheduled task.
@@ -177,5 +180,6 @@ class fill_report_table extends \core\task\scheduled_task {
                 $DB->insert_record('local_learning_report', $currentreportdata[$struseridlp], false, true);
             }
         }
+        learning_plans_recount_users();
     }
 }

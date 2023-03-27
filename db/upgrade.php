@@ -23,6 +23,10 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/learningplanlib.php');
+
 function xmldb_local_sc_learningplans_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
@@ -190,6 +194,47 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         }
         // Sc_learningplans savepoint reached.
         upgrade_plugin_savepoint(true, 2023030200, 'local', 'sc_learningplans');
+    }
+
+    if ($oldversion < 2023032204) {
+
+        $learningdeleteduser = $DB->get_records_sql(
+            "SELECT lr.*, u.firstname, u.lastname, u.email, u.deleted
+                FROM {local_learning_report} lr
+                JOIN {user} u ON (u.id = lr.userid AND u.deleted = 1)
+            "
+        );
+        foreach ($learningdeleteduser as $value) {
+            $DB->delete_records('local_learning_report', ['userid' => $value->userid]);
+        }
+        learning_plans_recount_users();
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023032204, 'local', 'sc_learningplans');
+    }
+    if ($oldversion < 2023032500) {
+
+        // Define table local_learningplan_rel_cours to be created.
+        $table = new xmldb_table('local_learningplan_rel_cours');
+
+        // Adding fields to table local_learningplan_rel_cours.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('origin_record_id', XMLDB_TYPE_INTEGER, '11', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('destination_record_id', XMLDB_TYPE_INTEGER, '11', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table local_learningplan_rel_cours.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Conditionally launch create table for local_learningplan_rel_cours.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023032500, 'local', 'sc_learningplans');
     }
 
     return true;
