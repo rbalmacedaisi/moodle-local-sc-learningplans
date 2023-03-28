@@ -61,6 +61,32 @@ let actionAddCourseRelations = () => {
             }
         });
     }
+
+    const delcloserelation = document.querySelector('#delcloserelation');
+    if (delcloserelation) {
+        delcloserelation.addEventListener('click', () => {
+            const modal = document.getElementById('coursesDelRelatedModal');
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+        });
+    }
+
+    const delrelation = document.querySelector('#delrelation');
+    if (delrelation) {
+        delrelation.addEventListener('click', () => {
+            const select = document.querySelector('#selectCourseToDelRelated');
+            if (select) {
+                const selectedOptions = select.selectedOptions;
+                const selectedValues = [];
+                for (let i = 0; i < selectedOptions.length; i++) {
+                    selectedValues.push(selectedOptions[i].value);
+                }
+                const records = selectedValues.join(',');
+                const recordid = window.lastRecordId;
+                callRemoveRelations(recordid, records);
+            }
+        });
+    }
 };
 
 const callRemoveRelations = (recordid, records) => {
@@ -108,13 +134,20 @@ const callGetPossibleRelations = (recordid, getToRemove = false) => {
 
     promise[0].done(function (response) {
         window.console.log('local_sc_learningplans_get_possible_relations', response);
-        const selectCourses = document.querySelector('#selectCourseToRelated');
-        selectCourses.innerHTML = '';
         window.getToRemove = getToRemove;
         let dataCourses = response.courses;
+        let selectCourses;
+        let modal;
         if (getToRemove) {
+            modal = document.getElementById('coursesDelRelatedModal');
             dataCourses = response.current;
+            selectCourses = document.querySelector('#selectCourseToDelRelated');
         }
+        else {
+            modal = document.getElementById('coursesRelatedModal');
+            selectCourses = document.querySelector('#selectCourseToRelated');
+        }
+        selectCourses.innerHTML = '';
         dataCourses.forEach(element => {
             const newElement = document.createElement("option");
             newElement.value = element.recordid;
@@ -122,7 +155,6 @@ const callGetPossibleRelations = (recordid, getToRemove = false) => {
             selectCourses.append(newElement);
         });
 
-        const modal = document.getElementById('coursesRelatedModal');
         modal.classList.add('show');
         modal.style.display = 'block';
     }).fail(function (response) {

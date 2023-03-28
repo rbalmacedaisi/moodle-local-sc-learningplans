@@ -19,6 +19,7 @@ export const init = (learningid, is_siteadmin) => {
             const requirements = document.querySelectorAll('input[name=learningrequirements]:checked').map(el => el.value).join();
             const customfields = [];
             document.getElementsByClassName('customfield').forEach(({id,value}) => {
+                // eslint-disable-next-line babel/no-unused-expressions
                 value? customfields.push({id,value}):undefined;
             });
             const promise = Ajax.call([{

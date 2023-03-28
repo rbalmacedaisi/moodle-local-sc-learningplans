@@ -117,6 +117,7 @@ let addLearningPlan = () => {
             const requirements = document.querySelectorAll('input[name=learningrequirements]:checked').map(el => el.value).join();
             const customfields = [];
             document.getElementsByClassName('customfield').forEach(({id,value}) => {
+                // eslint-disable-next-line babel/no-unused-expressions
                 value? customfields.push({id,value}):undefined;
             });
             const args = {
@@ -302,7 +303,7 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
                     careerduration.value = null;
                     careerduration.disabled = true;
                     // The next line was causing an error
-                    // let value = optperiod.isoptions[optperiod.selectedIndex].value; 
+                    // let value = optperiod.isoptions[optperiod.selectedIndex].value;
                     let value =  optperiod.value;
                     for (let i = 1; i <= value; i++) {
                         const labelForName = label.cloneNode();
@@ -353,6 +354,7 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
                                               <label for="css">${auto}</label></div>`;
 
                     const listperiods = document.querySelectorAll('.period_name');
+                    // eslint-disable-next-line no-unused-vars
                     let months = 0;
                     listperiods.forEach(e => {
                         const index = e.getAttribute('index');
