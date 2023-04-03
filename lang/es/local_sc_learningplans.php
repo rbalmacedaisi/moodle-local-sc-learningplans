@@ -204,6 +204,7 @@ $string['templatemailupdatelp'] = 'Plantilla de correo cuando el plan de aprendi
 $string['templatemailupdatelp_desc'] = '{{fullusername}}: Nombre completo de usuario<br/>{{lpname}}: Nombre del plan de aprendizaje<br/>{{firstcoursename}}: Nombre del primer curso<br/>{{firsturlcourse}}: Enlace del primer curso';
 
 $string['add_relation_course'] = 'Agregar correlación';
+$string['add_relation'] = 'Correlación';
 $string['remove_relation_course'] = 'Eliminar relación';
 $string['related_courses'] = 'Cursos relacionados';
 $string['customfield_regexpattern'] = 'Expresion regular campo personalizado';

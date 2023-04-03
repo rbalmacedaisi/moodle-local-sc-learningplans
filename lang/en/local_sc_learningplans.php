@@ -203,6 +203,7 @@ $string['templatemailupdatelp'] = 'Custom email template when LP is updated';
 $string['templatemailupdatelp_desc'] = '{{fullusername}}: User full name<br/>{{lpname}}: LP Name<br/>{{firstcoursename}}: First course name<br/>{{firsturlcourse}}: First url course';
 
 $string['add_relation_course'] = 'Add relation';
+$string['add_relation'] = 'Relation';
 $string['remove_relation_course'] = 'Remove relation';
 $string['related_courses'] = 'Related courses';
 $string['customfield_regexpattern'] = 'Custom field regex pattern';
