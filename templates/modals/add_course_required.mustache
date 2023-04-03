@@ -54,4 +54,28 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="coursesDelRelatedModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100 font-weight-bold" id="exampleModalLabel">{{#str}} remove_relation_course, local_sc_learningplans {{/str}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style='visibility: hidden;'>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <label class="w-100" for="learningname">{{#str}} available_courses, local_sc_learningplans {{/str}}</label>
+                    <input type="hidden" name="id" value="{{learningplanid}}" />
+                    <select id="selectCourseToDelRelated" class="form-select w-100" multiple required size="20" name="selectedcourse">                 
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id='delcloserelation' type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} close_modal, local_sc_learningplans {{/str}}</button>
+                <button id="delrelation" type="button" class="btn btn-primary">{{#str}} yesconfirm, local_sc_learningplans {{/str}}</button>
+            </div>
+        </div>
+    </div>
+</div>
 {{! End Modal course can be related}}
