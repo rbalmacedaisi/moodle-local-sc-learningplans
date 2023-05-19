@@ -91,7 +91,7 @@ select#selectAddCourseOptionalToLearningPlan {
 
 #userModal select#listusers,
 #userModal select#listroles,
-#userModal select#listgroups { 
+#userModal select#listgroups {
     width: 412px;
     height: 34px;
     border-radius: 5px;
@@ -375,11 +375,16 @@ button#addoptional_required {
 #careercost::-webkit-inner-spin-button,
 #careerduration::-webkit-outer-spin-button,
 #careerduration::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
-#careercost[type=number], #careerduration[type=number] {
-  -moz-appearance: textfield;
+#careercost[type=number],
+#careerduration[type=number] {
+    -moz-appearance: textfield;
+}
+
+.learningPlansTable thead tr th {
+    border: none !important;
 }

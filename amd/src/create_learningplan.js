@@ -16,7 +16,7 @@ const parent_enrol = document.getElementById('type_enrol');
 
 //Get courses items to be used
 const addcourses = document.getElementById('addcourses');
-const listcoursesplan =document.getElementById('listcoursesplan');
+const listcoursesplan = document.getElementById('listcoursesplan');
 const addrequired = document.getElementById('addrequired');
 const addoptional = document.getElementById('addooptional');
 const requiredlist = document.getElementById('formCurrentCourseToLearningPlan');
@@ -24,7 +24,7 @@ const optionallist = document.getElementById('formOptionalCourseToLearningPlan')
 const selectedcourse = document.getElementById('selectAddCourseToLearningPlan');
 
 //Get user items to be used
-const listusersplan=document.getElementById('listusersplan');
+const listusersplan = document.getElementById('listusersplan');
 const adduser = document.getElementById('adduser');
 const listusers = document.getElementById('listusers');
 const listroles = document.getElementById('listroles');
@@ -49,7 +49,7 @@ let addLearningPlan = () => {
     if (btnadd) {
         btnadd.addEventListener('click', e => {
             e.preventDefault();
-            let desc_plan =document.getElementById('id_desc_planeditable');
+            let desc_plan = document.getElementById('id_desc_planeditable');
             if (!learningshortid.validity.valid) {
                 learningshortid.reportValidity();
                 return;
@@ -58,17 +58,17 @@ let addLearningPlan = () => {
                 plannameelement.reportValidity();
                 return;
             }
-            else if (!careercost.validity.valid) {
-                careercost.reportValidity();
-                return;
-            }
-            else if (!careerduration.validity.valid) {
-                careerduration.reportValidity();
-                return;
-            }
-            else if (!careername.validity.valid) {
-                careername.reportValidity();
-                return;
+            if (careercost && careerduration && careername) {
+                if (!careercost.validity.valid) {
+                    careercost.reportValidity();
+                    return;
+                } else if (!careerduration.validity.valid) {
+                    careerduration.reportValidity();
+                    return;
+                } else if (!careername.validity.valid) {
+                    careername.reportValidity();
+                    return;
+                }
             }
             const btnscourse = document.querySelectorAll('button[courseid]');
             const btnsusers = document.querySelectorAll('button[userid]');
@@ -76,7 +76,7 @@ let addLearningPlan = () => {
             const type_enrol_manual = document.getElementById("type_manual");
             const type_enrol_automatic = document.getElementById("type_automatic");
             const hasperiod = addperiod.checked ? 1 : 0;
-            const type_enrol = setTypeEnrol(type_enrol_manual,type_enrol_automatic);
+            const type_enrol = setTypeEnrol(type_enrol_manual, type_enrol_automatic);
             const periods = [];
             const courses = [];
             const users = [];
@@ -116,9 +116,9 @@ let addLearningPlan = () => {
             }
             const requirements = document.querySelectorAll('input[name=learningrequirements]:checked').map(el => el.value).join();
             const customfields = [];
-            document.getElementsByClassName('customfield').forEach(({id,value}) => {
+            document.getElementsByClassName('customfield').forEach(({ id, value }) => {
                 // eslint-disable-next-line babel/no-unused-expressions
-                value? customfields.push({id,value}):undefined;
+                value ? customfields.push({ id, value }) : undefined;
             });
             const args = {
                 learningshortid: learningshortid.value,
@@ -304,7 +304,7 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
                     careerduration.disabled = true;
                     // The next line was causing an error
                     // let value = optperiod.isoptions[optperiod.selectedIndex].value;
-                    let value =  optperiod.value;
+                    let value = optperiod.value;
                     for (let i = 1; i <= value; i++) {
                         const labelForName = label.cloneNode();
                         labelForName.setAttribute('for', `period_${i}`);
@@ -389,8 +389,8 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
     }
 };
 
-const setTypeEnrol = (type_enrol_manual,type_enrol_automatic) => {
-    if (type_enrol_manual && type_enrol_manual.checked) {return 1;}
-    else if (type_enrol_automatic && type_enrol_automatic.checked) {return 2;}
+const setTypeEnrol = (type_enrol_manual, type_enrol_automatic) => {
+    if (type_enrol_manual && type_enrol_manual.checked) { return 1; }
+    else if (type_enrol_automatic && type_enrol_automatic.checked) { return 2; }
     return 0;
 };

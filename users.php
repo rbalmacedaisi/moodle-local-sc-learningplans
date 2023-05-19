@@ -74,10 +74,13 @@ $learningusers = $DB->get_records_sql(
 
 foreach ($learningusers as &$user) {
     $userid = $user->userid;
+    
     if (isset($allusers[$userid])) {
         unset($allusers[$userid]);
         $roleshortname = $roles[$user->userroleid]->shortname;
-        $user->rolename = get_String($roleshortname, 'local_sc_learningplans');
+        if($roleshortname){
+            $user->rolename = get_String($roleshortname, 'local_sc_learningplans');
+        }
     }
 }
 
