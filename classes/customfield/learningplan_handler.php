@@ -153,7 +153,7 @@ class learningplan_handler extends \core_customfield\handler {
                 'textarea' => $field->get('type') === 'textarea',
                 'name' => get_string($field->get('shortname'), 'local_sc_learningplans'),
                 'value' => empty($customfield->get_value())?'':$customfield->get_value(),
-                'disabled' => $field->get('shortname')==='careerduration' && $learningplan->hasperiod === "1" ? 'disabled':''
+                'disabled' => $field->get('shortname')==='careerduration'&& $learningplan && $learningplan->hasperiod === "1" ? 'disabled':''
             ];
             $configdata = $field->get('configdata');
             foreach (array_keys($configdata) as $key){

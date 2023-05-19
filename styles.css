@@ -294,7 +294,7 @@ input#type_automatic {
 
 [data-preset="default"] #notPeriodNav,
 [data-preset="default"] #periodNav {
-    background: var(--secondary);
+    background: #000000 !important;
 }
 
 #notPeriodNav .nav-link,
@@ -303,7 +303,7 @@ input#type_automatic {
     border-right: none;
     border-top: none;
     border-radius: 0px;
-    color: #7E8BB0 !important;
+    color: #dbdbdb !important;
 }
 
 #notPeriodNav .nav-link.active,
@@ -315,7 +315,7 @@ input#type_automatic {
 
 [data-preset="default"] #notPeriodNav .nav-link.active,
 [data-preset="default"] #periodNav .nav-link.active {
-    background: #2C407D !important;
+    background: #313131 !important;
     color: #ffffff !important;
     border-color: var(--primary) !important;
 }
@@ -343,11 +343,11 @@ li.list-courses-optional span.content-icon {
 
 li.list-courses-required:nth-child(odd) span.content-icon,
 li.list-courses-required-period:nth-child(odd) span.content-icon {
-    background: #86D418;
+    background: var(--primary);
 }
 
 ul.coursesrequired li:nth-child(2n) span.content-icon {
-    background: #FB8B24 !important;
+    background: var(--secondary) !important;
 }
 
 @media (max-width: 767.98px) {
@@ -380,6 +380,7 @@ button#addoptional_required {
 }
 
 /* Firefox */
+
 #careercost[type=number],
 #careerduration[type=number] {
     -moz-appearance: textfield;
@@ -387,4 +388,36 @@ button#addoptional_required {
 
 .learningPlansTable thead tr th {
     border: none !important;
+}
+
+#careercost[type=number],
+#careerduration[type=number] {
+    -moz-appearance: textfield;
+}
+
+@media (min-width: 768px) {
+    body.lpwidth #page.drawers .main-inner {
+        max-width: 1475px;
+    }
+
+}
+
+span#btnDeleteRelationCourse,
+span#btnAddRelationCourse {
+    cursor: pointer;
+    width: 110px !important;
+}
+
+#btndeletecourse {
+    vertical-align: initial !important;
+}
+
+div.actions-course #btndeletecourse,
+div.actions-course i.fa-arrows-alt {
+    color: #8f959e;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
 }

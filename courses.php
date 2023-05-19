@@ -50,7 +50,7 @@ $a = (object)['name' => $learningplan->name];
 $PAGE->set_title(get_string('managecourses', 'local_sc_learningplans', $a));
 $PAGE->set_heading(get_string('managecourses', 'local_sc_learningplans'));
 $PAGE->set_pagelayout('base');
-$PAGE->add_body_class('limitedwidth');
+$PAGE->add_body_class('lpwidth');
 $PAGE->navbar->add(get_string('administrationsite'), new moodle_url('/admin/search.php'));
 $PAGE->navbar->add(get_string('pluginname', 'local_sc_learningplans'), new moodle_url('/local/sc_learningplans/index.php'));
 $PAGE->navbar->add(
