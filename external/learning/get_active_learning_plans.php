@@ -31,13 +31,25 @@ require_once("$CFG->libdir/externallib.php");
 class get_active_learning_plans_external extends external_api {
 
     public static function get_active_learning_plans_parameters() {
-        return new external_function_parameters([]);
+        return new external_function_parameters([
+            'instructorId' => new external_value(PARAM_INT, 'Id of the instructor',  VALUE_DEFAULT, null, NULL_ALLOWED)
+            ]);
     }
 
-    public static function get_active_learning_plans() {
+    public static function get_active_learning_plans($instructorId = null) {
         global $DB;
         // Check if LP Exist.
-        $learningplans = $DB->get_records('local_learning_plans');
+        
+        $learningplans = [];
+        if($instructorId){
+            $instructorLearningPlansRegistered = $DB->get_records('local_learning_users',array('userid'=>$instructorId,'userroleid'=>4));
+            foreach($instructorLearningPlansRegistered as $instructorLearningPlanRegistered){
+                $learningplans[] = $DB->get_record('local_learning_plans',array('id'=>$instructorLearningPlanRegistered->learningplanid));
+            }
+        }else {
+            $learningplans = $DB->get_records('local_learning_plans');
+        }
+        
         
         $careername_options = [];
         
@@ -47,12 +59,13 @@ class get_active_learning_plans_external extends external_api {
             //Get the learning plan custom fields
             $handler = local_sc_learningplans\customfield\learningplan_handler::create();
             $learningplan_customfields = $handler->get_custom_fields_for_learning_plan($learningplan->id);
-            $careerinfo = $learningplan_customfields['Informacion_carrera']['fields'];
+            $learningPlanCareerCustomFields = $learningplan_customfields['Informacion_carrera']['fields'];
             
             $learningplanName = $learningplan->name;
             $career_name = null;
             $career_formattedinfo = [];
-            foreach($careerinfo as $careerfield){
+            
+            foreach($learningPlanCareerCustomFields as $careerfield){
                 if($careerfield['shortname'] === 'careername'){
                     $selected_careername_id = $careerfield['value'];
                     if(empty($careername_options)){
@@ -61,11 +74,13 @@ class get_active_learning_plans_external extends external_api {
                             $careername_options[$option['id']]=$option['value'];
                         }
                     }
-                    $career_name = $careername_options[$selected_careername_id];
+ 
+                    $career_name = array_key_exists($selected_careername_id,$careername_options)?$careername_options[$selected_careername_id]:'unset' ;
                     continue;
                 }
-                $career_formattedinfo[$careerfield['shortname']] = $careerfield['value'];
+                $career_formattedinfo[$careerfield['shortname']] = $careerfield['value']!==''? $careerfield['value']:'unset';
             }
+            
             $career_formattedinfo['careername'] = $career_name;
             $career_formattedinfo['lpid'] = $learningplan->id;
             $career_formattedinfo['timecreated'] = $learningplan->timecreated;

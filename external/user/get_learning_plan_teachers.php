@@ -57,19 +57,6 @@ class get_learning_plan_teachers_external extends external_api {
     public static function get_learning_plan_teachers($learningPlanId,$periodId=null,$courseId=null) {
         global $USER, $DB;
         
-        // $coreCourseId = $DB->get_record("local_learning_courses",['id' => $courseId])->courseid;
-        // $courseGroups = $DB->get_records("groups", ['courseid'=>$coreCourseId]);
-        
-        // $teachers = [];
-        // foreach($courseGroups as $group){
-        //     $groupTeachers = $DB->get_records("local_learning_users", ['learningplanid' => $learningPlanId, 'userroleid' => 4 , 'groupname' => $group->name]);
-        //     foreach($groupTeachers as $teacher){
-        //         $coreUser = $DB->get_record('user',['id'=>$teacher->userid]);
-        //         $teacher->fullname = $coreUser->firstname.' '.$coreUser->lastname;
-        //         $teacher->email = $coreUser->email;
-        //         array_push($teachers, $teacher);
-        //     }
-        // }
         
         $teachers = [];
         $groupTeachers = $DB->get_records("local_learning_users", ['learningplanid' => $learningPlanId, 'userroleid' => 4]);
@@ -77,7 +64,7 @@ class get_learning_plan_teachers_external extends external_api {
             $coreUser = $DB->get_record('user',['id'=>$teacher->userid]);
             $teacher->fullname = $coreUser->firstname.' '.$coreUser->lastname;
             $teacher->email = $coreUser->email;
-            array_push($teachers, $teacher);
+            $teachers[]=$teacher;
         }
         
         return [
