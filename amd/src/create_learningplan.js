@@ -300,8 +300,11 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
                 addingperiods.addEventListener('click', () => {
                     parent.innerHTML = '';
                     //Disabled the careerduration customfield, the duration will be calculated based on the periods
-                    careerduration.value = null;
-                    careerduration.disabled = true;
+                    if(careerduration){
+                        careerduration.value = null;
+                        careerduration.disabled = true;
+                    }
+                    
                     // The next line was causing an error
                     // let value = optperiod.isoptions[optperiod.selectedIndex].value;
                     let value = optperiod.value;
@@ -375,7 +378,9 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
     if (notperiod) {
         notperiod.addEventListener('click', () => {
             //Enable the careerduration customfield
-            careerduration.disabled = false;
+            if(careerduration){
+                careerduration.disabled = false;
+            }
             parent.innerHTML = '';
             parent_enrol.innerHTML = '';
             addingperiods.disabled = true;
