@@ -73,7 +73,7 @@ select#selectAddCourseOptionalToLearningPlan {
 }
 
 .learningPlansTable .lp_icon {
-    color: #88B13B;
+    color: var(--primary);
 }
 
 #userModal .modal-dialog,
