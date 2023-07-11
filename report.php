@@ -44,6 +44,7 @@ $pageurl = new moodle_url('/local/sc_learningplans/report.php', ['id' => $learni
 $PAGE->set_url($pageurl);
 
 $table = new report_lp_table('local_sc_learningplans_rep', $learningplanid);
+
 $table->is_downloading($download, 'report_learning_plan', get_string('report', 'local_sc_learningplans'));
 
 if (!$table->is_downloading()) {
@@ -56,6 +57,9 @@ if (!$table->is_downloading()) {
 $table->define_baseurl($pageurl);
 
 $table->out(20, true);
+// print_object($table->out(20, true));
+die;
+
 
 if (!$table->is_downloading()) {
     $PAGE->requires->js_call_amd('local_sc_learningplans/manage_learningplans', 'init');

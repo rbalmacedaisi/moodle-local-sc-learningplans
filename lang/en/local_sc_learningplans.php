@@ -176,6 +176,7 @@ $string['currentcourse'] = 'Current Course';
 $string['completedcourse'] = 'Last Completed Course';
 $string['progress'] = 'Progress';
 $string['currentperiod'] = 'Current Period';
+$string['base'] = 'Base';
 
 $string['assign_group'] = 'Assign Group';
 $string['select_group'] = 'Select group';

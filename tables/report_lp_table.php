@@ -33,7 +33,7 @@ class report_lp_table extends table_sql {
      */
     public function __construct($uniqueid, int $learningplanid) {
         parent::__construct($uniqueid);
-
+        global $DB;
         $this->learningplanid = $learningplanid;
 
         // Define columns.
@@ -45,6 +45,10 @@ class report_lp_table extends table_sql {
             'lastcompletedcoursename'   => get_string('completedcourse', 'local_sc_learningplans'),
             'lpprogress'                => get_string('progress', 'local_sc_learningplans'),
         ];
+        if($DB->get_record('user_info_field',['shortname'=>'base'])){
+            $columns['data']=get_string('base', 'local_sc_learningplans');
+        }
+
         $this->define_columns(array_keys($columns));
         $this->define_headers(array_values($columns));
 
@@ -66,6 +70,8 @@ class report_lp_table extends table_sql {
      * @return void
      */
     protected function init_sql() {
+        global $DB;
+
         $fields = 'r.*, u.firstname, u.lastname, u.email,
         u.firstnamephonetic,
         u.lastnamephonetic,
@@ -77,12 +83,25 @@ class report_lp_table extends table_sql {
 
         // Report search.
         $where = 'r.learningplanid = :learningplanid';
+
         $params = [
             'learningplanid' => $this->learningplanid
         ];
-
+        
+        // print_object($DB->get_records('user_info_field'));
+        // die;
+        if($baseField = $DB->get_record('user_info_field',['shortname'=>'base'])){
+            $fields = $fields . ', cfd.data';
+            $from = $from . ' JOIN {user_info_data} cfd ON (r.userid = cfd.userid)';
+            $where = $where . ' AND cfd.fieldid = :fieldid';
+            $params['fieldid']=$baseField->id;
+        }
+        
         $this->set_sql($fields, $from, $where, $params);
         $this->set_count_sql('SELECT COUNT(1) FROM ' . $from . ' WHERE ' . $where, $params);
+        
+        // print_object($this);
+        // die;
     }
 
     /**

@@ -178,6 +178,7 @@ $string['currentcourse'] = 'Nombre de curso actual';
 $string['completedcourse'] = 'Ultimo curso completado';
 $string['progress'] = 'Progreso';
 $string['currentperiod'] = 'Periodo actual';
+$string['base'] = 'Base';
 
 $string['assign_group'] = 'Asignar grupo';
 $string['select_group'] = 'Selecciona un grupo';
