@@ -47,6 +47,7 @@ $string['delete_learningplan']  = 'Eliminar plan de aprendizaje';
 $string['edit_plan']            = 'Editar plan de aprendizaje';
 $string['duplicate_plan']       = 'Duplicar plan';
 $string['report']               = "Reporte del Plan de Aprendizaje";
+$string['global_report']        = "Reporte global Planes de aprendizaje";
 $string['requirement_title']    = 'Agregar nuevo requerimiento';
 $string['manage_periods']       = 'Gestión de Períodos';
 $string['title_current_users']  = 'Usuarios actuales';
@@ -172,13 +173,17 @@ $string['massive_lpnotexist'] = 'El plan de aprendizaje ({$a->lpname}) no existe
 $string['massive_succes'] = 'El usuario {$a->username} se matriculó al plan de aprendizaje {$a->lpname}.';
 $string['massive_done'] = 'Información subida';
 
-$string['report'] = "Reporte del Plan de Aprendizaje";
 $string['email'] = 'Correo';
 $string['currentcourse'] = 'Nombre de curso actual';
 $string['completedcourse'] = 'Ultimo curso completado';
 $string['progress'] = 'Progreso';
 $string['currentperiod'] = 'Periodo actual';
 $string['base'] = 'Base';
+$string['lastname'] = 'Apellidos';
+$string['learningplan'] = 'Plan de aprendizaje';
+$string['lpprogress'] = '% de avance';
+$string['completecourses'] = 'Cursos completados';
+$string['totalcourses'] = 'Total de cursos';
 
 $string['assign_group'] = 'Asignar grupo';
 $string['select_group'] = 'Selecciona un grupo';

@@ -31,6 +31,12 @@ if ($hassiteconfig) {
         new moodle_url('/local/sc_learningplans/index.php')
     ));
     $ADMIN->add("courses", new admin_externalpage('learningplans_customfield', get_string('plugincustomfields', 'local_sc_learningplans'),new moodle_url('/local/sc_learningplans/customfield.php')));
+    $ADMIN->add('reports', new admin_externalpage(
+        'local_global_learning_plan_report_view',
+        get_string('global_report', 'local_sc_learningplans'),
+        new moodle_url('/local/sc_learningplans/global_report.php', []),
+    ));
+    
     $settingspage = new admin_settingpage('local_sc_learningplans_settings', get_string('pluginname', 'local_sc_learningplans'));
     if ($ADMIN->fulltree) {
         $settingspage->add(new admin_setting_configtext(
