@@ -57,9 +57,6 @@ if (!$table->is_downloading()) {
 $table->define_baseurl($pageurl);
 
 $table->out(20, true);
-// print_object($table->out(20, true));
-die;
-
 
 if (!$table->is_downloading()) {
     $PAGE->requires->js_call_amd('local_sc_learningplans/manage_learningplans', 'init');

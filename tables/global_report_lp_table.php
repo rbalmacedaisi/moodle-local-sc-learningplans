@@ -40,12 +40,15 @@ class global_report_lp_table extends table_sql {
             'firstname'                 => get_string('name', 'local_sc_learningplans'),
             'lastname'                  => get_string('lastname', 'local_sc_learningplans'),
             'email'                     => get_string('email', 'local_sc_learningplans'),
-            'base'                      => get_string('base', 'local_sc_learningplans'),
             'learningPlanName'          => get_string('learningplan', 'local_sc_learningplans'),
             'lpprogress'                => get_string('lpprogress', 'local_sc_learningplans'),
             'countcurrentcourse'        => get_string('completecourses', 'local_sc_learningplans'),
             'coursecount'               => get_string('totalcourses', 'local_sc_learningplans'),
         ];
+
+        if($baseField = $DB->get_record('user_info_field',['shortname'=>'base'])){
+            $columns['base']=get_string('base', 'local_sc_learningplans');
+        }
 
         $this->define_columns(array_keys($columns));
         $this->define_headers(array_values($columns));
@@ -94,8 +97,6 @@ class global_report_lp_table extends table_sql {
         }
         
         $this->set_sql($fields, $from, $where, $params);
-        $this->set_count_sql('SELECT COUNT(1) FROM ' . $from);
-
     }
 
     /**

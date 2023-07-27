@@ -87,9 +87,7 @@ class report_lp_table extends table_sql {
         $params = [
             'learningplanid' => $this->learningplanid
         ];
-        
-        // print_object($DB->get_records('user_info_field'));
-        // die;
+
         if($baseField = $DB->get_record('user_info_field',['shortname'=>'base'])){
             $fields = $fields . ', cfd.data';
             $from = $from . ' JOIN {user_info_data} cfd ON (r.userid = cfd.userid)';
@@ -100,8 +98,6 @@ class report_lp_table extends table_sql {
         $this->set_sql($fields, $from, $where, $params);
         $this->set_count_sql('SELECT COUNT(1) FROM ' . $from . ' WHERE ' . $where, $params);
         
-        // print_object($this);
-        // die;
     }
 
     /**
