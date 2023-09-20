@@ -39,9 +39,8 @@ class get_learning_plan_courses_external extends external_api {
                  'periodId'   => new external_value(
                     PARAM_INT,
                     'ID of the period',
-                    VALUE_OPTIONAL,
-                    null,
-                    NULL_NOT_ALLOWED
+                    VALUE_DEFAULT,
+                    null
                 ),
             )
         );
