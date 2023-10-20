@@ -236,6 +236,60 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         // Sc_learningplans savepoint reached.
         upgrade_plugin_savepoint(true, 2023032500, 'local', 'sc_learningplans');
     }
+    if ($oldversion < 2023101900) {
+
+        // Define field hassubperiods to be added to local_learning_periods.
+        $table = new xmldb_table('local_learning_periods');
+        $field = new xmldb_field('hassubperiods', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'timemodified');
+
+        // Conditionally launch add field hassubperiods.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        // Define field subperiodid to be added to local_learning_courses.
+        $table = new xmldb_table('local_learning_courses');
+        $field = new xmldb_field('subperiodid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field subperiodid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        // Define table local_learning_subperiods to be created.
+        $table = new xmldb_table('local_learning_subperiods');
+
+        // Adding fields to table local_learning_subperiods.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('name', XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, 'subperiodo');
+        $table->add_field('learningplanid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('periodid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('position', XMLDB_TYPE_INTEGER, '2', null, null, null, null);
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table local_learning_subperiods.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Conditionally launch create table for local_learning_subperiods.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+        
+        // Define field currentsubperiodid to be added to local_learning_users.
+        $table = new xmldb_table('local_learning_users');
+        $field = new xmldb_field('currentsubperiodid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field currentsubperiodid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023101900, 'local', 'sc_learningplans');
+    }
 
     return true;
 }
