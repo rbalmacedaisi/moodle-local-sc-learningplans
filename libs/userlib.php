@@ -59,6 +59,8 @@ function sc_learningplan_get_roles() {
  * @return void
  */
 function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $learningplanrecord, $learninguserrecord, $groupname) {
+
+    
     global $CFG;
     $CFG->alreadyRelated = [];
     global $CFG, $DB;
@@ -75,6 +77,7 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
         // Toca poner al usuario en espera llegado el caso.
         $ismanual = true;
     }
+    
     $changeperiod = false;
     $checkchangeperiod = false;
     $learninguserrecord->waitingperiod = null;
@@ -82,10 +85,13 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
     foreach ($courses as $course) {
         $courseperiod = $course->periodid; // If null, not matter.
         if ($hasperiods && $ismanual) {
+            var_dump('entro');
+            die;
             // Have periods and is manual enrolment.
             if ($usercurrentperiod == null) {
                 // El usuario no tiene asignado el periodo actual, se lo asignamos al periodo del ciclo.
                 $usercurrentperiod = $learninguserrecord->currentperiodid = $courseperiod;
+                $learninguserrecord->currentsubperiodid = $course->subperiodid; // If null, only mean that the lp period doesn´t have subperiods.
             }
             if ($prevloopperiodid == null) {
                 // Si la variable no tiene asignado el periodo del ciclo anterior, es porq ue es el primer ciclo.
@@ -114,8 +120,11 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
             }
             $prevloopperiodid = $courseperiod;
         }
+        
         $courseid = $course->courseid;
         $learninguserrecord->currentperiodid = $courseperiod; // If null, only mean that the lp not have periods.
+        $learninguserrecord->currentsubperiodid = $course->subperiodid; // If null, only mean that the lp period doesn´t have subperiods.
+        
         // Enrol in the course.
         enrol_user($enrolplugin, $userid, $courseid, $roleid, $groupname);
         enrol_user_in_related_courses($course->id, $enrolplugin, $userid, $roleid, $groupname);
@@ -228,6 +237,7 @@ function enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid, $
     global $DB;
     // Get optional courses.
     $optionalcourses = $DB->get_records('local_learning_courses', ['learningplanid' => $learningplanid, 'isrequired' => 0]);
+    
     enrol_user_in_all_courses($optionalcourses, $userid, $roleid, $groupname);
 
     $requiredcourses = $DB->get_records_sql('SELECT lpc.*, c.fullname FROM {local_learning_courses} lpc

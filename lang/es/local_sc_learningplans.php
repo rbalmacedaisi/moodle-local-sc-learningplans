@@ -130,6 +130,7 @@ $string['btn_save_coursepos'] = 'Guardar Posiciones en Cursos';
 $string['add_courses_period'] = 'Agregar nuevos Cursos';
 $string['select_credits'] = 'Seleccione el número de créditos';
 $string['select_one_period'] = 'Seleccione un Período';
+$string['select_one_subperiod'] = 'Seleccione un Subperíodo';
 
 $string['titleconfirmmove'] = 'Mover curso a requerido';
 $string['msgconfirm_mmove'] = '¿Realmente deseas que el curso {$a->cname} sea un curso requerido?';
@@ -225,3 +226,8 @@ $string['Campos_prueba'] = 'Campos test';
 $string['careercost'] = 'Costo carrera';
 $string['careerduration'] = 'Duración carrera (meses)';
 $string['careername'] = 'Nombre carrera';
+$string['add_subperiods'] = 'Desea agregar subperiodos';
+$string['divided_into_bimesters'] = 'Se dividira cada periodo en 2 Bimestres.';
+$string['subperiods'] = 'Subperiodos';
+$string['edit_period'] = 'Editar Periodo';
+$string['btnsave'] = 'Guardar';

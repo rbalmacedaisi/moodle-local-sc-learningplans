@@ -54,6 +54,15 @@
                         {{! Field for the list of periods }}
                         <div class="col-sm-12 col-md-12" id="listperiods"></div>
                         
+                        <div class="d-none py-3" id="subperiods">
+                            <label class="w-100" for="subperiods">{{#str}} add_subperiods, local_sc_learningplans {{/str}} </label>
+                            <input type="radio" id="notsubperiod" name="check_subperiod" value="0" checked>
+                            <label for="notsubperiod">{{#str}} no {{/str}}</label>
+                            <input type="radio" id="addsubperiod" name="check_subperiod" value="1">
+                            <label for="addsubperiod">{{#str}} yes {{/str}}</label>
+                            <small class="w-100 d-block text-muted">{{#str}} divided_into_bimesters, local_sc_learningplans {{/str}}</small>
+                        </div>
+                        
                         {{! Field for the type of enrollment }}
                         <div class="col-sm-12 col-md-12" id="type_enrol"></div>
                     </div>

@@ -42,7 +42,16 @@ class save_learning_plan_external extends external_api {
                         array(
                             'name' => new external_value(PARAM_TEXT, 'Name of Periods'),
                             'months' => new external_value(PARAM_INT, 'Duration in months'),
-                        ),
+                            'hassubperiods' => new external_value(PARAM_BOOL, 'Boolean indicating if the period has sub periods'),
+                            'subperiods' => new external_multiple_structure(
+                                new external_single_structure(
+                                    array(
+                                        'name' => new external_value(PARAM_TEXT, 'Sub period name'),
+                                        'position' => new external_value(PARAM_INT, 'subperiod position in the period')
+                                    )
+                                )
+                            )
+                        )
                     )
                 ),
                 'courses' => new external_multiple_structure(
@@ -50,8 +59,8 @@ class save_learning_plan_external extends external_api {
                         array(
                             'courseid' => new external_value(PARAM_INT, 'Course ID'),
                             'required' => new external_value(PARAM_INT, 'If the course is required (1) or not (0)'),
-                            'credits' => new external_value(PARAM_RAW, 'List credits of courses'),
-                        ),
+                            'credits' => new external_value(PARAM_RAW, 'List credits of courses')
+                        )
                     )
                 ),
                 'users' => new external_multiple_structure(
@@ -59,8 +68,8 @@ class save_learning_plan_external extends external_api {
                         array(
                             'userid' => new external_value(PARAM_INT, 'User ID'),
                             'roleid' => new external_value(PARAM_INT, 'Role ID'),
-                            'group'  => new external_value(PARAM_TEXT, 'Group name'),
-                        ),
+                            'group'  => new external_value(PARAM_TEXT, 'Group name')
+                        )
                     )
                 ),
                 'fileimage' => new external_value(PARAM_INT, 'Image itemid provide by filemanager form element'),
@@ -72,10 +81,10 @@ class save_learning_plan_external extends external_api {
                     new external_single_structure(
                         array(
                             'id' => new external_value(PARAM_TEXT, 'Id of the custom field'),
-                            'value' => new external_value(PARAM_TEXT, 'Value of the custom field'),
+                            'value' => new external_value(PARAM_TEXT, 'Value of the custom field')
                         ),
                     )
-                ),
+                )
             )
         );
     }
@@ -93,10 +102,10 @@ class save_learning_plan_external extends external_api {
         $requirements,
         $customfields
         ) {
+        
         global $DB, $USER;
         // Check if LP exist with the shortid.
         $learningplanexist = $DB->record_exists('local_learning_plans', ['shortname' => $learningshortid]);
-    
         if ($learningplanexist) {
             throw new moodle_exception('errorlearningplanexist', 'local_sc_learningplans');
         }
@@ -105,7 +114,7 @@ class save_learning_plan_external extends external_api {
         } else {
             $countperiod = count($periods);
         }
-
+        
         $newlearningplan = new stdClass();
         $newlearningplan->shortname     = $learningshortid;
         $newlearningplan->name          = $learningname;
@@ -119,10 +128,7 @@ class save_learning_plan_external extends external_api {
         $newlearningplan->usermodified  = $USER->id;
         $newlearningplan->timecreated = time();
         $newlearningplan->timemodified = time();
-        $learningplanid = $DB->insert_record('local_learning_plans', $newlearningplan);
-        
-        $newlearningplan->id = $learningplanid;
-        
+        $newlearningplan->id = $DB->insert_record('local_learning_plans', $newlearningplan);
         
         $learningplanduration = 0;
         if ($hasperiod == 0) {
@@ -140,7 +146,7 @@ class save_learning_plan_external extends external_api {
                     $position = 0;
                 }
                 save_learning_course_external::save_learning_course(
-                    $learningplanid, null, $courseid, $isrequired, $credits, $position
+                    $newlearningplan->id, null, $courseid, $isrequired, $credits, $position
                 );
             }
             foreach ($users as $user) {
@@ -148,15 +154,18 @@ class save_learning_plan_external extends external_api {
                 $roleid = $user['roleid'];
                 $group  = $user['group'];
                 $newlearningplan->usercount++;
-                add_learning_user_external::add_learning_user($learningplanid, $userid, $roleid, null, $group);
+                add_learning_user_external::add_learning_user($newlearningplan->id, $userid, $roleid, null, $group);
             }
         } else {
+
             // Only add periods.
             foreach ($periods as $period) {
                 $name = $period['name'];
                 $months = $period['months'];
+                $hassubperiods = $period['hassubperiods'];
+                $subperiods = [];
                 $learningplanduration = $learningplanduration + $months;
-                addperiod_learning_plan_external::addperiod_learning_plan($learningplanid, $name, $months);
+                addperiod_learning_plan_external::addperiod_learning_plan($newlearningplan->id, $name, $months,$hassubperiods,$subperiods);
             }
         }
 
@@ -168,7 +177,7 @@ class save_learning_plan_external extends external_api {
                 $context->id,
                 'local_sc_learningplans',
                 'learningplan_image',
-                $learningplanid,
+                $newlearningplan->id,
                 array('subdirs' => 0, 'maxfiles' => 1)
             );
         }
@@ -181,7 +190,7 @@ class save_learning_plan_external extends external_api {
             //Init the handler
             $handler = local_sc_learningplans\customfield\learningplan_handler::create();
             $customfieldstobecreated = new stdClass();
-            $customfieldstobecreated->id=$learningplanid;
+            $customfieldstobecreated->id=$newlearningplan->id;
             
             $learningplanduration? $customfieldstobecreated->customfield_careerduration= $learningplanduration: null;
             foreach ($customfields as $customfield) {
@@ -194,7 +203,7 @@ class save_learning_plan_external extends external_api {
         //End save learning plan custom fields-------------
         
         return [
-            'learningplanid' => $learningplanid
+            'learningplanid' => $newlearningplan->id
         ];
     }
 

@@ -79,7 +79,7 @@ class add_learning_user_external extends external_api {
         if (!$learningplanrecord) {
             throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
         }
-
+        
         $tableusers = 'local_learning_users';
 
         $learninguserexist = $DB->get_record($tableusers, [
@@ -103,9 +103,10 @@ class add_learning_user_external extends external_api {
         $learninguserexist->timemodified = time();
         $learninguserexist->timecreated = time();
         $learninguserexist->id = $DB->insert_record($tableusers, $learninguserexist);
-
+        
         // Enrol in first course and in all optional course.
         enrol_user_in_learningplan_courses($learningplan, $userid, $roleid, $group);
+        // enrol_user_in_learningplan_courses(34, 3, 5, '');
 
         // Now, if the role is manager, enrol the user in role system to give capabilities!
         $context = context_system::instance();

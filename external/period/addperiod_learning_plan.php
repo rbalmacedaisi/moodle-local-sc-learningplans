@@ -50,28 +50,54 @@ class addperiod_learning_plan_external extends external_api {
                     null,
                     NULL_NOT_ALLOWED
                 ),
+                'hassubperiods' => new external_value(PARAM_BOOL, 'Boolean indicating if the period has sub periods'),
+                'subperiods' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'name' => new external_value(PARAM_TEXT, 'Sub period name'),
+                            'position' => new external_value(PARAM_INT, 'subperiod position in the period')
+                        )
+                    )
+                )
             )
         );
     }
 
-    public static function addperiod_learning_plan($learningplanid, $name, $vigency) {
+    public static function addperiod_learning_plan($learningplanid, $name, $vigency,$hassubperiods,$subperiods) {
         global $DB, $USER;
-
+        
         $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplanid]);
         if (!$learningplanrecord) {
             throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
         }
-
+    
         $tableperiod = 'local_learning_periods';
 
         $createperiod = new stdClass();
         $createperiod->learningplanid = $learningplanid;
         $createperiod->name = $name;
         $createperiod->months = $vigency;
+        $createperiod->hassubperiods = $hassubperiods;
         $createperiod->usermodified = $USER->id;
         $createperiod->timecreated = time();
         $createperiod->timemodified = time();
         $createperiod->id = $DB->insert_record($tableperiod, $createperiod);
+        
+        //If the period has subperiods, create the subperiods
+        if($hassubperiods){
+            $subperiods = [['name'=>'BIMESTRE 1','position'=>0],['name'=>'BIMESTRE 2','position'=>1]];
+            foreach($subperiods as $subperiod){
+                $createsubperiod = new stdClass();
+                $createsubperiod->learningplanid = $learningplanid;
+                $createsubperiod->name = $subperiod['name'];
+                $createsubperiod->periodid = $createperiod->id;
+                $createsubperiod->position = $subperiod['position'];
+                $createsubperiod->usermodified = $USER->id;
+                $createsubperiod->timecreated = time();
+                $createsubperiod->timemodified = time();
+                $createsubperiod->id = $DB->insert_record('local_learning_subperiods', $createsubperiod);
+            }
+        }
 
         $learningplanrecord->periodcount += 1;
         $learningplanrecord->timemodified = time();

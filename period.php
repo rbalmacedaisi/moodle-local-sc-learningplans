@@ -42,6 +42,13 @@ if (!empty($periods)) {
     $hasperiods = true;
 }
 
+foreach($periods as $period){
+    if($period->hassubperiods){
+        $period->subperiods = array_values($DB->get_records('local_learning_subperiods',['periodid'=>$period->id]));
+        $numSubperiods = count($period->subperiods);
+        $period->numSubperiods = $numSubperiods;
+    }
+}
 
 $PAGE->set_url(new moodle_url('/local/sc_learningplans/period.php', ['id' => $learningplanid]));
 $PAGE->set_title(get_string('edit_plan', 'local_sc_learningplans'));
@@ -55,7 +62,6 @@ $PAGE->navbar->add(
     get_string('edit_period', 'local_sc_learningplans'),
     new moodle_url('/local/sc_learningplans/period.php', ['id' => $learningplanid])
 );
-
 $templatedata = [
     'hasperiods' => $hasperiods,
     'listperiods' => array_values($periods),

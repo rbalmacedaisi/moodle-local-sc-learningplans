@@ -29,6 +29,13 @@
                     </select>
                 </div>
                 
+                <div class="mt-3 d-none" id="selectSubPeriodToLearningPlanContainer">
+                    <label for="selectSubPeriodToLearningPlan">{{#str}} select_one_subperiod, local_sc_learningplans {{/str}}</label>
+                    <select id="selectSubPeriodToLearningPlan" class="form-control" required name="selectedsubperiod">
+                        <option value='0'>{{#str}} select_one_subperiod, local_sc_learningplans {{/str}}</option>
+                    </select>
+                </div>
+                
                 <div class="mt-3">
                     <input type="radio" id="required" name="type_course" value="1">
                     <label for="required" class="form-check-label">{{#str}} courses_required, local_sc_learningplans {{/str}}</label>

@@ -46,6 +46,12 @@ class save_learning_course_external extends external_api {
                     VALUE_DEFAULT,
                     null
                 ),
+                'subperiodid'   => new external_value(
+                    PARAM_INT,
+                    'ID of the subperiod',
+                    VALUE_DEFAULT,
+                    null
+                ),
                 'courseid'   => new external_value(
                     PARAM_TEXT,
                     'ID List of the course to add',
@@ -76,12 +82,17 @@ class save_learning_course_external extends external_api {
         );
     }
 
-    public static function save_learning_course($learningplan, $periodid, $courseid, $required, $credits, $position) {
+    public static function save_learning_course($learningplan, $periodid,$subperiodid, $courseid, $required, $credits, $position) {
         global $DB, $USER;
+
         $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplan]);
         if (!$learningplanrecord) {
             throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
         }
+        if ($DB->get_record('local_learning_periods',['id'=>$periodid])->hassubperiods && !$subperiodid) {
+            throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
+        }
+        
         $tablecourses = 'local_learning_courses';
         $courselist = explode(',', $courseid);
         foreach ($courselist as $courseid) {
@@ -114,6 +125,7 @@ class save_learning_course_external extends external_api {
             $learningplancourses->position = $courseposition ?? 0;
             $learningplancourses->credits = $credits;
             $learningplancourses->periodid = $periodid;
+            $learningplancourses->subperiodid = $subperiodid;
             $learningplancourses->usermodified = $USER->id;
             $learningplancourses->timecreated = time();
             $learningplancourses->timemodified = time();

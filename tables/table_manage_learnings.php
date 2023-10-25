@@ -111,7 +111,7 @@ class table_manage_learnings extends table_sql {
         $editicon       = html_writer::tag('i', '', array('class' => 'lp_icon fa fa-edit fa-fw'));
         $duplicateicon  = html_writer::tag('i', '', array('class' => 'lp_icon fa fa-copy fa-fw'));
         $reporticon     = html_writer::tag('i', '', array('class' => 'lp_icon fa fa-bar-chart fa-fw'));
-        $period         = html_writer::tag('i', '', array('class' => 'lp_icon fa fa-bars fa-fw'));
+        $period         = html_writer::tag('i', '', array('class' => 'lp_icon fa fa-calendar fa-fw'));
 
         $return = html_writer::link(
             new moodle_url('/local/sc_learningplans/users.php', ['id' => $values->id]),

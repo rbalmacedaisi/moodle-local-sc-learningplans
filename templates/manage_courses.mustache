@@ -63,9 +63,15 @@
                                                     <i class="fa fa-book course-icon"></i>
                                                 </span>
                                                 {{! End Course icon}}
-
+                        
                                                 {{! Coursename}}
-                                                <span class="pl-4 name-course font-weight-bold" for="course-{{id}}">{{coursename}}</span>
+                                                <div class="d-flex flex-column pl-4">
+                                                    <span class="name-course font-weight-bold" for="course-{{id}}">{{coursename}}</span>
+                                                    {{#subperiodname}}
+                                                    <small>{{subperiodname}}</small>
+                                                    {{/subperiodname}}
+                                                </div>
+                                                
                                                 <div class="spacer"></div>
 
                                                 {{! Actions for courses }}

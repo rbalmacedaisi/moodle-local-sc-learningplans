@@ -1,0 +1,56 @@
+<div class="modal fade modalEditPeriod" id="editNamePeriod-{{id}}" data-id="{{id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{! Start of Modal Header Section }}
+                <h5 class="modal-title text-center w-100 font-weight-bold" id="exampleModalLabel">{{#str}}edit_period, local_sc_learningplans{{/str}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                {{! End of Modal Header Section }}
+            </div>
+            
+            <div class="modal-body">
+                {{! Start of Modal Body Section }}
+                <div class="form-group px-2">
+                    {{! Display the current period name }}
+                    <h6 class="text-muted">{{name}}</h6>
+                    <div class="my-2">
+                        <label for="name_new_period_{{id}}">{{#str}} periodnamesetting, local_sc_learningplans {{/str}}</label>
+                        <input required class="form-control" value="{{name}}" id="name_new_period_{{id}}" type="text">
+                    </div>
+                    <div class="my-2">
+                        <label for="vigency_new_period_{{id}}">{{#str}} periodmonths, local_sc_learningplans {{/str}}</label>
+                        <input required class="form-control" value="{{months}}" id="vigency_new_period_{{id}}" type="text">
+                    </div>
+                    
+                    {{! Label for selecting whether there are subperiods }}
+                    <span class="w-100 d-block">{{#str}} add_subperiods, local_sc_learningplans {{/str}}</span>
+                    <div class="form-check form-check-inline">
+                        {{! Radio for selecting 'no subperiods' (default) }}
+                        <input class="form-check-input notsubperiod" type="radio" name="exampleRadios-{{id}}" id="notsubperiod-{{id}}" value="0" {{^subperiods}}checked {{/subperiods}}>
+                        <label class="form-check-label" for="notsubperiod-{{id}}">
+                            {{#str}} no {{/str}}
+                        </label>
+                    </div>
+                    
+                    <div class="form-check form-check-inline">
+                        {{! Radio for selecting 'subperiods' }}
+                        <input class="form-check-input addsubperiod" type="radio" name="exampleRadios-{{id}}" id="addsubperiod-{{id}}" value="1" {{#subperiods}}checked {{/subperiods}}>
+                        <label class="form-check-label" for="addsubperiod-{{id}}">
+                        {{#str}} yes {{/str}}
+                      </label>
+                    </div>
+                </div>
+                {{! End of Modal Body Section }}
+            </div>
+            
+             {{! Start of Modal Footer Section }}
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} cancel, local_sc_learningplans {{/str}}</button>
+                <button id="save_edit_period_{{id}}" type="button" class="btn btn-primary">{{#str}} btnsave, local_sc_learningplans {{/str}}</button>
+            </div>
+            {{! End of Modal Footer Section }}
+        </div>
+    </div>
+</div>

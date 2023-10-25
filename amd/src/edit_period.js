@@ -9,6 +9,7 @@ export const init = (learningid) => {
             e.preventDefault();
             const periodname = document.querySelector('#name_new_period');
             const periodvigency = document.querySelector('#vigency_new_period');
+            const addSubperiodRadioButton = document.getElementById('addsubperiod');
             if (!periodname.validity.valid) {
                 periodname.reportValidity();
                 return;
@@ -23,6 +24,8 @@ export const init = (learningid) => {
                     learningplanid: learningid,
                     name: periodname.value,
                     vigency: periodvigency.value,
+                    hassubperiods: addSubperiodRadioButton.checked ? 1 : 0,
+                    subperiods:[]
                 }
             },]);
 
@@ -58,7 +61,9 @@ export const init = (learningid) => {
                 window.console.log(e);
                 let nameperiod = document.querySelector('#name_new_period_' + periodid).value;
                 let vigencyperiod = document.querySelector('#vigency_new_period_' + periodid).value;
-                callEditPeriod(periodid, nameperiod, vigencyperiod);
+                let hassubperiodsCheck = document.querySelector('#addsubperiod-' + periodid);
+                let hassubperiods = hassubperiodsCheck.checked ? 1 : 0
+                callEditPeriod(periodid, nameperiod, vigencyperiod, hassubperiods);
             });
         }
     }
@@ -81,7 +86,7 @@ const callDeletePeriod = (learningid, periodid) => {
     });
 };
 
-const callEditPeriod = (periodid, nameperiod, vigencyperiod) => {
+const callEditPeriod = (periodid, nameperiod, vigencyperiod, hassubperiods) => {
     periodid = parseInt(periodid);
     const promise = Ajax.call([{
         methodname: 'local_sc_learningplans_edit_period_learning_plan',
@@ -89,6 +94,9 @@ const callEditPeriod = (periodid, nameperiod, vigencyperiod) => {
             periodid: periodid,
             nameperiod: nameperiod,
             vigency: vigencyperiod,
+            hassubperiods: hassubperiods,
+            subperiods:[]
+            //------------------------------------------------------------------
         }
     },]);
     promise[0].done(function (response) {
@@ -98,3 +106,21 @@ const callEditPeriod = (periodid, nameperiod, vigencyperiod) => {
         window.console.error(response);
     });
 };
+document.addEventListener('DOMContentLoaded', function () {
+  // Tu código JavaScript aquí
+  var modal = document.getElementById('editNamePeriod');
+  if (modal) {
+    modal.addEventListener('shown.bs.modal', function () {
+      // Simula un clic en el radio button con el id "exampleRadios2"
+      var radio = document.getElementById('exampleRadios2');
+      if (radio) {
+        radio.click();
+      }
+    });
+  }
+});
+
+
+
+
+

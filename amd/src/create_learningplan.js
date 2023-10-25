@@ -13,6 +13,7 @@ const optperiod = document.getElementById('periodslist');
 const addingperiods = document.getElementById('addingperiods');
 const parent = document.getElementById('listperiods');
 const parent_enrol = document.getElementById('type_enrol');
+const parent_subperiods = document.getElementById('subperiods');
 
 //Get courses items to be used
 const addcourses = document.getElementById('addcourses');
@@ -37,6 +38,7 @@ const learningimage = document.getElementById('id_learningplan_image');
 const careercost = document.getElementById('careercost');
 const careerduration = document.getElementById('careerduration');
 const careername = document.getElementById('careername');
+const addSubperiodRadioButton = document.getElementById('addsubperiod');
 
 export const init = (str_name_period_config, default_period_months) => {
     addLearningPlan();
@@ -49,6 +51,7 @@ let addLearningPlan = () => {
     if (btnadd) {
         btnadd.addEventListener('click', e => {
             e.preventDefault();
+            
             let desc_plan = document.getElementById('id_desc_planeditable');
             if (!learningshortid.validity.valid) {
                 learningshortid.reportValidity();
@@ -75,9 +78,9 @@ let addLearningPlan = () => {
             const listperiods = document.querySelectorAll('.period_name');
             const type_enrol_manual = document.getElementById("type_manual");
             const type_enrol_automatic = document.getElementById("type_automatic");
-            const hasperiod = addperiod.checked ? 1 : 0;
+            const hasperiod = addperiod.checked || addSubperiodRadioButton.checked;
             const type_enrol = setTypeEnrol(type_enrol_manual, type_enrol_automatic);
-            const periods = [];
+            let periods = [];
             const courses = [];
             const users = [];
             listperiods.forEach(e => {
@@ -90,7 +93,9 @@ let addLearningPlan = () => {
                 }
                 periods.push({
                     name,
-                    months
+                    months,
+                    hassubperiods:addSubperiodRadioButton.checked,
+                    subperiods:[]
                 });
             });
             if (btnscourse.length != 0 && hasperiod == 0) {
@@ -133,6 +138,7 @@ let addLearningPlan = () => {
                 requirements,
                 customfields
             };
+            console.log(args)
             const promise = Ajax.call([{
                 methodname: 'local_sc_learningplans_save_learning_plan',
                 args
@@ -298,6 +304,7 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
             optperiod.disabled = false;
             if (addingperiods) {
                 addingperiods.addEventListener('click', () => {
+                    parent_subperiods.classList.remove('d-none');
                     parent.innerHTML = '';
                     //Disabled the careerduration customfield, the duration will be calculated based on the periods
                     if(careerduration){
@@ -377,6 +384,7 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
     }
     if (notperiod) {
         notperiod.addEventListener('click', () => {
+            
             //Enable the careerduration customfield
             if(careerduration){
                 careerduration.disabled = false;
@@ -390,6 +398,8 @@ let addPeriodsOrNot = async (str_name_period_config, default_period_months) => {
             listcoursesplan.classList.add("d-block");
             listusersplan.classList.remove("d-none");
             listusersplan.classList.add("d-block");
+            parent_subperiods.classList.add('d-none');
+            optperiod.selectedIndex = -1;
         });
     }
 };

@@ -129,6 +129,7 @@ $string['btn_save_coursepos'] = 'Save Courses Position';
 $string['add_courses_period'] = 'Add new courses';
 $string['select_credits'] = 'Select number credits';
 $string['select_one_period'] = 'Select Period';
+$string['select_one_subperiod'] = 'Select Sub-Period';
 
 $string['titleconfirmmove'] = 'Move optional course to required';
 $string['msgconfirm_mmove'] = 'Are you sure to move the course {$a->cname} to required list?';
@@ -224,4 +225,8 @@ $string['Campos_prueba'] = 'Campos test';
 $string['careercost'] = 'Career cost';
 $string['careerduration'] = 'Career duration (months)';
 $string['careername'] = 'Career name';
-
+$string['add_subperiods'] = 'You want to add subperiod';
+$string['divided_into_bimesters'] = 'Each period will be divided into 2 Bimesters.';
+$string['subperiods'] = 'Subperiods';
+$string['edit_period'] = 'Edit Period';
+$string['btnsave'] = 'Save';

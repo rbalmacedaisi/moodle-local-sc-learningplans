@@ -54,9 +54,13 @@ class delete_period_learning_plan_external extends external_api {
         if (!$learningplanrecord) {
             throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
         }
-
         $isdelete = null;
         $result = false;
+        
+        $periodhassubperiods = $DB->get_record('local_learning_periods',['id'=>$periodid])->hassubperiods;
+        if($periodhassubperiods){
+             $DB->delete_records('local_learning_subperiods', ['periodid' => $periodid]);
+        }
 
         $isdelete = $DB->delete_records('local_learning_periods', ['id' => $periodid]);
 

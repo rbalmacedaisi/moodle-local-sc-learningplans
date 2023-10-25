@@ -86,6 +86,7 @@ class get_learning_plans_external extends external_api {
                 llperiod.name periodname,
                 llperiod.months periodmotnhs,
                 llperiod.id periodrecordid,
+                llperiod.hassubperiods hassubperiods,
                 llu.currentperiodid
             FROM {local_learning_users} llu
             JOIN {local_learning_plans} llp ON (llp.id = llu.learningplanid)
@@ -117,6 +118,8 @@ class get_learning_plans_external extends external_api {
         );
 
         $allperiods = $DB->get_records('local_learning_periods');
+
+        
 
         $returnlearningplandata = [];
         $fs = get_file_storage();
@@ -172,7 +175,6 @@ class get_learning_plans_external extends external_api {
                 $cinfo = new completion_info($course);
                 $coursecompletiondata[$courseid]['completed'] = $cinfo->is_course_complete($USER->id);
             }
-
             $courseprogress = $coursecompletiondata[$courseid]['progress'];
             $coursecompleted = $coursecompletiondata[$courseid]['completed'];
             if ($userlpdata->isrequired == 1) {
@@ -185,10 +187,14 @@ class get_learning_plans_external extends external_api {
                     'id' => $userlpdata->periodrecordid,
                     'totalperiodcourses' => 0,
                     'periodname' => $periodname,
+                    'hassubperiods' => $userlpdata->hassubperiods,
                     'requiredcourses' => [],
                     'optionalcourses' => [],
                 ];
             }
+            $subperiodid = $DB->get_record('local_learning_courses',['courseid'=>$courseid, 'learningplanid'=>$learningplanid])->subperiodid;
+            $subperiod = $subperiodid?  $DB->get_record('local_learning_subperiods',['id'=>$subperiodid]):null;
+            
             $returnlearningplandata[$learningplanid]['periodsdata'][$periodname][$coursestringindex][$courseid] = [
                 'id' => $courseid,
                 'crid' => $userlpdata->courserecordid,
@@ -201,6 +207,8 @@ class get_learning_plans_external extends external_api {
                 'waiting' => true, // For now, all courses are waiting.
                 'active' => false, // For now, all courses aren't active.
                 'current' => false, // For now, all courses isn't current.
+                'subperiodid'=> $subperiod? $subperiod->id: null,
+                'subperiodname'=> $subperiod? $subperiod->name: null,
             ];
 
         }
@@ -273,6 +281,8 @@ class get_learning_plans_external extends external_api {
                     'waiting'       => new external_value(PARAM_BOOL, 'Si esta en espera o no'),
                     'active'        => new external_value(PARAM_BOOL, 'Si es un curso activo'),
                     'current'       => new external_value(PARAM_BOOL, 'Si es el curso actual que cursa'),
+                    'subperiodid'       => new external_value(PARAM_INT, 'El id del subperiodo al que pertenece si es el caso'),
+                    'subperiodname'       => new external_value(PARAM_TEXT, 'El nombre del subperiodo'),
                 ]
             ), 'Estructura de cursos', VALUE_DEFAULT
         );
@@ -282,6 +292,7 @@ class get_learning_plans_external extends external_api {
                     'id'              => new external_value(PARAM_INT, 'ID of Period'),
                     'totalperiodcourses' => new external_value(PARAM_INT, 'Total courses in period'),
                     'periodname'      => new external_value(PARAM_TEXT, 'Fullname of period'),
+                    'hassubperiods'      => new external_value(PARAM_BOOL   , 'If the period has subperiods'),
                     'requiredcourses'           => $structurecourses,
                     'optionalcourses'           => $structurecourses,
                 ]

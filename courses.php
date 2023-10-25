@@ -79,6 +79,9 @@ if ($learningplan->hasperiod == 1) {
     foreach ($listperiods as $period) {
         $listperiodcourses[$period->id]['idperiod'] = $period->id;
         $listperiodcourses[$period->id]['nameperiod'] = $period->name;
+        if($period->hassubperiods){
+            $period->subperiods = $DB->get_records('local_learning_subperiods',['periodid'=>$period->id]);
+        }
     }
     if (!empty($learningplancourses)) {
         foreach ($learningplancourses as $course) {
@@ -96,6 +99,7 @@ if ($learningplan->hasperiod == 1) {
             } else {
                 $listperiodcourses[$period->id]['coursesoptional'][] = $course;
             }
+            $course->subperiodname=$course->subperiodid? $period->subperiods[$course->subperiodid]->name : null;
             unset($allcourses[$course->courseid]);
         }
     }
@@ -127,6 +131,9 @@ $credits = [
     ['id' => '10', 'value' => '10']
 ];
 
+// print_object(array_values($listperiods));
+// print_object(array_values($listperiodcourses));
+// die;
 $templatedata = [
     'learningplanid' => $id,
     'courses' => array_values($allcourses),
@@ -141,5 +148,5 @@ $templatedata = [
 
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('local_sc_learningplans/manage_courses', $templatedata);
-$PAGE->requires->js_call_amd('local_sc_learningplans/manage_courses', 'init', ['learningplanid' => $id]);
+$PAGE->requires->js_call_amd('local_sc_learningplans/manage_courses', 'init', ['learningplanid' => $id,'periods'=>$listperiods]);
 echo $OUTPUT->footer();

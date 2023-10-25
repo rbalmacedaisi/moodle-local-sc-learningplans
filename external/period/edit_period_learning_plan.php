@@ -50,11 +50,21 @@ class edit_period_learning_plan_external extends external_api {
                     null,
                     NULL_NOT_ALLOWED
                 ),
+                'hassubperiods' => new external_value(PARAM_BOOL, 'Boolean indicating if the period has sub periods',VALUE_REQUIRED),
+                'subperiods' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'id'=>new external_value(PARAM_INT, 'Sub period id'),
+                            'name' => new external_value(PARAM_TEXT, 'Sub period name'),
+                            'position' => new external_value(PARAM_INT, 'subperiod position in the period')
+                        )
+                    )
+                )
             )
         );
     }
 
-    public static function edit_period_learning_plan($periodid, $nameperiod, $vigency) {
+    public static function edit_period_learning_plan($periodid, $nameperiod, $vigency,$hassubperiods,$subperiods) {
         global $USER, $DB;
 
         $period = $DB->get_record('local_learning_periods', ['id' => $periodid]);
@@ -64,9 +74,30 @@ class edit_period_learning_plan_external extends external_api {
 
         $period->name = $nameperiod;
         $period->months = $vigency;
+        $period->hassubperiods = $hassubperiods;
         $period->usermodified = $USER->id;
         $period->timemodified = time();
         $DB->update_record('local_learning_periods', $period);
+        
+        //If the period has subperiods, edit the subperiods
+        if($hassubperiods && !$DB->get_records('local_learning_subperiods',['periodid'=>$periodid])){
+
+            $subperiods = [['name'=>'BIMESTRE 1','position'=>0],['name'=>'BIMESTRE 2','position'=>1]];
+            foreach($subperiods as $subperiod){
+                $createsubperiod = new stdClass();
+                $createsubperiod->learningplanid = $period->learningplanid;
+                $createsubperiod->name = $subperiod['name'];
+                $createsubperiod->periodid =$periodid;
+                $createsubperiod->position = $subperiod['position'];
+                $createsubperiod->usermodified = $USER->id;
+                $createsubperiod->timecreated = time();
+                $createsubperiod->timemodified = time();
+                $createsubperiod->id = $DB->insert_record('local_learning_subperiods', $createsubperiod);
+            }
+        }
+        else {
+            $DB->delete_records('local_learning_subperiods',['periodid'=>$periodid]);
+        }
         
         //Edit the career custom field based on the remaining periods
         $periods = $DB->get_records("local_learning_periods", ['learningplanid' => $period->learningplanid]);
