@@ -290,6 +290,85 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         // Sc_learningplans savepoint reached.
         upgrade_plugin_savepoint(true, 2023101900, 'local', 'sc_learningplans');
     }
+    if ($oldversion < 2023112400) {
+
+        // Define table local_learning_course_progre to be created.
+        $table = new xmldb_table('local_learning_course_progre');
+
+        // Adding fields to table local_learning_course_progre.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('periodid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('periodname', XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, 'unnamed');
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('coursename', XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, 'unnamed');
+        $table->add_field('progress', XMLDB_TYPE_NUMBER, '3, 2', null, null, null, '0.0');
+        $table->add_field('grade', XMLDB_TYPE_NUMBER, '3, 2', null, XMLDB_NOTNULL, null, '0.0');
+        $table->add_field('credits', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('prerequisites', XMLDB_TYPE_CHAR, '64', null, null, null, null);
+        $table->add_field('tc', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('practicalhours', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('teoricalhours', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table local_learning_course_progre.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Conditionally launch create table for local_learning_course_progre.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023112400, 'local', 'sc_learningplans');
+    }
+    if ($oldversion < 2023112401) {
+
+        // Define field learningplanid to be added to local_learning_course_progre.
+        $table = new xmldb_table('local_learning_course_progre');
+        $field = new xmldb_field('learningplanid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'timemodified');
+
+        // Conditionally launch add field learningplanid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023112401, 'local', 'sc_learningplans');
+    }
+    if ($oldversion < 2023112402) {
+
+        // Define field status to be added to local_learning_course_progre.
+        $table = new xmldb_table('local_learning_course_progre');
+        $field = new xmldb_field('status', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'learningplanid');
+
+        // Conditionally launch add field status.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023112402, 'local', 'sc_learningplans');
+    }
+    if ($oldversion < 2023112700) {
+
+        // Define table local_learning_course_progre to be dropped.
+        $table = new xmldb_table('local_learning_course_progre');
+
+        // Conditionally launch drop table for local_learning_course_progre.
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2023112700, 'local', 'sc_learningplans');
+    }
+
+
+
 
     return true;
 }

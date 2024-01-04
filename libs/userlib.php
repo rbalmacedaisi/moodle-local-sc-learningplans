@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/group/lib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/lib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/courselib.php');
 
 /**
@@ -85,8 +86,6 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
     foreach ($courses as $course) {
         $courseperiod = $course->periodid; // If null, not matter.
         if ($hasperiods && $ismanual) {
-            var_dump('entro');
-            die;
             // Have periods and is manual enrolment.
             if ($usercurrentperiod == null) {
                 // El usuario no tiene asignado el periodo actual, se lo asignamos al periodo del ciclo.

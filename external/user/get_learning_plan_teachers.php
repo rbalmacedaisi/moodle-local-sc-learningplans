@@ -55,7 +55,6 @@ class get_learning_plan_teachers_external extends external_api {
     public static function get_learning_plan_teachers($learningPlanId,$periodId=null,$courseId=null) {
         global $USER, $DB;
         
-        
         $teachers = [];
         $groupTeachers = $DB->get_records("local_learning_users", ['learningplanid' => $learningPlanId, 'userroleid' => 4]);
         foreach($groupTeachers as $teacher){

@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/classes/event/learningplanuser_added.php');
 
 class add_learning_user_external extends external_api {
 
@@ -75,6 +76,7 @@ class add_learning_user_external extends external_api {
 
     public static function add_learning_user($learningplan, $userid, $roleid, $currentperiodid, $group) {
         global $DB, $USER;
+        
         $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplan]);
         if (!$learningplanrecord) {
             throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
@@ -106,7 +108,6 @@ class add_learning_user_external extends external_api {
         
         // Enrol in first course and in all optional course.
         enrol_user_in_learningplan_courses($learningplan, $userid, $roleid, $group);
-        // enrol_user_in_learningplan_courses(34, 3, 5, '');
 
         // Now, if the role is manager, enrol the user in role system to give capabilities!
         $context = context_system::instance();
@@ -119,9 +120,17 @@ class add_learning_user_external extends external_api {
         }
 
         send_email_user_enroled($learningplan, $userid, $roleid);
-
         $learningplanrecord->usercount++;
         $DB->update_record('local_learning_plans', $learningplanrecord);
+        
+        $learningplanuser_added_event = \local_sc_learningplans\event\learningplanuser_added::create(array(
+            'context' => context_system::instance(),
+            'objectid' => $learninguserexist->id,
+            'relateduserid'=>$userid,
+            'other' => ["learningPlanId"=>$learningplan,"roleId"=>$roleid]
+        ));
+        $learningplanuser_added_event->trigger();
+        
         return [
             'id' => $learninguserexist->id,
         ];

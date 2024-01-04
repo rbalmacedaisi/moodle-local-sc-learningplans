@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/classes/event/learningplanuser_removed.php');
 
 class delete_learning_user_external extends external_api {
 
@@ -58,6 +59,7 @@ class delete_learning_user_external extends external_api {
 
     public static function delete_learning_user($learningplan, $userid, $unenrol) {
         global $DB;
+        
         $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplan]);
         if (!$learningplanrecord) {
             throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
@@ -72,6 +74,13 @@ class delete_learning_user_external extends external_api {
         } else {
             // Delete relation user - lp records.
             $isdelete = $DB->delete_records('local_learning_users', ['id' => $learninguserexist->id]);
+            $learningplanuser_removed_event = \local_sc_learningplans\event\learningplanuser_removed::create(array(
+                'context' => context_system::instance(),
+                'objectid' => $learninguserexist->id,
+                'relateduserid'=>$userid,
+                'other' => array("learningPlanId"=>$learningplan)
+            ));
+            $learningplanuser_removed_event->trigger();
             if ($unenrol) {
                 // Check the courses from this lp.
                 $optionalcourses = $DB->get_records_sql('SELECT c.id as course_id, lpc.*, c.fullname
@@ -134,6 +143,7 @@ class delete_learning_user_external extends external_api {
         $learningplanrecord->usercount--;
         $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
+        
         return [
             'isdelete' => $isdelete,
         ];
