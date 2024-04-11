@@ -61,11 +61,9 @@ function sc_learningplan_get_roles() {
  */
 function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $learningplanrecord, $learninguserrecord, $groupname) {
 
-    
-    global $CFG;
-    $CFG->alreadyRelated = [];
     global $CFG, $DB;
     require_once("$CFG->libdir/completionlib.php");
+    $CFG->alreadyRelated = [];
     $enrolplugin = enrol_get_plugin('manual');
     $allcourses = get_courses();
 
@@ -73,12 +71,8 @@ function enrol_user_in_first_uncomplete_course($courses, $userid, $roleid, $lear
     $usercurrentperiod = $learninguserrecord->currentperiodid;
     $hasperiods = $learningplanrecord->hasperiod;
     $enroltype = $learningplanrecord->enroltype; // 1: Manual, 2: Automatic.
-    $ismanual = false;
-    if ($enroltype == 1) {
-        // Toca poner al usuario en espera llegado el caso.
-        $ismanual = true;
-    }
-    
+    $ismanual =$enroltype == 1;
+    // Si $ismanual==true Toca poner al usuario en espera llegado el caso.
     $changeperiod = false;
     $checkchangeperiod = false;
     $learninguserrecord->waitingperiod = null;
@@ -247,7 +241,6 @@ function enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid, $
         'learningplanid' => $learningplanid,
         'isrequired' => 1
     ]);
-
     $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplanid]);
     $learninguserrecord = $DB->get_record('local_learning_users', [
         'learningplanid' => $learningplanid,

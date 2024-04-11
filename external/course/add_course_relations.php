@@ -63,6 +63,10 @@ class add_course_relations_external extends external_api {
         $records = explode(',', $records);
 
         foreach ($records as $newrecord) {
+            if($DB->get_record('local_learningplan_rel_cours',['origin_record_id'=>$recordid,'destination_record_id'=>$newrecord])){
+                continue;
+            }
+            
             $newrecord = trim($newrecord);
             $insertrelation = new stdClass();
             $insertrelation->origin_record_id = $recordid;

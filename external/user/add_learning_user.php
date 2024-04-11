@@ -105,7 +105,7 @@ class add_learning_user_external extends external_api {
         $learninguserexist->timemodified = time();
         $learninguserexist->timecreated = time();
         $learninguserexist->id = $DB->insert_record($tableusers, $learninguserexist);
-        
+
         // Enrol in first course and in all optional course.
         enrol_user_in_learningplan_courses($learningplan, $userid, $roleid, $group);
 

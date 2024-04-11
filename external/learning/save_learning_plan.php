@@ -35,24 +35,16 @@ class save_learning_plan_external extends external_api {
     public static function save_learning_plan_parameters() {
         return new external_function_parameters(
             array(
-                'learningshortid' => new external_value(PARAM_TEXT, 'Unique shortname'),
-                'learningname' => new external_value(PARAM_TEXT, 'Name of the learning plan'),
+                'learningshortid' => new external_value(PARAM_TEXT, 'Unique shortname',VALUE_REQUIRED),
+                'learningname' => new external_value(PARAM_TEXT, 'Name of the learning plan',VALUE_REQUIRED),
                 'periods'      => new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            'name' => new external_value(PARAM_TEXT, 'Name of Periods'),
-                            'months' => new external_value(PARAM_INT, 'Duration in months'),
-                            'hassubperiods' => new external_value(PARAM_BOOL, 'Boolean indicating if the period has sub periods'),
-                            'subperiods' => new external_multiple_structure(
-                                new external_single_structure(
-                                    array(
-                                        'name' => new external_value(PARAM_TEXT, 'Sub period name'),
-                                        'position' => new external_value(PARAM_INT, 'subperiod position in the period')
-                                    )
-                                )
-                            )
+                            'name' => new external_value(PARAM_TEXT, 'Name of Periods', VALUE_REQUIRED),
+                            'months' => new external_value(PARAM_INT, 'Duration in months', VALUE_REQUIRED),
+                            'hassubperiods' => new external_value(PARAM_BOOL, 'Boolean indicating if the period has sub periods', VALUE_DEFAULT, false)
                         )
-                    )
+                    ),'Period list',VALUE_DEFAULT,[]
                 ),
                 'courses' => new external_multiple_structure(
                     new external_single_structure(
@@ -61,7 +53,7 @@ class save_learning_plan_external extends external_api {
                             'required' => new external_value(PARAM_INT, 'If the course is required (1) or not (0)'),
                             'credits' => new external_value(PARAM_RAW, 'List credits of courses')
                         )
-                    )
+                    ),'Course list',VALUE_DEFAULT,[]
                 ),
                 'users' => new external_multiple_structure(
                     new external_single_structure(
@@ -70,37 +62,37 @@ class save_learning_plan_external extends external_api {
                             'roleid' => new external_value(PARAM_INT, 'Role ID'),
                             'group'  => new external_value(PARAM_TEXT, 'Group name')
                         )
-                    )
+                    ),'User list',VALUE_DEFAULT,[]
                 ),
-                'fileimage' => new external_value(PARAM_INT, 'Image itemid provide by filemanager form element'),
-                'description' => new external_value(PARAM_RAW, 'Description of the learning plan'),
-                'hasperiod'   => new external_value(PARAM_INT, 'Check if learning plan has periods'),
-                'enroltype'  => new external_value(PARAM_INT, 'Type Enrolment if plan has periods'),
-                'requirements'   => new external_value(PARAM_TEXT, 'User Profiles id'),
+                'fileimage' => new external_value(PARAM_INT, 'Image itemid provide by filemanager form element',VALUE_DEFAULT,null),
+                'description' => new external_value(PARAM_RAW, 'Description of the learning plan',VALUE_DEFAULT,''),
+                'hasperiod'   => new external_value(PARAM_BOOL, 'Check if learning plan has periods',VALUE_DEFAULT,false),
+                'enroltype'  => new external_value(PARAM_INT, 'Type Enrolment if plan has periods',VALUE_DEFAULT,1),
+                'requirements'   => new external_value(PARAM_TEXT, 'User Profiles id',VALUE_DEFAULT,''),
                 'customfields' => new external_multiple_structure(
                     new external_single_structure(
                         array(
                             'id' => new external_value(PARAM_TEXT, 'Id of the custom field'),
                             'value' => new external_value(PARAM_TEXT, 'Value of the custom field')
                         ),
-                    )
+                    ),'Custom field list',VALUE_DEFAULT,[]
                 )
             )
         );
     }
 
     public static function save_learning_plan(
-        $learningshortid,
-        $learningname,
-        $periods,
-        $courses,
-        $users,
-        $fileimage,
-        $description,
-        $hasperiod,
-        $enroltype,
-        $requirements,
-        $customfields
+            $learningshortid,
+            $learningname,
+            $periods, 
+            $courses=[],
+            $users=[],
+            $fileimage,
+            $description='',
+            $hasperiod=false,
+            $enroltype=1,
+            $requirements='',
+            $customfields=[]
         ) {
         
         global $DB, $USER;
@@ -168,19 +160,41 @@ class save_learning_plan_external extends external_api {
                 addperiod_learning_plan_external::addperiod_learning_plan($newlearningplan->id, $name, $months,$hassubperiods,$subperiods);
             }
         }
-
-        if ($fileimage) {
-            $itemid = $fileimage;
+        
+        $file_exists = $DB->record_exists('files', array('itemid' => $fileimage));
+       
+        if(!$file_exists){
+            $image_path = __DIR__ . '/img/group_desc.png';
             $context = context_system::instance();
-            file_save_draft_area_files(
-                $itemid,
-                $context->id,
-                'local_sc_learningplans',
-                'learningplan_image',
-                $newlearningplan->id,
-                array('subdirs' => 0, 'maxfiles' => 1)
+            $file_record = array(
+                'contextid' => $context->id,
+                'component' => 'local_sc_learningplans',
+                'filearea' => 'learningplan_image',
+                'itemid' => $newlearningplan->id, 
+                'filepath' => '/',
+                'filename' => 'group_desc.png',
+                'source'  => 'group_desc.png'
             );
+            
+            //Get core storage and save image by default
+            $fs = get_file_storage();
+            $file = $fs->create_file_from_pathname($file_record, $image_path);
+
+        }else{
+            if ($fileimage) {
+                $itemid = $fileimage;
+                $context = context_system::instance();
+                $result = file_save_draft_area_files(
+                    $itemid,
+                    $context->id,
+                    'local_sc_learningplans',
+                    'learningplan_image',
+                    $newlearningplan->id,
+                    array('subdirs' => 0, 'maxfiles' => 1)
+                );
+            }
         }
+        
         $newlearningplan->updated_at = time();
         $DB->update_record('local_learning_plans', $newlearningplan);
         

@@ -50,20 +50,12 @@ class addperiod_learning_plan_external extends external_api {
                     null,
                     NULL_NOT_ALLOWED
                 ),
-                'hassubperiods' => new external_value(PARAM_BOOL, 'Boolean indicating if the period has sub periods'),
-                'subperiods' => new external_multiple_structure(
-                    new external_single_structure(
-                        array(
-                            'name' => new external_value(PARAM_TEXT, 'Sub period name'),
-                            'position' => new external_value(PARAM_INT, 'subperiod position in the period')
-                        )
-                    )
-                )
+                'hassubperiods' => new external_value(PARAM_BOOL, 'Boolean indicating if the period has sub periods')
             )
         );
     }
 
-    public static function addperiod_learning_plan($learningplanid, $name, $vigency,$hassubperiods,$subperiods) {
+    public static function addperiod_learning_plan($learningplanid, $name, $vigency,$hassubperiods) {
         global $DB, $USER;
         
         $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplanid]);

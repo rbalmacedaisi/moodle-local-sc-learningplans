@@ -71,7 +71,10 @@ class edit_period_learning_plan_external extends external_api {
         if (!$period) {
             throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
         }
-
+        
+        if($hassubperiods){
+            
+        }
         $period->name = $nameperiod;
         $period->months = $vigency;
         $period->hassubperiods = $hassubperiods;
@@ -79,9 +82,11 @@ class edit_period_learning_plan_external extends external_api {
         $period->timemodified = time();
         $DB->update_record('local_learning_periods', $period);
         
+        $subperiodExists = $DB->get_records('local_learning_subperiods',['periodid'=>$periodid]);
+        $totalsubperiodExists = count($subperiodExists);
+    
         //If the period has subperiods, edit the subperiods
-        if($hassubperiods && !$DB->get_records('local_learning_subperiods',['periodid'=>$periodid])){
-
+        if($hassubperiods && $totalsubperiodExists  == 0){
             $subperiods = [['name'=>'BIMESTRE 1','position'=>0],['name'=>'BIMESTRE 2','position'=>1]];
             foreach($subperiods as $subperiod){
                 $createsubperiod = new stdClass();
@@ -95,7 +100,7 @@ class edit_period_learning_plan_external extends external_api {
                 $createsubperiod->id = $DB->insert_record('local_learning_subperiods', $createsubperiod);
             }
         }
-        else {
+        else if(!$hassubperiods) {
             $DB->delete_records('local_learning_subperiods',['periodid'=>$periodid]);
         }
         

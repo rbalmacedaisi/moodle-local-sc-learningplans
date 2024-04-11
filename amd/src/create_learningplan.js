@@ -94,8 +94,7 @@ let addLearningPlan = () => {
                 periods.push({
                     name,
                     months,
-                    hassubperiods:addSubperiodRadioButton.checked,
-                    subperiods:[]
+                    hassubperiods:addSubperiodRadioButton.checked
                 });
             });
             if (btnscourse.length != 0 && hasperiod == 0) {

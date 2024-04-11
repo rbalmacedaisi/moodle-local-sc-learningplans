@@ -231,3 +231,6 @@ $string['divided_into_bimesters'] = 'Se dividira cada periodo en 2 Bimestres.';
 $string['subperiods'] = 'Subperiodos';
 $string['edit_period'] = 'Editar Periodo';
 $string['btnsave'] = 'Guardar';
+
+$string['errorlearningplanexist'] = 'El plan de aprendizaje ya existe.';
+$string['learninguserexist'] = 'El usuario ya esta en el plan de aprendizaje.';
