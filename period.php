@@ -47,6 +47,8 @@ foreach($periods as $period){
         $period->subperiods = array_values($DB->get_records('local_learning_subperiods',['periodid'=>$period->id]));
         $numSubperiods = count($period->subperiods);
         $period->numSubperiods = $numSubperiods;
+    }else{
+        $period->numSubperiods = 0;
     }
 }
 

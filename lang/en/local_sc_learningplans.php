@@ -230,3 +230,6 @@ $string['divided_into_bimesters'] = 'Each period will be divided into 2 Bimester
 $string['subperiods'] = 'Subperiods';
 $string['edit_period'] = 'Edit Period';
 $string['btnsave'] = 'Save';
+
+$string['errorlearningplanexist'] = 'Learning Plan already exists.';
+$string['learninguserexist'] = 'The user is already on the learning plan.';

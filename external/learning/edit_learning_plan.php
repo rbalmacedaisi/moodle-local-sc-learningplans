@@ -59,7 +59,8 @@ class edit_learning_plan_external extends external_api {
             $requirements,
             $customfields
         ) {
-        global $DB;
+        global $DB,$CFG,$USER;
+
         // Check if LP Exist.
         $learningplan = $DB->get_record('local_learning_plans', ['id' => $learningid]);
         if (!$learningplan) {
@@ -78,18 +79,41 @@ class edit_learning_plan_external extends external_api {
         if ($otherlearningshortid) {
             throw new moodle_exception('otherlpsameshortid', 'local_sc_learningplans');
         }
-        if ($fileimage) {
-            $itemid = $fileimage;
+
+        $file_exists = $DB->record_exists('files', array('itemid' => $fileimage));
+        if(!$file_exists){
+            $image_path = __DIR__ . '/img/group_desc.png';
+            
             $context = context_system::instance();
-            file_save_draft_area_files(
-                $itemid,
-                $context->id,
-                'local_sc_learningplans',
-                'learningplan_image',
-                $learningid,
-                array('subdirs' => 0, 'maxfiles' => 1)
+            $file_record = array(
+                'contextid' => $context->id,
+                'component' => 'local_sc_learningplans',
+                'filearea' => 'learningplan_image',
+                'itemid' => $learningid, 
+                'filepath' => '/',
+                'filename' => 'group_desc.png',
+                'source'  => 'group_desc.png'
             );
+            
+            //Get core storage and save image by default
+            $fs = get_file_storage();
+            $file = $fs->create_file_from_pathname($file_record, $image_path);
+            
+        }else{
+            if ($fileimage) {
+                $itemid = $fileimage;
+                $context = context_system::instance();
+                $result = file_save_draft_area_files(
+                    $itemid,
+                    $context->id,
+                    'local_sc_learningplans',
+                    'learningplan_image',
+                    $learningid,
+                    array('subdirs' => 0, 'maxfiles' => 1)
+                );
+            }
         }
+        
         $description = $description;
         $learningplan->shortname = $learningshortname;
         $learningplan->name = $learningname;
