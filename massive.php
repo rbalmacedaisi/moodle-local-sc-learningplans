@@ -41,7 +41,7 @@ if (is_null($datafile)) {
 }
 
 $file = fopen($datafile['tmp_name'], "r");
-
+fgetcsv($file, 0, ',');
 $headerreaded = false;
 $learningplans = [];
 $rolestudentid = 5;
@@ -49,14 +49,16 @@ $rolestudent = $DB->get_record('role', ['shortname' => 'student']);
 if ($rolestudent) {
     $rolestudentid = $rolestudent->id;
 }
-while (($linecsv = fgetcsv($file)) !== false) {
-    if (!$headerreaded) {
+while (($linecsv = fgetcsv($file, 0, ',')) !== false) {
+
+    /*if (!$headerreaded) {
         $headerreaded = true;
         continue;
-    }
-    if (count($linecsv) < 5) { // If not have the 7 datas, pass line.
+    }*/
+    /*if (count($linecsv) < 5) { // If not have the 7 datas, pass line.
         continue;
-    }
+    }*/
+   
     $email      = trim($linecsv[0]);
     $firstname  = trim($linecsv[1]);
     $lastname   = trim($linecsv[2]);
