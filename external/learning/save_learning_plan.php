@@ -74,7 +74,7 @@ class save_learning_plan_external extends external_api {
                 ),
                 'fileimage' => new external_value(PARAM_INT, 'Image itemid provide by filemanager form element'),
                 'description' => new external_value(PARAM_RAW, 'Description of the learning plan'),
-                'hasperiod'   => new external_value(PARAM_INT, 'Check if learning plan has periods'),
+                'hasperiod'   => new external_value(PARAM_BOOL, 'Check if learning plan has periods',VALUE_DEFAULT,false),
                 'enroltype'  => new external_value(PARAM_INT, 'Type Enrolment if plan has periods'),
                 'requirements'   => new external_value(PARAM_TEXT, 'User Profiles id'),
                 'customfields' => new external_multiple_structure(
@@ -109,6 +109,7 @@ class save_learning_plan_external extends external_api {
         if ($learningplanexist) {
             throw new moodle_exception('errorlearningplanexist', 'local_sc_learningplans');
         }
+    
         if ($hasperiod == 0) {
             $countperiod = 0;
         } else {
