@@ -123,8 +123,11 @@ class save_learning_plan_external extends external_api {
         $newlearningplan->timecreated = time();
         $newlearningplan->timemodified = time();
         $newlearningplan->id = $DB->insert_record('local_learning_plans', $newlearningplan);
-        
+ 
         $learningplanduration = 0;
+        if(empty($periods)){
+            $hasperiod = false;
+        }
         if ($hasperiod == 0) {
             // Not periods, so the request data have courses and users.
             $pos = 0;
@@ -140,7 +143,7 @@ class save_learning_plan_external extends external_api {
                     $position = 0;
                 }
                 save_learning_course_external::save_learning_course(
-                    $newlearningplan->id, null, $courseid, $isrequired, $credits, $position
+                    $newlearningplan->id, null, $hasperiod,$courseid, $isrequired, $credits, $position
                 );
             }
             foreach ($users as $user) {

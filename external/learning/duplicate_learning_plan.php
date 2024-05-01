@@ -58,6 +58,7 @@ class duplicate_learning_plan_external extends external_api {
         $description
     ) {
         global $DB, $USER, $PAGE;
+
         $context = context_system::instance();
         $PAGE->set_context($context);
         $oldlearningid = $learningid;
@@ -115,7 +116,8 @@ class duplicate_learning_plan_external extends external_api {
                     $datanewperiod = addperiod_learning_plan_external::addperiod_learning_plan(
                         $newlearningplanid,
                         $data->name,
-                        $data->months
+                        $data->months,
+                        $data->hassubperiods
                     );
                     $newperiodid = $datanewperiod['id'];
                     foreach ($data->courses as $datacourse) {
@@ -126,6 +128,7 @@ class duplicate_learning_plan_external extends external_api {
                         save_learning_course_external::save_learning_course(
                             $newlearningplanid,
                             $newperiodid,
+                            null,
                             $datacourse->courseid,
                             $datacourse->isrequired,
                             $datacourse->credits,
