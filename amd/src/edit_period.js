@@ -25,7 +25,7 @@ export const init = (learningid) => {
                     name: periodname.value,
                     vigency: periodvigency.value,
                     hassubperiods: addSubperiodRadioButton.checked ? 1 : 0,
-                    subperiods:[]
+                    //subperiods:[]
                 }
             },]);
 

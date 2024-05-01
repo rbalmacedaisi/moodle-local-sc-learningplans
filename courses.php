@@ -84,6 +84,7 @@ if ($learningplan->hasperiod == 1) {
         }
     }
     if (!empty($learningplancourses)) {
+        
         foreach ($learningplancourses as $course) {
             if (!isset($listperiods[$course->periodid]) || !isset($allcourses[$course->courseid])) {
                 continue;

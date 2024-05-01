@@ -132,6 +132,7 @@ class save_learning_course_external extends external_api {
                 $learningplanrecord->coursecount++;
             }
         }
+        $context = context_system::instance();
         $users = $DB->get_records_sql(
             'SELECT llu.* FROM {local_learning_users} llu
             JOIN {user} u ON (u.id = llu.userid)
@@ -140,10 +141,19 @@ class save_learning_course_external extends external_api {
             $userid = $user->userid;
             $roleid = $user->userroleid;
             enrol_user_in_learningplan_courses($learningplan, $userid, $roleid, $user->groupname);
+            
+            $learningplanuser_added_event = \local_sc_learningplans\event\learningplanuser_added::create(array(
+                'context' => context_system::instance(),
+                'objectid' => $learningplanrecord->id,
+                'relateduserid'=>$userid,
+                'other' => ["learningPlanId"=>$learningplan,"roleId"=>$roleid]
+            ));
+            $learningplanuser_added_event->trigger();
         }
         $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
         send_email_lp_updated($learningplan);
+         
         return [
             'id' => $learningplancourses->id ?? 0,
         ];
