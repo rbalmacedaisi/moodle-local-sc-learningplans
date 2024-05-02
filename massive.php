@@ -41,7 +41,26 @@ if (is_null($datafile)) {
 }
 
 $file = fopen($datafile['tmp_name'], "r");
-fgetcsv($file, 0, ',');
+fgetcsv($file, 0);
+
+// read the first Line to file
+$headerLine = fgets($file);
+
+// get codification to file
+$encoding = mb_detect_encoding($headerLine, ['UTF-8', 'ISO-8859-1'], true);
+
+// get delimiter to file and parse data
+$delimiters = [',', ';']; 
+$delimiter = null;
+
+foreach ($delimiters as $char) {
+    $fields = str_getcsv(mb_convert_encoding($headerLine, 'UTF-8', $encoding), $char);
+    if (count($fields) > 1) {
+        $delimiter = $char;
+        break;
+    }
+}
+
 $headerreaded = false;
 $learningplans = [];
 $rolestudentid = 5;
@@ -49,7 +68,9 @@ $rolestudent = $DB->get_record('role', ['shortname' => 'student']);
 if ($rolestudent) {
     $rolestudentid = $rolestudent->id;
 }
-while (($linecsv = fgetcsv($file, 0, ',')) !== false) {
+fseek($file, 0);
+fgets($file);
+while (($linecsv = fgetcsv($file, 0, $delimiter)) !== false) {
 
     /*if (!$headerreaded) {
         $headerreaded = true;
@@ -147,6 +168,6 @@ while (($linecsv = fgetcsv($file, 0, ',')) !== false) {
     $message = get_string('massive_succes', 'local_sc_learningplans', $a);
     \core\notification::success($message);
 }
-
+fclose($file);
 $message = get_string('massive_done', 'local_sc_learningplans');
 redirect(new moodle_url('/local/sc_learningplans/index.php'), $message);
