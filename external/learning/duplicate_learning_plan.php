@@ -145,6 +145,7 @@ class duplicate_learning_plan_external extends external_api {
                     save_learning_course_external::save_learning_course(
                         $newlearningplanid,
                         null,
+                        null,
                         $datacourse->courseid,
                         $datacourse->isrequired,
                         $datacourse->credits,
