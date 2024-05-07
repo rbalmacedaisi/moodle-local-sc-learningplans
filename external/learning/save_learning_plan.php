@@ -167,9 +167,10 @@ class save_learning_plan_external extends external_api {
         }
         
         $file_exists = $DB->record_exists('files', array('itemid' => $fileimage));
-       
+
         if(!$file_exists){
             $image_path = __DIR__ . '/img/group_desc.png';
+            $file_content = file_get_contents($image_path);
             $context = context_system::instance();
             $file_record = array(
                 'contextid' => $context->id,
@@ -183,8 +184,8 @@ class save_learning_plan_external extends external_api {
             
             //Get core storage and save image by default
             $fs = get_file_storage();
-            $file = $fs->create_file_from_pathname($file_record, $image_path);
-
+            $fs->create_file_from_string($file_record, $file_content);
+            
         }else{
             if ($fileimage) {
                 $itemid = $fileimage;
