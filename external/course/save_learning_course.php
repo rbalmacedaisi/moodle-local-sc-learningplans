@@ -74,7 +74,7 @@ class save_learning_course_external extends external_api {
                 ),
                 'position'   => new external_value(
                     PARAM_INT,
-                    'credits of courses',
+                    'position of courses',
                     VALUE_DEFAULT,
                     null
                 ),
@@ -127,10 +127,19 @@ class save_learning_course_external extends external_api {
             $learningplancourses->timecreated = time();
             $learningplancourses->timemodified = time();
             $learningplancourses->id = $DB->insert_record('local_learning_courses', $learningplancourses);
+            
             if ($required) {
                 // Increase course count if is required.
                 $learningplanrecord->coursecount++;
             }
+            
+            $learningplancourse_added_event = \local_sc_learningplans\event\learningplancourse_added::create(array(
+                'context' => context_system::instance(),
+                'objectid' => $courseid,
+                'other' => ["learningPlanId"=>$learningplan,"required"=>$required,"learningCourseId"=>$learningplancourses->id]
+            ));
+            
+            $learningplancourse_added_event->trigger();
         }
         $context = context_system::instance();
         $users = $DB->get_records_sql(
@@ -142,18 +151,10 @@ class save_learning_course_external extends external_api {
             $roleid = $user->userroleid;
             enrol_user_in_learningplan_courses($learningplan, $userid, $roleid, $user->groupname);
             
-            $learningplanuser_added_event = \local_sc_learningplans\event\learningplanuser_added::create(array(
-                'context' => context_system::instance(),
-                'objectid' => $learningplanrecord->id,
-                'relateduserid'=>$userid,
-                'other' => ["learningPlanId"=>$learningplan,"roleId"=>$roleid]
-            ));
-            $learningplanuser_added_event->trigger();
         }
         $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
         send_email_lp_updated($learningplan);
-         
         return [
             'id' => $learningplancourses->id ?? 0,
         ];
