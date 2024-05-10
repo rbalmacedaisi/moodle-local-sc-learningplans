@@ -88,6 +88,11 @@ class delete_learning_course_external extends external_api {
                     ]);
             }
         }
+        
+        //Delete relations with the delete course
+        $DB->delete_records('local_learningplan_rel_cours',['origin_record_id'=>$courseid]);
+        $DB->delete_records('local_learningplan_rel_cours',['destination_record_id'=>$courseid]);
+        
         $learningplanrecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningplanrecord);
         return [

@@ -23,7 +23,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
 
 /**
  * Get all groyps in all courses from LP
@@ -138,5 +138,84 @@ function mark_active_related_courses($recordid) {
     $relations = get_related_courses($recordid);
     foreach ($relations as $reldata) {
         mark_active_related_courses($reldata->destination_record_id);
+    }
+}
+/*
+* This function adds a relation record between a course added to a period in a learning plan
+* and the courses added to the same period, the learning plan needs to have periods enabled
+*/
+
+function relate_course_with_current_period_courses($learningPlanCourseId){
+    global $DB;
+    
+    $learningPlanCoursePeriodId = $DB->get_field('local_learning_courses','periodid',['id'=>$learningPlanCourseId],MUST_EXIST);
+    //Get the courses in the same period
+    $coursesInSamePeriod = $DB->get_records('local_learning_courses',['periodid'=>$learningPlanCoursePeriodId],'','id');
+    unset($coursesInSamePeriod[$learningPlanCourseId]);
+    if(empty($coursesInSamePeriod)){
+        return false;
+    }
+    add_course_relations($learningPlanCourseId,array_column($coursesInSamePeriod, 'id'));
+    return true;
+}
+
+/*
+* This function adds a relation record between an lpCourse added to a leraning plan
+* and the lpCourses defined in $lpCourseIdsToRelate
+*/
+function add_course_relations($lpCourseId,$lpCourseIdsToRelate){
+    global $DB,$USER;
+    
+    try{
+        $transaction = $DB->start_delegated_transaction();
+        foreach ($lpCourseIdsToRelate as $relatedLpCourseId) {
+            $relatedLpCourseId = trim($relatedLpCourseId);
+            if($DB->record_exists('local_learningplan_rel_cours',['origin_record_id'=>$lpCourseId,'destination_record_id'=>$relatedLpCourseId])){
+                continue;
+            }
+            
+            $originDestinationRelation = new stdClass();
+            $originDestinationRelation->origin_record_id = $lpCourseId;
+            $originDestinationRelation->destination_record_id = $relatedLpCourseId;
+            $originDestinationRelation->usermodified = $USER->id;
+            $originDestinationRelation->timecreated = time();
+            $originDestinationRelation->timemodified = time();
+            
+            // Add relation X => Y.
+            $originDestinationRelationCreated = $DB->insert_record('local_learningplan_rel_cours', $originDestinationRelation, false, true);
+    
+            if(!$originDestinationRelationCreated){
+                throw new moodle_exception('errorcreatingrelation', 'local_sc_learningplans');
+            }
+            
+            $destinationOriginRelation = $originDestinationRelation;
+            $destinationOriginRelation->origin_record_id = $relatedLpCourseId;
+            $destinationOriginRelation->destination_record_id = $lpCourseId;
+            
+            // Inverse the relation, Y => X.
+            $destinationOriginRelationCreated = $DB->insert_record('local_learningplan_rel_cours', $destinationOriginRelation, false, false);
+            
+            if(!$destinationOriginRelationCreated){
+                throw new moodle_exception('errorcreatingrelation', 'local_sc_learningplans');
+            }
+        }    
+        
+        $learningPlanId = $DB->get_field('local_learning_courses','learningplanid',['id'=>$lpCourseId]);
+        // Re enroll all lp users.
+        $lpUsers = $DB->get_records_sql(
+            'SELECT llu.* FROM {local_learning_users} llu
+            JOIN {user} u ON (u.id = llu.userid)
+            WHERE llu.learningplanid = :learningplanid', ['learningplanid' => $learningPlanId]);
+        foreach ($lpUsers as $user) {
+            $userId = $user->userid;
+            $roleId = $user->userroleid;
+            enrol_user_in_learningplan_courses($learningPlanId, $userId, $roleId, $user->groupname);
+        }
+        $transaction->allow_commit();
+        
+        return true;
+    }catch(Exception $e){
+        $transaction->rollback($e);
+        throw $e;
     }
 }

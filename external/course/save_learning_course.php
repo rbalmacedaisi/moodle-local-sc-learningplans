@@ -126,7 +126,7 @@ class save_learning_course_external extends external_api {
             $learningplancourses->usermodified = $USER->id;
             $learningplancourses->timecreated = time();
             $learningplancourses->timemodified = time();
-            $learningplancourses->id = $DB->insert_record('local_learning_courses', $learningplancourses);
+            $learningplancourses->id = $DB->insert_record('local_learning_courses', $learningplancourses,true,true);
             
             if ($required) {
                 // Increase course count if is required.

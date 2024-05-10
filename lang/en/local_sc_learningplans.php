@@ -231,5 +231,9 @@ $string['subperiods'] = 'Subperiods';
 $string['edit_period'] = 'Edit Period';
 $string['btnsave'] = 'Save';
 
+//Error messages
 $string['errorlearningplanexist'] = 'Learning Plan already exists.';
+$string['coursenotexist'] = "The Learning Plan's course doesn't exist.";
+$string['lpnotexist'] = "The Learning Plan doesn't exist.";
 $string['learninguserexist'] = 'The user is already on the learning plan.';
+$string['errorcreatingrelation'] = 'Error when creating course relations.';

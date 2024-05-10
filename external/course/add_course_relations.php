@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/courselib.php');
 
 class add_course_relations_external extends external_api {
 
@@ -50,61 +51,28 @@ class add_course_relations_external extends external_api {
     }
 
     public static function add_course_relations($recordid, $records) {
-        global $DB, $USER;
-        $courserecord = $DB->get_record('local_learning_courses', ['id' => $recordid]);
-        if (!$courserecord) {
+        global $DB;
+        if (!$learningPlanId = $DB->get_field('local_learning_courses','learningplanid',['id' => $recordid])) {
             throw new moodle_exception('coursenotexist', 'local_sc_learningplans');
         }
-        $learningplanid = $courserecord->learningplanid;
-        $learningplanrecord = $DB->get_record('local_learning_plans', ['id' => $learningplanid]);
-        if (!$learningplanrecord) {
+        
+        if (!$learningPlanRecord = $DB->get_record('local_learning_plans', ['id' => $learningPlanId],'id')) {
             throw new moodle_exception('lpnotexist', 'local_sc_learningplans');
         }
         $records = explode(',', $records);
 
-        foreach ($records as $newrecord) {
-            if($DB->get_record('local_learningplan_rel_cours',['origin_record_id'=>$recordid,'destination_record_id'=>$newrecord])){
-                continue;
-            }
-            
-            $newrecord = trim($newrecord);
-            $insertrelation = new stdClass();
-            $insertrelation->origin_record_id = $recordid;
-            $insertrelation->destination_record_id = $newrecord;
-            $insertrelation->usermodified = $USER->id;
-            $insertrelation->timecreated = time();
-            $insertrelation->timemodified = time();
-            // Add relation X => Y.
-            $DB->insert_record('local_learningplan_rel_cours', $insertrelation, true, true);
+        add_course_relations($recordid,$records);
+        
+        $learningPlanRecord->timemodified = time();
+        $DB->update_record('local_learning_plans', $learningPlanRecord);
 
-            $inverserelation = $insertrelation;
-            $inverserelation->destination_record_id = $recordid;
-            $inverserelation->origin_record_id = $newrecord;
-            // Inverse the relation, Y => X.
-            $DB->insert_record('local_learningplan_rel_cours', $inverserelation, true, true);
-        }
-        // Re enroll all lp users.
-        $users = $DB->get_records_sql(
-            'SELECT llu.* FROM {local_learning_users} llu
-            JOIN {user} u ON (u.id = llu.userid)
-            WHERE llu.learningplanid = :learningplanid', ['learningplanid' => $learningplanid]);
-        foreach ($users as $user) {
-            $userid = $user->userid;
-            $roleid = $user->userroleid;
-            enrol_user_in_learningplan_courses($learningplanid, $userid, $roleid, $user->groupname);
-        }
-        $learningplanrecord->timemodified = time();
-        $DB->update_record('local_learning_plans', $learningplanrecord);
-
-        return [
-            'done' => true,
-        ];
+        return [];
     }
 
     public static function add_course_relations_returns() {
         return new external_single_structure(
             array(
-                'done' => new external_value(PARAM_BOOL, 'If done relation')
+                'done' => new external_value(PARAM_BOOL, 'If done relation',VALUE_DEFAULT,true)
             )
         );
     }

@@ -233,4 +233,7 @@ $string['edit_period'] = 'Editar Periodo';
 $string['btnsave'] = 'Guardar';
 
 $string['errorlearningplanexist'] = 'El plan de aprendizaje ya existe.';
+$string['coursenotexist'] = "El curso del plan de aprendizaje no existe.";
+$string['lpnotexist'] = "El plan de aprendizaje no existe.";
 $string['learninguserexist'] = 'El usuario ya esta en el plan de aprendizaje.';
+$string['errorcreatingrelation'] = 'Error al crear la relación entre los cursos.';
