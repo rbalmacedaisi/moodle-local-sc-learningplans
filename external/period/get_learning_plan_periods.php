@@ -41,20 +41,27 @@ class get_learning_plan_periods_external extends external_api {
     }
 
     public static function get_learning_plan_periods($learningPlanId) {
-        global $USER, $DB;
-
-        // Check if plan has periods.
-        $periods = $DB->get_records("local_learning_periods", ['learningplanid' => $learningPlanId]);
+        global $DB;
         
-        return [
-            'periods' => json_encode(array_values($periods))
-        ];
+        try{
+            // Check if plan has periods.
+            $periods = $DB->get_records("local_learning_periods", ['learningplanid' => $learningPlanId]);
+            
+            return [
+                'periods' => json_encode(array_values($periods))
+            ];
+        }catch(Exception $e){
+            return ['status'=>-1,'message'=>$e->getMessage()];
+        }
+        
     }
 
     public static function get_learning_plan_periods_returns() {
         return new external_single_structure(
             array(
-                'periods' => new external_value(PARAM_RAW, 'Periods information')
+                'status' => new external_value(PARAM_INT, '1 if success, -1 otherwise',VALUE_DEFAULT,1),
+                'periods' => new external_value(PARAM_RAW, 'Periods information',VALUE_DEFAULT,null),
+                'message' => new external_value(PARAM_TEXT, 'Periods information',VALUE_DEFAULT,'ok'),
             )
         );
     }
