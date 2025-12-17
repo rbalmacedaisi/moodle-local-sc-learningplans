@@ -26,7 +26,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/tablelib.php');
 
-class table_manage_users extends table_sql {
+class table_manage_users extends table_sql
+{
 
     /**
      * Constructor
@@ -34,7 +35,8 @@ class table_manage_users extends table_sql {
      * @param string $uniqueid
      * @param integer $learningplanid
      */
-    public function __construct(string $uniqueid, int $learningplanid, $searchuser) {
+    public function __construct(string $uniqueid, int $learningplanid, $searchuser)
+    {
         parent::__construct($uniqueid);
         $this->searchuser = $searchuser;
         $this->learningplanid = $learningplanid;
@@ -44,12 +46,12 @@ class table_manage_users extends table_sql {
             'id'            => get_string('id', 'local_sc_learningplans'),
             'fullname'      => get_string('name', 'local_sc_learningplans'),
             'email'         => get_string('email_user', 'local_sc_learningplans'),
-            'roles_user'    => get_string('roles_user', 'local_sc_learningplans'),
+            'rolename'    => get_string('roles_user', 'local_sc_learningplans'),
             'action_user'   => get_string('action_user', 'local_sc_learningplans'),
         ];
         $this->define_columns(array_keys($columns));
         $this->define_headers(array_values($columns));
-
+        $this->no_sorting('action_user');
         // Table configuration.
         $this->set_attribute('id', $this->uniqueid);
         $this->set_attribute('cellspacing', '0');
@@ -67,7 +69,8 @@ class table_manage_users extends table_sql {
      *
      * @return void
      */
-    protected function init_sql() {
+    protected function init_sql()
+    {
         $fields = 'u.id, lu.userid, u.firstname, u.lastname, u.email,
         r.shortname as rolename,
         u.firstnamephonetic,
@@ -84,7 +87,8 @@ class table_manage_users extends table_sql {
         $search = $this->searchuser;
         if ($search) {
             if (!function_exists('str_contains')) {
-                function str_contains($haystack, $needle) {
+                function str_contains($haystack, $needle)
+                {
                     return $needle !== '' && mb_strpos($haystack, $needle) !== false;
                 }
             }
@@ -118,7 +122,8 @@ class table_manage_users extends table_sql {
      * @param object $values the table row being output.
      * @return string HTML content to go inside the td.
      */
-    public function col_roles_user($values) {
+    public function col_roles_user($values)
+    {
         return get_string($values->rolename, 'local_sc_learningplans');
     }
 
@@ -127,7 +132,8 @@ class table_manage_users extends table_sql {
      * @param object $values the table row being output.
      * @return string HTML content to go inside the td.
      */
-    public function col_action_user($values) {
+    public function col_action_user($values)
+    {
         $icondelete = html_writer::tag('i', "", ['class' => 'lp_icon fa fa-trash fa-fw']);
         $html = html_writer::tag('button', $icondelete, [
             'id' => 'deleteuser',

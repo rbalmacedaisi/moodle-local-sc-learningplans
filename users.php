@@ -35,6 +35,7 @@ admin_externalpage_setup('local_sc_learningplans');
 $learningplanid = required_param('id', PARAM_INT);
 $searchuser = optional_param('searchUser', null, PARAM_TEXT);
 
+
 $learningplan = $DB->get_record('local_learning_plans', array('id' => $learningplanid));
 if (!$learningplan) {
     redirect(new moodle_url('/local/sc_learningplans/index.php'));
@@ -74,11 +75,11 @@ $learningusers = $DB->get_records_sql(
 
 foreach ($learningusers as &$user) {
     $userid = $user->userid;
-    
+
     if (isset($allusers[$userid])) {
         unset($allusers[$userid]);
         $roleshortname = $roles[$user->userroleid]->shortname;
-        if($roleshortname){
+        if ($roleshortname) {
             $user->rolename = get_String($roleshortname, 'local_sc_learningplans');
         }
     }
@@ -94,9 +95,9 @@ $templatedata = [
     'hasmanualenrol' => $hasmanualenrol,
     'searchUser' => $searchuser,
 ];
-
 $download = optional_param('download', '', PARAM_ALPHA);
 $table = new table_manage_users('local_learning_users', $learningplanid, $searchuser);
+
 
 $table->is_downloading($download, 'learningplans', get_string('pluginname', 'local_sc_learningplans'));
 

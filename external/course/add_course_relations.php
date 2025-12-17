@@ -66,7 +66,7 @@ class add_course_relations_external extends external_api {
         $learningPlanRecord->timemodified = time();
         $DB->update_record('local_learning_plans', $learningPlanRecord);
 
-        return [];
+        return true;
     }
 
     public static function add_course_relations_returns() {

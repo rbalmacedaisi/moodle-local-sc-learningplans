@@ -68,7 +68,7 @@ class get_active_learning_plans_external extends external_api {
                 foreach($learningPlanCareerCustomFields as $careerfield){
                     if($careerfield['shortname'] === 'careername'){
                         $selected_careername_id = $careerfield['value'];
-                        if(empty($careername_options)){
+                        if(!empty($careername_options)){
                             $options = $careerfield['options'];
                             foreach($options as $option){
                                 $careername_options[$option['id']]=$option['value'];
