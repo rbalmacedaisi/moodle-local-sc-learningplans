@@ -203,6 +203,8 @@ class get_learning_plans_external extends external_api {
                 'courseurl' => $CFG->wwwroot . '/course/view.php?id=' .$courseid,
                 'realprogress' => $courseprogress ?? 0,
                 'showprogress' => 0,
+                'progress' => $courseprogress ?? 0, // [FIX] Added exact key 'progress'
+                'credits' => 0, // [FIX] Initialized 'credits', will be populated in get_learning_plans_data or here
                 'completed' => $coursecompleted ?? false,
                 'waiting' => true, // For now, all courses are waiting.
                 'active' => false, // For now, all courses aren't active.
@@ -277,6 +279,8 @@ class get_learning_plans_external extends external_api {
                     'courseurl'     => new external_value(PARAM_RAW, 'Urlcourse'),
                     'realprogress'  => new external_value(PARAM_RAW, 'Real progress course'),
                     'showprogress'  => new external_value(PARAM_RAW, 'Progress to show'),
+                    'progress'      => new external_value(PARAM_RAW, 'Exact progress key for Nuxt'),
+                    'credits'       => new external_value(PARAM_INT, 'Credits for the course'),
                     'completed'     => new external_value(PARAM_BOOL, 'Completed course'),
                     'waiting'       => new external_value(PARAM_BOOL, 'Si esta en espera o no'),
                     'active'        => new external_value(PARAM_BOOL, 'Si es un curso activo'),
