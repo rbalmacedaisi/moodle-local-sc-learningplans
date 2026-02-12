@@ -57,6 +57,8 @@
         <FIELD NAME="timecreated" TYPE="int" LENGTH="18" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="18" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="currentsubperiodid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="academicperiodid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Link to gmk_academic_calendar.id"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="activo" SEQUENCE="false" COMMENT="activo, aplazado, retirado"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

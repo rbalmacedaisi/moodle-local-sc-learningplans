@@ -370,5 +370,26 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
 
 
 
+    if ($oldversion < 2026021200) {
+
+        // Define field academicperiodid to be added to local_learning_users.
+        $table = new xmldb_table('local_learning_users');
+        $fieldId = new xmldb_field('academicperiodid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'currentsubperiodid');
+        $fieldStatus = new xmldb_field('status', XMLDB_TYPE_CHAR, '20', null, null, null, 'activo', 'academicperiodid');
+
+        // Conditionally launch add field academicperiodid.
+        if (!$dbman->field_exists($table, $fieldId)) {
+            $dbman->add_field($table, $fieldId);
+        }
+
+        // Conditionally launch add field status.
+        if (!$dbman->field_exists($table, $fieldStatus)) {
+            $dbman->add_field($table, $fieldStatus);
+        }
+
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2026021200, 'local', 'sc_learningplans');
+    }
+
     return true;
 }
