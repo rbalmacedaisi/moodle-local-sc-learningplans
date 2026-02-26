@@ -235,6 +235,22 @@ $functions = array(
         'loginrequired' => true,
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
+    'local_sc_learningplans_save_plan_dependency' => array(
+        'classname'     => 'save_plan_dependency_external',
+        'methodname'    => 'save_plan_dependency',
+        'classpath'     => 'local/sc_learningplans/external/learning/save_plan_dependency.php',
+        'description'   => 'Save learning plan dependency',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
+    'local_sc_learningplans_delete_plan_dependency' => array(
+        'classname'     => 'delete_plan_dependency_external',
+        'methodname'    => 'delete_plan_dependency',
+        'classpath'     => 'local/sc_learningplans/external/learning/delete_plan_dependency.php',
+        'description'   => 'Delete learning plan dependency',
+        'type'          => 'write',
+        'ajax'          => true,
+    ),
 );
 
 $services = array(

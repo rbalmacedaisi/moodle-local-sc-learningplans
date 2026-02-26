@@ -159,7 +159,8 @@
                     </div>
                     {{! End Periods accordion card }}
                 </div>
-                {{! End Accordion of the periods of the learning plan}}
+                {{! Accordion of the periods of the learning plan}}
+                {{! ... (existing periods) }}
                 {{/listcoursesperiod}}
             </div>
             {{/hasperiod}}
@@ -305,9 +306,70 @@
             </div>
             {{! End Course management card }}
             {{/hasperiod}}
+
+            {{! Linked Plans Section (Common) }}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{#str}} linked_plans, local_sc_learningplans {{/str}}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-end mb-3">
+                        <button class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modalPlanDependencies">
+                            <i class="fa fa-link"></i> {{#str}} link_new_plan, local_sc_learningplans {{/str}}
+                        </button>
+                    </div>
+                    <ul class="list-group">
+                        {{#linkedplans}}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{name}}</strong> ({{shortname}})
+                            </div>
+                            <button class="btn btn-outline-danger btn-sm" id="btnDeletePlanDep" data-id="{{id}}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </li>
+                        {{/linkedplans}}
+                        {{^linkedplans}}
+                        <li class="list-group-item text-muted text-center">
+                            {{#str}} no_linked_plans, local_sc_learningplans {{/str}}
+                        </li>
+                        {{/linkedplans}}
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 {{> local_sc_learningplans/modals/add_course_periods }}
 {{> local_sc_learningplans/modals/add_course_required }}
 {{> local_sc_learningplans/modals/add_course_optional }}
+
+{{! Modal Plan Dependencies }}
+<div class="modal fade" id="modalPlanDependencies" tabindex="-1" role="dialog" aria-labelledby="modalPlanDependenciesLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPlanDependenciesLabel">{{#str}} link_new_plan, local_sc_learningplans {{/str}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="small text-muted mb-3">{{#str}} link_plan_help, local_sc_learningplans {{/str}}</p>
+                <div class="form-group">
+                    <label for="selectDependentPlan">{{#str}} select_plan, local_sc_learningplans {{/str}}</label>
+                    <select class="form-control select2" id="selectDependentPlan">
+                        <option value="">{{#str}} choose, moodle {{/str}}...</option>
+                        {{#availableplans}}
+                        <option value="{{id}}">{{name}}</option>
+                        {{/availableplans}}
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}} cancel, moodle {{/str}}</button>
+                <button type="button" class="btn btn-primary" id="btnSavePlanDep">{{#str}} save, moodle {{/str}}</button>
+            </div>
+        </div>
+    </div>
+</div>

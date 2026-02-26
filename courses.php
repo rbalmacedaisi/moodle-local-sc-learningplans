@@ -25,6 +25,7 @@
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/courselib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/plan_deplib.php');
 
 require_login();
 
@@ -144,7 +145,9 @@ $templatedata = [
     'listcoursesperiod' => array_values($listperiodcourses),
     'currentcourses' => $requiredcourses,
     'optionalcourses' => $optionalcourses,
-    'name' => $namepage
+    'name' => $namepage,
+    'linkedplans' => array_values(sc_learningplan_get_linked_plans($id)),
+    'availableplans' => array_values($DB->get_records_sql("SELECT id, name FROM {local_learning_plans} WHERE id <> :id", ['id' => $id]))
 ];
 
 echo $OUTPUT->header();

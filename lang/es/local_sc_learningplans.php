@@ -237,3 +237,11 @@ $string['coursenotexist'] = "El curso del plan de aprendizaje no existe.";
 $string['lpnotexist'] = "El plan de aprendizaje no existe.";
 $string['learninguserexist'] = 'El usuario ya esta en el plan de aprendizaje.';
 $string['errorcreatingrelation'] = 'Error al crear la relación entre los cursos.';
+
+$string['linked_plans'] = 'Planes Vinculados (Auto-enrolamiento)';
+$string['link_new_plan'] = 'Vincular nuevo plan';
+$string['no_linked_plans'] = 'No hay planes vinculados.';
+$string['link_plan_help'] = 'Cuando un estudiante sea enrolado en este plan, automáticamente será enrolado en los planes seleccionados aquí.';
+$string['select_plan'] = 'Seleccionar plan';
+$string['cannotlinktoself'] = 'No se puede vincular un plan a sí mismo.';
+$string['msgconfirm_lp_dep'] = '¿Está seguro de querer eliminar la vinculación con este plan de aprendizaje?';

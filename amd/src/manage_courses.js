@@ -3,14 +3,14 @@ import * as Str from 'core/str';
 import * as Ajax from 'core/ajax';
 
 const addCoursePeriodSelector = document.getElementById('selectPeriodToLearningPlan');
-const addCourseSubPeriodSelectorContainer =  document.getElementById('selectSubPeriodToLearningPlanContainer');
-const addCourseSubPeriodSelector =document.getElementById('selectSubPeriodToLearningPlan');
+const addCourseSubPeriodSelectorContainer = document.getElementById('selectSubPeriodToLearningPlanContainer');
+const addCourseSubPeriodSelector = document.getElementById('selectSubPeriodToLearningPlan');
 
 let learnigplanPeriods;
 
 export const init = (learningplanid, periods) => {
     learnigplanPeriods = periods
-    
+
     deleteCourseAction(learningplanid);
     addCoursePeriodAction(learningplanid);
     addRequiredAction(learningplanid);
@@ -18,6 +18,66 @@ export const init = (learningplanid, periods) => {
     changeOptionalToRequiredAction(learningplanid);
     updateCoursePositionAction();
     actionAddCourseRelations();
+    actionAddPlanDependencies(learningplanid);
+};
+
+let actionAddPlanDependencies = (learningplanid) => {
+    const btnSave = document.querySelector('#btnSavePlanDep');
+    if (btnSave) {
+        btnSave.addEventListener('click', () => {
+            const dependentplanid = document.querySelector('#selectDependentPlan').value;
+            if (dependentplanid) {
+                callSavePlanDependency(learningplanid, dependentplanid);
+            }
+        });
+    }
+
+    const deleteBtns = document.querySelectorAll('#btnDeletePlanDep');
+    if (deleteBtns) {
+        const titleconfirm = Str.get_string('titleconfirm', 'local_sc_learningplans');
+        const msgconfirm = Str.get_string('msgconfirm_lp_dep', 'local_sc_learningplans');
+        const yesconfirm = Str.get_string('yesconfirm', 'local_sc_learningplans');
+        for (const el of deleteBtns) {
+            el.addEventListener('click', e => {
+                e.preventDefault();
+                const id = el.getAttribute('data-id');
+                notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
+                    callDeletePlanDependency(id);
+                });
+            });
+        }
+    }
+};
+
+const callSavePlanDependency = (learningplanid, dependentplanid) => {
+    const promise = Ajax.call([{
+        methodname: 'local_sc_learningplans_save_plan_dependency',
+        args: {
+            learningplanid,
+            dependentplanid,
+        }
+    },]);
+
+    promise[0].done(function (response) {
+        window.location.reload();
+    }).fail(function (response) {
+        notification.exception(response);
+    });
+};
+
+const callDeletePlanDependency = (id) => {
+    const promise = Ajax.call([{
+        methodname: 'local_sc_learningplans_delete_plan_dependency',
+        args: {
+            id,
+        }
+    },]);
+
+    promise[0].done(function (response) {
+        window.location.reload();
+    }).fail(function (response) {
+        notification.exception(response);
+    });
 };
 
 let actionAddCourseRelations = () => {
@@ -208,20 +268,20 @@ let addCoursePeriodAction = (learningplanid) => {
             }
         });
     }
-    
-    
-    addCoursePeriodSelector.addEventListener('change', e=>{
+
+
+    addCoursePeriodSelector.addEventListener('change', e => {
         addCourseSubPeriodSelector.value = "0"
         // Get a reference to all elements with the specified class name
         const elementsToRemove = document.getElementsByClassName("subperiods");
-        
+
         // Loop through the elements and remove them
         while (elementsToRemove.length > 0) {
-          const element = elementsToRemove[0];
-          element.parentNode.removeChild(element);
+            const element = elementsToRemove[0];
+            element.parentNode.removeChild(element);
         }
 
-        if(learnigplanPeriods[e.target.value].hassubperiods ==="1"){
+        if (learnigplanPeriods[e.target.value].hassubperiods === "1") {
             let subperiods = learnigplanPeriods[e.target.value].subperiods
             for (const subperiodid in subperiods) {
                 if (Object.hasOwnProperty.call(subperiods, subperiodid)) {
@@ -229,7 +289,7 @@ let addCoursePeriodAction = (learningplanid) => {
                     const option = document.createElement("option");
                     option.text = subperiod.name;
                     option.className = "subperiods";
-                    option.value=subperiod.id;
+                    option.value = subperiod.id;
                     addCourseSubPeriodSelector.appendChild(option);
                 }
             }
@@ -308,7 +368,7 @@ const callUpdateCourse = (learningid, courseorder, periodid = null, reload = tru
 
     promise[0].done(function (response) {
         window.console.log('local_sc_learningplans_update_required_learning_courses', response);
-        if(reload) {
+        if (reload) {
             location.reload();
         }
     }).fail(function (response) {
@@ -319,13 +379,13 @@ const callUpdateCourse = (learningid, courseorder, periodid = null, reload = tru
 const callAddCourse = (learningid, periodid, courseid, isrequired, credits) => {
     learningid = parseInt(learningid);
     isrequired = parseInt(isrequired);
-    
+
     const promise = Ajax.call([{
         methodname: 'local_sc_learningplans_save_learning_course',
         args: {
             learningplan: learningid,
             periodid,
-            subperiodid : addCourseSubPeriodSelector.value,
+            subperiodid: addCourseSubPeriodSelector.value,
             courseid,
             required: isrequired,
             credits: credits,

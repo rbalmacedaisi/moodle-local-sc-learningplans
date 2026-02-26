@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/userlib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/libs/plan_deplib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/classes/event/learningplanuser_added.php');
 
 class add_learning_user_external extends external_api {
@@ -108,6 +109,9 @@ class add_learning_user_external extends external_api {
 
         // Enrol in first course and in all optional course.
         enrol_user_in_learningplan_courses($learningplan, $userid, $roleid, $group);
+
+        // Check for plan dependencies and auto-enrol.
+        sc_learningplan_trigger_dependencies($learningplan, $userid, $roleid, $group);
 
         // Now, if the role is manager, enrol the user in role system to give capabilities!
         $context = context_system::instance();
