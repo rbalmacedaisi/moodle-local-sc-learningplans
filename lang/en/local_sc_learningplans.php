@@ -231,6 +231,15 @@ $string['subperiods'] = 'Subperiods';
 $string['edit_period'] = 'Edit Period';
 $string['btnsave'] = 'Save';
 
+// Linked plans (auto-enrollment)
+$string['linked_plans']      = 'Linked Plans (Auto-enrollment)';
+$string['link_new_plan']     = 'Link new plan';
+$string['no_linked_plans']   = 'No linked plans.';
+$string['link_plan_help']    = 'When a student is enrolled in this plan, they will automatically be enrolled in the plans selected here.';
+$string['select_plan']       = 'Select plan';
+$string['cannotlinktoself']  = 'Cannot link a plan to itself.';
+$string['msgconfirm_lp_dep'] = 'Are you sure you want to remove the link with this learning plan?';
+
 //Error messages
 $string['errorlearningplanexist'] = 'Learning Plan already exists.';
 $string['coursenotexist'] = "The Learning Plan's course doesn't exist.";
