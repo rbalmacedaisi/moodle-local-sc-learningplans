@@ -96,7 +96,12 @@ class table_manage_users extends table_sql
             $roles = $DB->get_records('role');
             $roltosearch = '';
             foreach ($roles as $rol) {
-                $strrolname = strtolower(get_string($rol->shortname, 'local_sc_learningplans'));
+                if (get_string_manager()->string_exists($rol->shortname, 'local_sc_learningplans')) {
+                    $strrolname = strtolower(get_string($rol->shortname, 'local_sc_learningplans'));
+                } else {
+                    // Fallback for roles without a defined language string (avoids debugging warnings).
+                    $strrolname = strtolower($rol->name !== '' ? $rol->name : $rol->shortname);
+                }
                 if (str_contains($strrolname, strtolower($search))) {
                     $roltosearch .= " OR r.shortname LIKE '%$rol->shortname%' ";
                 }

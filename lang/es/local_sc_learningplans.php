@@ -107,6 +107,8 @@ $string['user']             = 'user';
 $string['frontpage']        = 'frontpage';
 $string['scteachrole']      = 'scteachrole';
 $string['scmanagerrole']    = 'scmanagerrole';
+$string['caregiver']        = 'Acudiente';
+$string['administrative']   = 'Administrativo';
 
 $string['addnewperiods'] = 'Añadir un nuevo periodo';
 $string['name_period'] = 'Asigne un nombre al periodo';
