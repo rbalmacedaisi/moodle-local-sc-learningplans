@@ -242,8 +242,8 @@ class credit_resolver {
                   FROM {" . self::SNAPSHOT_TABLE . "}
                  WHERE learningplanid > 0 AND courseid > 0 AND status > 0
               GROUP BY learningplanid, courseid";
-        $pairs = $DB->get_records_sql($sql, null, 'courseid,learningplanid');
-        foreach ($pairs as $pair) {
+        $recordset = $DB->get_recordset_sql($sql);
+        foreach ($recordset as $pair) {
             $scanned++;
             $resolved = self::resolve((int)$pair->learningplanid, (int)$pair->courseid);
             if ($resolved <= 0) {
@@ -252,6 +252,7 @@ class credit_resolver {
             }
             $updated += self::refresh_student_snapshots((int)$pair->learningplanid, (int)$pair->courseid);
         }
+        $recordset->close();
 
         return [
             'scanned'  => $scanned,
