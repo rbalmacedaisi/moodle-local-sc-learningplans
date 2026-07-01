@@ -238,10 +238,11 @@ class credit_resolver {
         $updated = 0;
         $missing = 0;
 
-        $sql = "SELECT DISTINCT learningplanid, courseid
+        $sql = "SELECT learningplanid, courseid
                   FROM {" . self::SNAPSHOT_TABLE . "}
-                 WHERE learningplanid > 0 AND courseid > 0 AND status > 0";
-        $pairs = $DB->get_records_sql($sql);
+                 WHERE learningplanid > 0 AND courseid > 0 AND status > 0
+              GROUP BY learningplanid, courseid";
+        $pairs = $DB->get_records_sql($sql, null, 'courseid,learningplanid');
         foreach ($pairs as $pair) {
             $scanned++;
             $resolved = self::resolve((int)$pair->learningplanid, (int)$pair->courseid);
