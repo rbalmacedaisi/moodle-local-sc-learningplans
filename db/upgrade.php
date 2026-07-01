@@ -418,5 +418,104 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026022600, 'local', 'sc_learningplans');
     }
 
+    if ($oldversion < 2026070100) {
+
+        // Define table local_learning_credits to be created.
+        // Canonical store of per-(plan, course) credit definitions, replacing the
+        // credits column on local_learning_courses and the snapshot on
+        // gmk_course_progre as the single source of truth.
+        $table = new xmldb_table('local_learning_credits');
+
+        // Adding fields to table local_learning_credits.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('learningplanid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('credits', XMLDB_TYPE_INTEGER, '9', null, null, null, null);
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+
+        // Adding keys to table local_learning_credits.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('uq_plan_course', XMLDB_KEY_UNIQUE, ['learningplanid', 'courseid']);
+        $table->add_key('fk_lc_plan', XMLDB_KEY_FOREIGN, ['learningplanid'], 'local_learning_plans', ['id']);
+        $table->add_key('fk_lc_course', XMLDB_KEY_FOREIGN, ['courseid'], 'course', ['id']);
+        $table->add_key('fk_lc_user', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Conditionally launch create table for local_learning_credits.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Initial data migration.
+        // Source priority:
+        //   1. local_learning_courses.credits (most recent non-null value per plan-course)
+        //   2. customfield_data 'credits' on the course (legacy Moodle custom field)
+        //   3. NULL (left unset, resolver falls back to custom field at read time)
+        $now = time();
+
+        // 1. Pull the most recent non-null credits from local_learning_courses.
+        $sql = "SELECT lc.learningplanid, lc.courseid, MAX(lc.credits) AS credits
+                  FROM {local_learning_courses} lc
+                 WHERE lc.credits IS NOT NULL AND lc.credits > 0
+              GROUP BY lc.learningplanid, lc.courseid";
+        $rows = $DB->get_records_sql($sql);
+        $migratedwithvalue = 0;
+        foreach ($rows as $r) {
+            $existing = $DB->get_record('local_learning_credits', [
+                'learningplanid' => (int)$r->learningplanid,
+                'courseid' => (int)$r->courseid,
+            ]);
+            if ($existing) {
+                continue;
+            }
+            $record = new stdClass();
+            $record->learningplanid = (int)$r->learningplanid;
+            $record->courseid = (int)$r->courseid;
+            $record->credits = (int)$r->credits;
+            $record->timecreated = $now;
+            $record->timemodified = $now;
+            $record->usermodified = null;
+            $DB->insert_record('local_learning_credits', $record);
+            $migratedwithvalue++;
+        }
+
+        // 2. Fall back to customfield_data 'credits' for (plan, course) pairs without a value.
+        $customfieldid = $DB->get_field('customfield_field', 'id', ['shortname' => 'credits']);
+        if ($customfieldid) {
+            $sql = "SELECT DISTINCT lc.learningplanid, lc.courseid, cf.value AS cfcredits
+                      FROM {local_learning_courses} lc
+                      JOIN {customfield_data} cf ON cf.fieldid = :cfid AND cf.instanceid = lc.courseid
+                     WHERE cf.value IS NOT NULL AND cf.value <> ''";
+            $rows = $DB->get_records_sql($sql, ['cfid' => $customfieldid]);
+            $migratedfromcustom = 0;
+            foreach ($rows as $r) {
+                $existing = $DB->get_record('local_learning_credits', [
+                    'learningplanid' => (int)$r->learningplanid,
+                    'courseid' => (int)$r->courseid,
+                ]);
+                if ($existing) {
+                    continue;
+                }
+                $value = (int)trim((string)$r->cfcredits);
+                if ($value <= 0) {
+                    continue;
+                }
+                $record = new stdClass();
+                $record->learningplanid = (int)$r->learningplanid;
+                $record->courseid = (int)$r->courseid;
+                $record->credits = $value;
+                $record->timecreated = $now;
+                $record->timemodified = $now;
+                $record->usermodified = null;
+                $DB->insert_record('local_learning_credits', $record);
+                $migratedfromcustom++;
+            }
+        }
+
+        // Sc_learningplans savepoint reached.
+        upgrade_plugin_savepoint(true, 2026070100, 'local', 'sc_learningplans');
+    }
+
     return true;
 }

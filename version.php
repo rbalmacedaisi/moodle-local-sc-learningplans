@@ -26,5 +26,5 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_sc_learningplans';
 $plugin->release = '1.0.2';
-$plugin->version = 2026022600;  // Added local_learningplan_deps table for plan dependencies
+$plugin->version = 2026070100;  // Added local_learning_credits table for per-plan credit definitions
 $plugin->requires = 2020061500;

@@ -19,6 +19,7 @@ export const init = (learningplanid, periods) => {
     updateCoursePositionAction();
     actionAddCourseRelations();
     actionAddPlanDependencies(learningplanid);
+    creditChangeAction(learningplanid);
 };
 
 let actionAddPlanDependencies = (learningplanid) => {
@@ -642,3 +643,57 @@ function handleDragEnd() {
         item.classList.remove('over');
     });
 }
+
+/**
+ * Wire the per-(plan, course) credits input so changes are persisted to
+ * local_learning_credits and the affected student snapshots are refreshed.
+ */
+let creditChangeAction = (learningplanid) => {
+    const editors = document.querySelectorAll('.gmk-credit-editor .gmk-credit-input');
+    editors.forEach((input) => {
+        input.addEventListener('change', (e) => {
+            const raw = e.target.value.trim();
+            const value = parseInt(raw, 10);
+            if (Number.isNaN(value) || value < 0 || value > 99) {
+                e.target.classList.add('is-invalid');
+                e.target.focus();
+                return;
+            }
+            e.target.classList.remove('is-invalid');
+            const wrapper = e.target.closest('.gmk-credit-editor');
+            const lpid = parseInt(wrapper.getAttribute('data-learningplanid') || learningplanid, 10);
+            const cid = parseInt(wrapper.getAttribute('data-courseid'), 10);
+            if (!lpid || !cid) {
+                return;
+            }
+            callSaveCourseCredit(lpid, cid, value, e.target);
+        });
+    });
+};
+
+const callSaveCourseCredit = (learningplanid, courseid, credits, inputEl) => {
+    if (inputEl) {
+        inputEl.disabled = true;
+    }
+    const promise = Ajax.call([{
+        methodname: 'local_sc_learningplans_save_course_credit',
+        args: {
+            learningplanid,
+            courseid,
+            credits,
+        }
+    }]);
+
+    promise[0].done(function (response) {
+        if (inputEl) {
+            inputEl.value = response.credits;
+            inputEl.disabled = false;
+        }
+    }).fail(function (response) {
+        if (inputEl) {
+            inputEl.disabled = false;
+            inputEl.classList.add('is-invalid');
+        }
+        notification.exception(response);
+    });
+};

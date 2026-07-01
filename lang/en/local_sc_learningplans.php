@@ -248,3 +248,17 @@ $string['coursenotexist'] = "The Learning Plan's course doesn't exist.";
 $string['lpnotexist'] = "The Learning Plan doesn't exist.";
 $string['learninguserexist'] = 'The user is already on the learning plan.';
 $string['errorcreatingrelation'] = 'Error when creating course relations.';
+
+// Credit definition UI
+$string['credits_column'] = 'Credits';
+$string['credits_placeholder'] = 'Credits';
+$string['credits_help'] = 'Number of credits this course contributes inside the plan. Applied to enrolled students on save.';
+$string['credits_save'] = 'Save credits';
+$string['credits_saving'] = 'Saving...';
+$string['credits_saved'] = 'Credits saved';
+$string['credits_save_failed'] = 'Could not save the credits';
+$string['credits_invalid'] = 'Enter an integer between 0 and 99';
+$string['credits_affected_students'] = '{$a} students will be updated';
+
+// Scheduled task name
+$string['task_credit_integrity_check'] = 'Verify integrity of local_learning_credits and resync per-student credits.';

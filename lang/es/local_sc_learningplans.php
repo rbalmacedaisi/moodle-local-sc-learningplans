@@ -247,3 +247,17 @@ $string['link_plan_help'] = 'Cuando un estudiante sea enrolado en este plan, aut
 $string['select_plan'] = 'Seleccionar plan';
 $string['cannotlinktoself'] = 'No se puede vincular un plan a sí mismo.';
 $string['msgconfirm_lp_dep'] = '¿Está seguro de querer eliminar la vinculación con este plan de aprendizaje?';
+
+// Credit definition UI
+$string['credits_column'] = 'Créditos';
+$string['credits_placeholder'] = 'Nº créditos';
+$string['credits_help'] = 'Número de créditos que el curso aporta dentro de este plan. Se aplica a los estudiantes inscritos al guardar.';
+$string['credits_save'] = 'Guardar créditos';
+$string['credits_saving'] = 'Guardando...';
+$string['credits_saved'] = 'Créditos guardados';
+$string['credits_save_failed'] = 'No se pudieron guardar los créditos';
+$string['credits_invalid'] = 'Ingrese un número entero entre 0 y 99';
+$string['credits_affected_students'] = '{$a} estudiantes serán actualizados';
+
+// Scheduled task name
+$string['task_credit_integrity_check'] = 'Verifica la integridad de la tabla local_learning_credits y resincroniza los créditos por estudiante.';

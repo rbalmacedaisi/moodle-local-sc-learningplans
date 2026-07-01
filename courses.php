@@ -26,6 +26,7 @@ require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/courselib.php');
 require_once($CFG->dirroot . '/local/sc_learningplans/libs/plan_deplib.php');
+require_once($CFG->dirroot . '/local/sc_learningplans/classes/local/credit_resolver.php');
 
 require_login();
 
@@ -85,7 +86,7 @@ if ($learningplan->hasperiod == 1) {
         }
     }
     if (!empty($learningplancourses)) {
-        
+
         foreach ($learningplancourses as $course) {
             if (!isset($listperiods[$course->periodid]) || !isset($allcourses[$course->courseid])) {
                 continue;
@@ -102,6 +103,11 @@ if ($learningplan->hasperiod == 1) {
                 $listperiodcourses[$period->id]['coursesoptional'][] = $course;
             }
             $course->subperiodname=$course->subperiodid? $period->subperiods[$course->subperiodid]->name : null;
+            // [CREDITS] Resolve canonical credits per (plan, course) for the editor.
+            $course->resolvedcredits = \local_sc_learningplans\local\credit_resolver::resolve(
+                (int)$id,
+                (int)$course->courseid
+            );
             unset($allcourses[$course->courseid]);
         }
     }
@@ -116,6 +122,11 @@ if ($learningplan->hasperiod == 1) {
         } else {
             $optionalcourses[] = $course;
         }
+        // [CREDITS] Resolve canonical credits per (plan, course) for the editor.
+        $course->resolvedcredits = \local_sc_learningplans\local\credit_resolver::resolve(
+            (int)$id,
+            (int)$course->courseid
+        );
         unset($allcourses[$course->courseid]);
     }
 }

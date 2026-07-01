@@ -71,8 +71,23 @@
                                                     <small>{{subperiodname}}</small>
                                                     {{/subperiodname}}
                                                 </div>
-                                                
+
                                                 <div class="spacer"></div>
+
+                                                {{! Credits editor (per-plan) }}
+                                                <div class="gmk-credit-editor mr-3" data-learningplanid="{{learningplanid}}" data-courseid="{{courseid}}">
+                                                    <label class="mb-0 small text-muted" for="gmk-credit-{{id}}">{{#str}} credits_column, local_sc_learningplans {{/str}}</label>
+                                                    <input type="number"
+                                                           id="gmk-credit-{{id}}"
+                                                           class="form-control form-control-sm gmk-credit-input"
+                                                           style="width: 70px;"
+                                                           min="0"
+                                                           max="99"
+                                                           step="1"
+                                                           value="{{resolvedcredits}}"
+                                                           placeholder="{{#str}} credits_placeholder, local_sc_learningplans {{/str}}"
+                                                           title="{{#str}} credits_help, local_sc_learningplans {{/str}}" />
+                                                </div>
 
                                                 {{! Actions for courses }}
                                                 <div class="actions-course">
@@ -214,7 +229,22 @@
                                     {{! Coursename}}
                                     <span class="pl-4 name-course font-weight-bold" for="course-{{id}}">{{coursename}}</span>
                                     <div class="spacer"></div>
-                                    
+
+                                    {{! Credits editor (per-plan) }}
+                                    <div class="gmk-credit-editor mr-3" data-learningplanid="{{learningplanid}}" data-courseid="{{courseid}}">
+                                        <label class="mb-0 small text-muted" for="gmk-credit-{{id}}">{{#str}} credits_column, local_sc_learningplans {{/str}}</label>
+                                        <input type="number"
+                                               id="gmk-credit-{{id}}"
+                                               class="form-control form-control-sm gmk-credit-input"
+                                               style="width: 70px;"
+                                               min="0"
+                                               max="99"
+                                               step="1"
+                                               value="{{resolvedcredits}}"
+                                               placeholder="{{#str}} credits_placeholder, local_sc_learningplans {{/str}}"
+                                               title="{{#str}} credits_help, local_sc_learningplans {{/str}}" />
+                                    </div>
+
                                     {{! Actions for courses }}
                                     <div class="actions-course">
                                         {{#relatedcourses}}

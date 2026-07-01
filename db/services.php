@@ -251,6 +251,16 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
     ),
+    'local_sc_learningplans_save_course_credit' => array(
+        'classname'     => 'save_course_credit_external',
+        'methodname'    => 'save_course_credit',
+        'classpath'     => 'local/sc_learningplans/external/course/save_course_credit.php',
+        'description'   => 'Set the per-(plan, course) credit definition and refresh affected snapshots.',
+        'type'          => 'write',
+        'ajax'          => true,
+        'loginrequired' => true,
+        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    ),
 );
 
 $services = array(
@@ -261,6 +271,7 @@ $services = array(
             'local_sc_learningplans_get_possible_relations',
             'local_sc_learningplans_add_course_relations',
             'local_sc_learningplans_del_course_relations',
+            'local_sc_learningplans_save_course_credit',
         ),
         'requiredcapability'    => 'local/sc_learningplans:manage',
         'restrictedusers'       => 0,
