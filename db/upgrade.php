@@ -459,7 +459,7 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
                   FROM {local_learning_courses} lc
                  WHERE lc.credits IS NOT NULL AND lc.credits > 0
               GROUP BY lc.learningplanid, lc.courseid";
-        $rows = $DB->get_records_sql($sql);
+        $rows = $DB->get_records_sql($sql, null, 'learningplanid,courseid');
         $migratedwithvalue = 0;
         foreach ($rows as $r) {
             $existing = $DB->get_record('local_learning_credits', [
@@ -483,11 +483,12 @@ function xmldb_local_sc_learningplans_upgrade($oldversion) {
         // 2. Fall back to customfield_data 'credits' for (plan, course) pairs without a value.
         $customfieldid = $DB->get_field('customfield_field', 'id', ['shortname' => 'credits']);
         if ($customfieldid) {
-            $sql = "SELECT DISTINCT lc.learningplanid, lc.courseid, cf.value AS cfcredits
+            $sql = "SELECT lc.learningplanid, lc.courseid, MAX(cf.value) AS cfcredits
                       FROM {local_learning_courses} lc
                       JOIN {customfield_data} cf ON cf.fieldid = :cfid AND cf.instanceid = lc.courseid
-                     WHERE cf.value IS NOT NULL AND cf.value <> ''";
-            $rows = $DB->get_records_sql($sql, ['cfid' => $customfieldid]);
+                     WHERE cf.value IS NOT NULL AND cf.value <> ''
+                  GROUP BY lc.learningplanid, lc.courseid";
+            $rows = $DB->get_records_sql($sql, ['cfid' => $customfieldid], 'learningplanid,courseid');
             $migratedfromcustom = 0;
             foreach ($rows as $r) {
                 $existing = $DB->get_record('local_learning_credits', [
