@@ -2,14 +2,14 @@
     <div class="row">
         <div class="col-sm-12">
             {{! Global credits toolbar }}
-            <div class="gmk-credits-toolbar alert alert-info d-none" role="region" aria-live="polite">
+            <div class="gmk-credits-toolbar alert alert-info" role="region" aria-live="polite">
                 <div class="d-flex align-items-center flex-wrap">
                     <strong class="mr-3">{{#str}} credits_pending_label, local_sc_learningplans {{/str}} <span class="gmk-credits-dirty-count badge badge-warning">0</span></strong>
                     <span class="text-muted small mr-3">{{#str}} credits_help, local_sc_learningplans {{/str}}</span>
-                    <button type="button" class="btn btn-success gmk-credits-save-all mr-2" disabled>
+                    <button type="button" class="btn btn-success gmk-credits-save-all mr-2">
                         <i class="fa fa-save"></i> {{#str}} credits_save_all, local_sc_learningplans {{/str}}
                     </button>
-                    <button type="button" class="btn btn-outline-secondary gmk-credits-revert-all">
+                    <button type="button" class="btn btn-outline-secondary gmk-credits-revert-all" disabled>
                         {{#str}} credits_revert, local_sc_learningplans {{/str}}
                     </button>
                 </div>
