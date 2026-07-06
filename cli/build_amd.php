@@ -2,9 +2,10 @@
 /**
  * Build AMD modules from local/sc_learningplans/amd/src/.
  *
- * Uses terser to minify, then wraps the output in the AMD `define()`
- * envelope so Moodle's requirejs loader can pick it up. Also injects the
- * module name (filename without .js) when it's missing.
+ * The source uses ES6 (import / export) so the body must be rewritten
+ * to AMD-style `_exports.X = ...` before minifying. This is the
+ * transformation grunt-contrib-requirejs does for Moodle core, but
+ * we do it manually here because we do not run the full grunt build.
  *
  * Usage: php local/sc_learningplans/cli/build_amd.php
  *
@@ -49,6 +50,113 @@ if ($terser === '') {
     }
 }
 
+/**
+ * Rewrite ES6 export statements into AMD `_exports.X = ...` assignments
+ * that terser will safely preserve.
+ *
+ * Handles:
+ *   - export const X = ...                  -> _exports.X = ...
+ *   - export let X = ...                    -> _exports.X = ...
+ *   - export var X = ...                    -> _exports.X = ...
+ *   - export function f(...) {...}          -> _exports.f = function(...)
+ *   - export class C {...}                  -> _exports.C = class C {...}
+ *   - export default EXPR;                   -> _exports.default = EXPR;
+ *   - export { a, b as c };                 -> _exports.a = a; _exports.c = b;
+ *   - export * from "dep";                   -> (delegated to _deps)
+ */
+function rewrite_es6_to_amd(string $source): string {
+    // Strip top-level ES6 imports.
+    $imports = [];
+    $deps = [];
+    if (preg_match_all('/^\s*import\s+(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)\s+from\s+[\'"]([^\'"]+)[\'"]\s*;?/m', $source, $imatches, PREG_SET_ORDER)) {
+        foreach ($imatches as $m) {
+            $deps[] = $m[1];
+            // Record the local alias for the import.
+            if (preg_match('/^\s*import\s+\*\s+as\s+(\w+)\s+from/', $m[0], $am)) {
+                $imports[] = ['name' => $am[1], 'kind' => 'star', 'dep' => $m[1]];
+            } elseif (preg_match('/^\s*import\s*\{([^}]+)\}\s*from/', $m[0], $am)) {
+                foreach (explode(',', $am[1]) as $piece) {
+                    $piece = trim($piece);
+                    if ($piece === '') continue;
+                    if (preg_match('/^(\w+)\s+as\s+(\w+)$/', $piece, $mm)) {
+                        $imports[] = ['name' => $mm[2], 'orig' => $mm[1], 'kind' => 'named', 'dep' => $m[1]];
+                    } else {
+                        $imports[] = ['name' => trim($piece), 'kind' => 'named', 'dep' => $m[1]];
+                    }
+                }
+            } elseif (preg_match('/^\s*import\s+(\w+)\s+from/', $m[0], $am)) {
+                $imports[] = ['name' => $am[1], 'kind' => 'default', 'dep' => $m[1]];
+            }
+        }
+    }
+
+    // Build an arglist for the factory function.
+    $args = [];
+    $seen = [];
+    foreach ($imports as $imp) {
+        if (!in_array($imp['name'], $seen, true)) {
+            $args[] = $imp['name'];
+            $seen[] = $imp['name'];
+        }
+    }
+
+    // Strip the import statements from the source so they don't break parsing.
+    $body = preg_replace('/^\s*import\s+(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)\s+from\s+[\'"]([^\'"]+)[\'"]\s*;?/m', '', $source);
+
+    // Rewrite top-level `export const/let/var X = ...`  ->  `_exports.X = ...;`
+    $body = preg_replace_callback(
+        '/^(?<![\w$])(export\s+(?:const|let|var)\s+([A-Za-z_$][\w$]*)\b)/m',
+        function ($m) { return '_exports.' . $m[2] . ' ='; },
+        $body
+    );
+
+    // Rewrite top-level `export function NAME(...) {...}` ->
+    //   `_exports.NAME = function(...) {...}`
+    $body = preg_replace_callback(
+        '/^(?<![\w$])export\s+function\s+([A-Za-z_$][\w$]*)/m',
+        function ($m) { return '_exports.' . $m[1] . ' = function'; },
+        $body
+    );
+
+    // Rewrite top-level `export class NAME {...}` -> `_exports.NAME = class ...`
+    $body = preg_replace_callback(
+        '/^(?<![\w$])export\s+class\s+([A-Za-z_$][\w$]*)/m',
+        function ($m) { return '_exports.' . $m[1] . ' = class'; },
+        $body
+    );
+
+    // Rewrite `export default EXPR;` (single-line form) -> `_exports.default = EXPR;`
+    $body = preg_replace_callback(
+        '/^(?<![\w$])export\s+default\s+([^;]+);/m',
+        function ($m) { return '_exports.default = ' . $m[1] . ';'; },
+        $body
+    );
+
+    // Rewrite `export { a as b, c };` -> assign each.
+    $body = preg_replace_callback(
+        '/^(?<![\w$])export\s*\{([^}]+)\}\s*;?$/m',
+        function ($m) {
+            $out = [];
+            foreach (explode(',', $m[1]) as $piece) {
+                $piece = trim($piece);
+                if ($piece === '') continue;
+                if (preg_match('/^(\w+)\s+as\s+(\w+)$/', $piece, $mm)) {
+                    $out[] = '_exports.' . $mm[2] . ' = ' . $mm[1] . ';';
+                } else {
+                    $out[] = '_exports.' . $piece . ' = ' . $piece . ';';
+                }
+            }
+            return implode("\n", $out);
+        },
+        $body
+    );
+
+    // Strip leading whitespace on every line (terser handles its own formatting).
+    $body = preg_replace('/^[ \t]+/m', '', $body);
+
+    return [$body, $args, $deps];
+}
+
 $files = glob($srcroot . '/*.js');
 if (!$files) {
     echo "No AMD modules found in {$srcroot}\n";
@@ -61,89 +169,29 @@ foreach ($files as $src) {
     $modulename = preg_replace('/\.js$/', '', $name);
     $dst = $buildroot . '/' . preg_replace('/\.js$/', '.min.js', $name);
 
-    // 1. Detect AMD `define([deps], factory)` (multi-line or single-line).
     $source = file_get_contents($src);
-    $amddeps = null;
-    $amdfactory = null;
 
-    // Multi-line pattern: define(['...', ...], function(...){...});
-    if (preg_match('/^define\(\s*(\[[^\]]*\])\s*,\s*function\s*\(([^)]*)\)\s*\{(.*)\}\s*\)\s*;?\s*$/sm', $source, $m)) {
-        $amddeps = trim($m[1]);
-        $amdfactoryargs = trim($m[2]);
-        $amdfactorybody = $m[3];
-    } elseif (preg_match('/^define\s*\(\s*([\'"][^\'"]+[\'"])\s*,\s*(\[[^\]]*\])\s*,\s*function\s*\(([^)]*)\)\s*\{(.*)\}\s*\)\s*;?\s*$/sm', $source, $m)) {
-        // define('name', [...], function(){...});
-        $amdnamed = trim($m[1]);
+    // Detect AMD define() wrapper and unwrap.
+    if (preg_match('/^define\(\s*[\'"]([^\'"]+)[\'"]\s*,\s*(\[[^\]]*\])\s*,\s*function\s*\(([^)]*)\)\s*\{(.*)\}\s*\)\s*;?\s*$/sm', $source, $m)) {
+        // define('name', [deps], function(args) { body });
+        $amdnamed = "'" . $m[1] . "'";
         $amddeps = trim($m[2]);
         $amdfactoryargs = trim($m[3]);
         $amdfactorybody = $m[4];
-    } elseif (preg_match('/^define\s*\(\s*function\s*\(([^)]*)\)\s*\{(.*)\}\s*\)\s*;?\s*$/sm', $source, $m)) {
-        // define(function(...){...});  - no deps
-        $amddeps = '[]';
-        $amdfactoryargs = trim($m[1]);
-        $amdfactorybody = $m[2];
+    } elseif (preg_match('/^define\(\s*(\[[^\]]*\])\s*,\s*function\s*\(([^)]*)\)\s*\{(.*)\}\s*\)\s*;?\s*$/sm', $source, $m)) {
+        $amdnamed = null;
+        $amddeps = trim($m[1]);
+        $amdfactoryargs = trim($m[2]);
+        $amdfactorybody = $m[3];
+    } else {
+        // ES6 source. Rewrite imports/exports into AMD shape.
+        [$amdfactorybody, $parsedargs, $parseddeps] = rewrite_es6_to_amd($source);
+        $amdnamed = "'local_sc_learningplans/{$modulename}'";
+        $amddeps = '[' . implode(',', array_map(function ($d) { return "'{$d}'"; }, array_unique($parseddeps))) . ']';
+        $amdfactoryargs = implode(',', $parsedargs);
     }
 
-    if ($amddeps === null) {
-        // Source is not in classic AMD define() shape. Two possibilities:
-        //   a) It uses ES6 import statements + top-level code (what we have here).
-        //   b) It uses define() but our regex missed it.
-        // Try to detect ES6 imports and gather them as deps heuristically.
-        $imports = [];
-        if (preg_match_all('/^\s*import\s+(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)\s+from\s+[\'"]([^\'"]+)[\'"]\s*;?/m', $source, $im)) {
-            foreach ($im[1] as $dep) {
-                $imports[] = "'" . $dep . "'";
-            }
-        }
-        // If there were any imports, we need to wrap in define().
-        if (!empty($imports)) {
-            $deps = '[' . implode(',', array_unique($imports)) . ']';
-            // Extract the body (everything after the last import).
-            $lastImportEnd = 0;
-            foreach ($im[0] as $imp) {
-                $pos = strrpos($source, $imp);
-                if ($pos !== false) {
-                    $lastImportEnd = max($lastImportEnd, $pos + strlen($imp));
-                }
-            }
-            $body = trim(substr($source, $lastImportEnd));
-            // The body is the factory body. The factory args will be the
-            // imported names that need to be available inside.
-            // We figure out the args from the `import * as X from ...` form.
-            $args = [];
-            if (preg_match_all('/import\s+\*\s+as\s+(\w+)\s+from/', $source, $an)) {
-                foreach ($an[1] as $a) {
-                    $args[] = $a;
-                }
-            } elseif (preg_match_all('/import\s*\{([^}]+)\}\s*from/', $source, $an2)) {
-                foreach ($an2[1] as $raw) {
-                    foreach (explode(',', $raw) as $piece) {
-                        $piece = trim($piece);
-                        if ($piece === '') continue;
-                        // Pull out the local name after "as" or the last identifier.
-                        if (preg_match('/\bas\s+(\w+)/', $piece, $m2)) {
-                            $args[] = $m2[1];
-                        } else {
-                            $args[] = trim(preg_split('/\s+/', $piece)[0]);
-                        }
-                    }
-                }
-            } elseif (preg_match_all('/^import\s+(\w+)\s+from/', $source, $an3)) {
-                foreach ($an3[1] as $a) {
-                    $args[] = $a;
-                }
-            }
-            $amdfactoryargs = implode(',', $args);
-            $amdfactorybody = $body;
-            $amddeps = $deps;
-        } else {
-            // Could not understand the source. Skip it.
-            fwrite(STDERR, "SKIP {$name}: cannot parse as AMD define() or detect ES6 imports.\n");
-            continue;
-        }
-    }
-
-    // Minify the factory body alone, then re-wrap.
+    // Write the (possibly unwrapped) body to a temp file, then minify it.
     $tmp = tempnam(sys_get_temp_dir(), 'gmkamd');
     $tmpSrc = $tmp . '.js';
     $tmpDst = $tmp . '.min.js';
@@ -165,9 +213,11 @@ foreach ($files as $src) {
     @unlink($tmpDst);
     @unlink($tmp);
 
-    // Assemble AMD wrapper. Always emit the 2-arg form so requirejs
-    // attaches the module name properly.
-    $wrapped = "define('local_sc_learningplans/{$modulename}',{$amddeps},function({$amdfactoryargs}){{$minifiedBody}});\n";
+    // Build the AMD envelope.
+    $defineHeader = $amdnamed !== null
+        ? "define({$amdnamed},{$amddeps},function({$amdfactoryargs}){"
+        : "define({$amddeps},function({$amdfactoryargs}){";
+    $wrapped = $defineHeader . $minifiedBody . "});\n";
 
     file_put_contents($dst, $wrapped);
     echo "OK  {$name} -> " . basename($dst) . " (" . filesize($dst) . " bytes)\n";
