@@ -102,7 +102,9 @@ if ($learningplan->hasperiod == 1) {
             } else {
                 $listperiodcourses[$period->id]['coursesoptional'][] = $course;
             }
-            $course->subperiodname=$course->subperiodid? $period->subperiods[$course->subperiodid]->name : null;
+            $course->subperiodname = (!empty($course->subperiodid) && isset($period->subperiods[$course->subperiodid]))
+                ? $period->subperiods[$course->subperiodid]->name
+                : null;
             // [CREDITS] Resolve canonical credits per (plan, course) for the editor.
             $course->resolvedcredits = \local_sc_learningplans\local\credit_resolver::resolve(
                 (int)$id,
