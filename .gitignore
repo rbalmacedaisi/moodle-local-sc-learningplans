@@ -1,2 +1,2 @@
-amd/build/*.min.js
-amd/build/*.min.js.map
+# AMD build artifacts are tracked and deployed via git (Moodle standard).
+# Regenerate with grunt (grunt amd) before committing changes to amd/src/.
