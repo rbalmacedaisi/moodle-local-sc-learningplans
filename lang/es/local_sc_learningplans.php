@@ -258,6 +258,9 @@ $string['credits_saved'] = 'Créditos guardados';
 $string['credits_save_failed'] = 'No se pudieron guardar los créditos';
 $string['credits_invalid'] = 'Ingrese un número entero entre 0 y 99';
 $string['credits_affected_students'] = '{$a} estudiantes serán actualizados';
+$string['credits_pending_label'] = 'Cambios de créditos pendientes:';
+$string['credits_save_all'] = 'Guardar todos los créditos';
+$string['credits_revert'] = 'Descartar cambios';
 
 // Scheduled task name
 $string['task_credit_integrity_check'] = 'Verifica la integridad de la tabla local_learning_credits y resincroniza los créditos por estudiante.';

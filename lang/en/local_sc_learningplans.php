@@ -259,6 +259,9 @@ $string['credits_saved'] = 'Credits saved';
 $string['credits_save_failed'] = 'Could not save the credits';
 $string['credits_invalid'] = 'Enter an integer between 0 and 99';
 $string['credits_affected_students'] = '{$a} students will be updated';
+$string['credits_pending_label'] = 'Pending credit changes:';
+$string['credits_save_all'] = 'Save all credits';
+$string['credits_revert'] = 'Discard changes';
 
 // Scheduled task name
 $string['task_credit_integrity_check'] = 'Verify integrity of local_learning_credits and resync per-student credits.';

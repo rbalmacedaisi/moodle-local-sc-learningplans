@@ -421,3 +421,12 @@ div.actions-course i.fa-arrows-alt {
     pointer-events: none;
     opacity: 0.5;
 }
+.gmk-credit-editor .gmk-credit-input.is-dirty {
+    border-color: #f0ad4e;
+    background-color: #fcf8e3;
+}
+
+.gmk-credits-toolbar .gmk-credits-dirty-count {
+    font-size: 0.95em;
+    margin-left: 0.25rem;
+}

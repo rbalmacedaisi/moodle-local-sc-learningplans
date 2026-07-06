@@ -657,12 +657,13 @@ function handleDragEnd() {
 }
 
 /**
- * Wire the per-(plan, course) credits input so changes are persisted to
- * local_learning_credits and the affected student snapshots are refreshed.
+ * Credits editor: per-row input + a single global "Save" button.
  *
- * Persistence is triggered by the visible "Save" button (gmk-credit-save),
- * not by the input change event - this matches the conventional Moodle UX
- * and avoids accidental saves while the admin is still typing.
+ * Inputs are independent and only become "dirty" when their value differs
+ * from data-original-value. The global save button is disabled until at
+ * least one row is dirty; clicking it batches every dirty row into the
+ * local_sc_learningplans_save_course_credit endpoint and refreshes the
+ * affected snapshots server-side.
  */
 let creditChangeAction = (learningplanid) => {
     const invalidMsgPromise = Str.get_string('credits_invalid', 'local_sc_learningplans');
@@ -670,103 +671,187 @@ let creditChangeAction = (learningplanid) => {
     const savedMsgPromise = Str.get_string('credits_saved', 'local_sc_learningplans');
     const failedMsgPromise = Str.get_string('credits_save_failed', 'local_sc_learningplans');
 
-    const triggerSave = (btn) => {
-        const wrapper = btn.closest('.gmk-credit-editor');
-        if (!wrapper) {
+    const toolbar = document.querySelector('.gmk-credits-toolbar');
+    const btnSaveAll = document.querySelector('.gmk-credits-save-all');
+    const btnRevertAll = document.querySelector('.gmk-credits-revert-all');
+    const dirtyCountEl = toolbar ? toolbar.querySelector('.gmk-credits-dirty-count') : null;
+
+    const setStatus = (statusEl, kind, msg) => {
+        if (!statusEl) {
             return;
         }
-        const input = wrapper.querySelector('.gmk-credit-input');
-        const status = wrapper.querySelector('.gmk-credit-status');
-        const raw = (input.value || '').trim();
-        const value = parseInt(raw, 10);
-        if (Number.isNaN(value) || value < 0 || value > 99) {
-            input.classList.add('is-invalid');
-            invalidMsgPromise.then((msg) => {
-                status.textContent = msg;
-                status.classList.remove('text-success');
-                status.classList.add('text-danger');
-            });
-            input.focus();
-            return;
-        }
-        input.classList.remove('is-invalid');
-        const lpid = parseInt(wrapper.getAttribute('data-learningplanid') || learningplanid, 10);
-        const cid = parseInt(wrapper.getAttribute('data-courseid'), 10);
-        if (!lpid || !cid) {
-            return;
-        }
-        btn.disabled = true;
-        input.disabled = true;
-        savingMsgPromise.then((msg) => {
-            status.textContent = msg;
-            status.classList.remove('text-success', 'text-danger');
-            status.classList.add('text-muted');
-        });
-        callSaveCourseCredit(lpid, cid, value, input, btn, status, savedMsgPromise, failedMsgPromise);
+        statusEl.textContent = msg;
+        statusEl.classList.remove('text-success', 'text-danger', 'text-muted');
+        statusEl.classList.add(kind);
     };
 
-    const saveButtons = document.querySelectorAll('.gmk-credit-save');
-    saveButtons.forEach((btn) => {
-        btn.addEventListener('click', () => triggerSave(btn));
-    });
+    const isDirty = (input) => {
+        const current = (input.value || '').trim();
+        const original = (input.getAttribute('data-original-value') || '').trim();
+        return current !== original;
+    };
 
-    // Convenience: pressing Enter inside the input triggers save.
-    const editors = document.querySelectorAll('.gmk-credit-editor');
-    editors.forEach((editor) => {
-        const input = editor.querySelector('.gmk-credit-input');
-        const btn = editor.querySelector('.gmk-credit-save');
-        if (!input || !btn) {
-            return;
+    const updateDirtyState = () => {
+        const inputs = document.querySelectorAll('.gmk-credit-input');
+        let dirtyCount = 0;
+        inputs.forEach((input) => {
+            const dirty = isDirty(input);
+            input.classList.toggle('is-dirty', dirty);
+            if (dirty) {
+                dirtyCount++;
+            }
+        });
+        if (btnSaveAll) {
+            btnSaveAll.disabled = dirtyCount === 0;
         }
+        if (dirtyCountEl) {
+            dirtyCountEl.textContent = String(dirtyCount);
+        }
+        if (toolbar) {
+            toolbar.classList.toggle('d-none', dirtyCount === 0);
+        }
+    };
+
+    const validateInput = (input) => {
+        const raw = (input.value || '').trim();
+        if (raw === '') {
+            return 0;
+        }
+        const value = parseInt(raw, 10);
+        if (Number.isNaN(value) || value < 0 || value > 99) {
+            return null;
+        }
+        return value;
+    };
+
+    // Wire every input: live dirty tracking + clear status on edit.
+    const inputs = document.querySelectorAll('.gmk-credit-input');
+    inputs.forEach((input) => {
+        const status = input.parentElement.querySelector('.gmk-credit-status');
+        input.addEventListener('input', () => {
+            const value = validateInput(input);
+            if (value === null) {
+                input.classList.add('is-invalid');
+            } else {
+                input.classList.remove('is-invalid');
+            }
+            if (status) {
+                status.textContent = '';
+                status.classList.remove('text-success', 'text-danger', 'text-muted');
+            }
+            updateDirtyState();
+        });
+        // Pressing Enter inside an input commits the global save.
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                triggerSave(btn);
+                if (btnSaveAll && !btnSaveAll.disabled) {
+                    btnSaveAll.click();
+                }
             }
         });
     });
-};
 
-const callSaveCourseCredit = (learningplanid, courseid, credits, inputEl, btnEl, statusEl, savedMsgPromise, failedMsgPromise) => {
-    const resetControls = () => {
-        if (inputEl) {
-            inputEl.disabled = false;
-        }
-        if (btnEl) {
-            btnEl.disabled = false;
-        }
-    };
-
-    const promise = Ajax.call([{
-        methodname: 'local_sc_learningplans_save_course_credit',
-        args: {
-            learningplanid,
-            courseid,
-            credits,
-        }
-    }]);
-
-    promise[0].done(function (response) {
-        if (inputEl) {
-            inputEl.value = response.credits;
-        }
-        resetControls();
-        if (statusEl) {
-            savedMsgPromise.then((msg) => {
-                statusEl.textContent = msg;
-                statusEl.classList.remove('text-muted', 'text-danger');
-                statusEl.classList.add('text-success');
+    if (btnSaveAll) {
+        btnSaveAll.addEventListener('click', () => {
+            const dirtyRows = [];
+            document.querySelectorAll('.gmk-credit-input').forEach((input) => {
+                if (!isDirty(input)) {
+                    return;
+                }
+                const value = validateInput(input);
+                if (value === null) {
+                    input.classList.add('is-invalid');
+                    return;
+                }
+                const wrapper = input.closest('.gmk-credit-editor');
+                const lpid = parseInt(wrapper.getAttribute('data-learningplanid') || learningplanid, 10);
+                const cid = parseInt(wrapper.getAttribute('data-courseid'), 10);
+                if (!lpid || !cid) {
+                    return;
+                }
+                dirtyRows.push({input, lpid, cid, value});
             });
-        }
-    }).fail(function (response) {
-        resetControls();
-        if (statusEl) {
-            failedMsgPromise.then((msg) => {
-                statusEl.textContent = msg;
-                statusEl.classList.remove('text-muted', 'text-success');
-                statusEl.classList.add('text-danger');
+
+            if (dirtyRows.length === 0) {
+                return;
+            }
+
+            btnSaveAll.disabled = true;
+            if (btnRevertAll) {
+                btnRevertAll.disabled = true;
+            }
+            savingMsgPromise.then((msg) => {
+                dirtyRows.forEach((r) => setStatus(r.input.parentElement.querySelector('.gmk-credit-status'), 'text-muted', msg));
             });
-        }
-        notification.exception(response);
-    });
+
+            const calls = dirtyRows.map((r) => ({
+                methodname: 'local_sc_learningplans_save_course_credit',
+                args: {
+                    learningplanid: r.lpid,
+                    courseid: r.cid,
+                    credits: r.value,
+                },
+            }));
+
+            Ajax.call(calls).then((responses) => {
+                let anyFail = false;
+                responses.forEach((response, idx) => {
+                    const row = dirtyRows[idx];
+                    const statusEl = row.input.parentElement.querySelector('.gmk-credit-status');
+                    if (response && response.error === false && response.data) {
+                        const data = response.data;
+                        row.input.value = data.credits;
+                        row.input.setAttribute('data-original-value', data.credits);
+                        row.input.classList.remove('is-invalid');
+                        savedMsgPromise.then((msg) => setStatus(statusEl, 'text-success', msg));
+                    } else {
+                        anyFail = true;
+                        failedMsgPromise.then((msg) => setStatus(statusEl, 'text-danger', msg));
+                        if (response.exception) {
+                            notification.exception(response);
+                        }
+                    }
+                });
+                updateDirtyState();
+                if (!anyFail) {
+                    if (btnRevertAll) {
+                        btnRevertAll.disabled = false;
+                    }
+                } else {
+                    btnSaveAll.disabled = false;
+                    if (btnRevertAll) {
+                        btnRevertAll.disabled = false;
+                    }
+                }
+            }).catch((err) => {
+                failedMsgPromise.then((msg) => {
+                    dirtyRows.forEach((r) => setStatus(r.input.parentElement.querySelector('.gmk-credit-status'), 'text-danger', msg));
+                });
+                btnSaveAll.disabled = false;
+                if (btnRevertAll) {
+                    btnRevertAll.disabled = false;
+                }
+                notification.exception(err);
+            });
+        });
+    }
+
+    if (btnRevertAll) {
+        btnRevertAll.addEventListener('click', () => {
+            document.querySelectorAll('.gmk-credit-input').forEach((input) => {
+                const original = input.getAttribute('data-original-value') || '';
+                input.value = original;
+                input.classList.remove('is-invalid', 'is-dirty');
+                const status = input.parentElement.querySelector('.gmk-credit-status');
+                if (status) {
+                    status.textContent = '';
+                    status.classList.remove('text-success', 'text-danger', 'text-muted');
+                }
+            });
+            updateDirtyState();
+        });
+    }
+
+    updateDirtyState();
 };

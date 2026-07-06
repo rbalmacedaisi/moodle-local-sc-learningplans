@@ -1,6 +1,20 @@
 <div class="container-fluid px-0">
     <div class="row">
         <div class="col-sm-12">
+            {{! Global credits toolbar }}
+            <div class="gmk-credits-toolbar alert alert-info d-none" role="region" aria-live="polite">
+                <div class="d-flex align-items-center flex-wrap">
+                    <strong class="mr-3">{{#str}} credits_pending_label, local_sc_learningplans {{/str}} <span class="gmk-credits-dirty-count badge badge-warning">0</span></strong>
+                    <span class="text-muted small mr-3">{{#str}} credits_help, local_sc_learningplans {{/str}}</span>
+                    <button type="button" class="btn btn-success gmk-credits-save-all mr-2" disabled>
+                        <i class="fa fa-save"></i> {{#str}} credits_save_all, local_sc_learningplans {{/str}}
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary gmk-credits-revert-all">
+                        {{#str}} credits_revert, local_sc_learningplans {{/str}}
+                    </button>
+                </div>
+            </div>
+
             {{#hasperiod}}
             <div class="pt-3">
                 <div class="d-flex mb-3">
@@ -85,14 +99,9 @@
                                                            max="99"
                                                            step="1"
                                                            value="{{resolvedcredits}}"
+                                                           data-original-value="{{resolvedcredits}}"
                                                            placeholder="{{#str}} credits_placeholder, local_sc_learningplans {{/str}}"
                                                            title="{{#str}} credits_help, local_sc_learningplans {{/str}}" />
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-primary gmk-credit-save"
-                                                            id="gmk-credit-save-{{id}}"
-                                                            title="{{#str}} credits_save, local_sc_learningplans {{/str}}">
-                                                        <i class="fa fa-save"></i>
-                                                    </button>
                                                     <span class="gmk-credit-status ml-1 small" aria-live="polite"></span>
                                                 </div>
 
@@ -248,14 +257,9 @@
                                                max="99"
                                                step="1"
                                                value="{{resolvedcredits}}"
+                                               data-original-value="{{resolvedcredits}}"
                                                placeholder="{{#str}} credits_placeholder, local_sc_learningplans {{/str}}"
                                                title="{{#str}} credits_help, local_sc_learningplans {{/str}}" />
-                                        <button type="button"
-                                                class="btn btn-sm btn-primary gmk-credit-save"
-                                                id="gmk-credit-save-{{id}}"
-                                                title="{{#str}} credits_save, local_sc_learningplans {{/str}}">
-                                            <i class="fa fa-save"></i>
-                                        </button>
                                         <span class="gmk-credit-status ml-1 small" aria-live="polite"></span>
                                     </div>
 
