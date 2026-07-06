@@ -137,16 +137,13 @@ let addLearningPlan = () => {
                 requirements,
                 customfields
             };
-            console.log(args)
             const promise = Ajax.call([{
                 methodname: 'local_sc_learningplans_save_learning_plan',
                 args
             },]);
             promise[0].done(function (response) {
-                window.console.log('local_sc_learningplans_save_learning_plan', response);
                 window.location.href = '/local/sc_learningplans/index.php';
             }).fail(function (response) {
-                window.console.error(response);
             });
         });
     }
@@ -210,7 +207,6 @@ let addCourses = async () => {
                 return;
             }
             const selectedoption = selectedcourse.querySelector(`option[value="${selectedcourse.value}"]`);
-            window.console.log(selectedoption, `option[value="${selectedcourse.value}"]`);
             if (selectedoption) {
                 selectedoption.disabled = true;
                 const coursename = selectedoption.innerHTML;
@@ -230,7 +226,6 @@ let addCourses = async () => {
                 deletebtn.classList.add('close');
                 deletebtn.onclick = e => {
                     e.preventDefault();
-                    window.console.log(e.target, e.target.getAttribute('courseid'));
                     selectedoption.disabled = false;
                     divcontainer.remove();
                 };
@@ -251,7 +246,6 @@ let addCourses = async () => {
                 return;
             }
             const selectedoption = selectedcourse.querySelector(`option[value="${selectedcourse.value}"]`);
-            window.console.log(selectedoption, `option[value="${selectedcourse.value}"]`);
             if (selectedoption) {
                 selectedoption.disabled = true;
                 const coursename = selectedoption.innerHTML;
@@ -270,7 +264,6 @@ let addCourses = async () => {
                 deletebtn.classList.add('close');
                 deletebtn.onclick = e => {
                     e.preventDefault();
-                    window.console.log(e.target, e.target.getAttribute('courseid'));
                     selectedoption.disabled = false;
                     divcontainer.remove();
                 };

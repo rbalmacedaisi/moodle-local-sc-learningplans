@@ -8,15 +8,12 @@ export const init = (learningplanid) => {
     searchAction();
 };
 const searchAction = () => {
-    window.console.log('searchAction');
     const btn = document.querySelector('#searchBtn');
-    window.console.log('btn', btn);
     if(!btn) {
         return;
     }
     btn.addEventListener('click', () => {
         const search = document.querySelector('#searchUser');
-        window.console.log('click', search);
         if(!search) {
             return;
         }
@@ -37,7 +34,6 @@ const deleteUserAction = (learningplanid) => {
             const userid = e.target.parentElement.getAttribute('userid');
             notification.saveCancel(titleconfirm, msgconfirm, yesconfirm, () => {
                 const removeenrol = document.querySelector('#checkRemoveCourses');
-                window.console.log(removeenrol, removeenrol.checked);
                 callDeleteUser(learningplanid, userid, removeenrol ? removeenrol.checked : false);
             });
         });
@@ -87,10 +83,8 @@ const callDeleteUser = (learningplan, userid, unenrol) => {
     },]);
 
     promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_delete_learning_user', response);
         window.location.reload();
     }).fail(function (response) {
-        window.console.error(response);
     });
 };
 
@@ -109,9 +103,7 @@ const callAddUser = (learningplan, userid, roleid, group) => {
     },]);
 
     promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_add_learning_user', response);
         window.location.reload();
     }).fail(function (response) {
-        window.console.error(response);
     });
 };

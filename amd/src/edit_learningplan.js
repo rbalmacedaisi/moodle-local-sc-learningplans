@@ -36,7 +36,6 @@ export const init = (learningid, is_siteadmin) => {
             },]);
 
             promise[0].done(function () {
-                window.console.log(is_siteadmin, 'local_sc_learningplans_edit_learning_plan');
                 if (!is_siteadmin) {
                     window.location.href = '/';
                 }
@@ -44,7 +43,6 @@ export const init = (learningid, is_siteadmin) => {
                     window.location.href = '/local/sc_learningplans/index.php';
                 }
             }).fail(function (response) {
-                window.console.error(response);
             });
         });
     }

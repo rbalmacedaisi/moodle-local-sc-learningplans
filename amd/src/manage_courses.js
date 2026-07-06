@@ -178,10 +178,8 @@ const callRemoveRelations = (recordid, records) => {
     },]);
 
     promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_del_course_relations', response);
         location.reload();
     }).fail(function (response) {
-        window.console.error(response);
     });
 };
 
@@ -195,10 +193,8 @@ const callAddRelations = (recordid, records) => {
     },]);
 
     promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_add_course_relations', response);
         location.reload();
     }).fail(function (response) {
-        window.console.error(response);
     });
 };
 
@@ -212,7 +208,6 @@ const callGetPossibleRelations = (recordid, getToRemove = false) => {
     },]);
 
     promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_get_possible_relations', response);
         window.getToRemove = getToRemove;
         let dataCourses = response.courses;
         let selectCourses;
@@ -237,7 +232,6 @@ const callGetPossibleRelations = (recordid, getToRemove = false) => {
         modal.classList.add('show');
         modal.style.display = 'block';
     }).fail(function (response) {
-        window.console.error(response);
     });
 };
 
@@ -380,12 +374,10 @@ const callUpdateCourse = (learningid, courseorder, periodid = null, reload = tru
     },]);
 
     promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_update_required_learning_courses', response);
         if (reload) {
             location.reload();
         }
     }).fail(function (response) {
-        window.console.error(response);
     });
 };
 
@@ -406,10 +398,8 @@ const callAddCourse = (learningid, periodid, courseid, isrequired, credits) => {
     },]);
 
     promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_save_learning_course', response);
         window.location.reload();
     }).fail(function (response) {
-        window.console.error(response);
     });
 };
 
@@ -429,7 +419,6 @@ const callDeleteCourse = (
     },]);
 
     promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_delete_learning_course', response);
         if (notaddingcourse) {
             window.location.reload();
         }
@@ -438,7 +427,6 @@ const callDeleteCourse = (
         }
 
     }).fail(function (response) {
-        window.console.error(response);
     });
 };
 
@@ -614,15 +602,11 @@ function handleDrop(e) {
             const allPeriodsRequired = document.querySelectorAll('.coursesrequired');
             allPeriodsRequired.forEach(el => {
                 const periodid = el.getAttribute('record-periodid');
-                window.console.log(periodid);
                 clickUpdateCoursePeriod(learningplanid, periodid, false);
             });
         } else {
             clickUpdateCourses(learningplanid);
         }
-        window.console.log(learningplanid, havePeriod,
-            'Cambiando los cursos draggedItemAttr: ',
-            draggedItemAttr, 'itemToReplaceAttr', itemToReplaceAttr);
     }
 
     return false;
@@ -682,9 +666,6 @@ let creditChangeAction = (learningplanid) => {
     const setDebug = (msg) => {
         if (debugEl) {
             debugEl.textContent = msg;
-        }
-        if (window.console && console.log) {
-            console.log('[gmk-credits] ' + msg);
         }
     };
 
@@ -872,9 +853,6 @@ let creditChangeAction = (learningplanid) => {
                 }).fail((ex) => {
                     anyFail = true;
                     failedMsgPromise.then((msg) => setStatus(statusEl, 'text-danger', msg));
-                    if (ex && ex.message) {
-                        console.error('[gmk-credits] save failed:', ex);
-                    }
                 }).always(() => {
                     pending--;
                     if (pending === 0) {

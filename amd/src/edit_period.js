@@ -30,10 +30,8 @@ export const init = (learningid) => {
             },]);
 
             promise[0].done(function (response) {
-                window.console.log('local_sc_learningplans_addperiod_learning_plan', response);
                 window.location.reload(true);
             }).fail(function (response) {
-                window.console.error(response);
             });
         });
     }
@@ -58,7 +56,6 @@ export const init = (learningid) => {
             let periodid = btnedit.getAttribute('data-id');
             const btnsavename = document.querySelector('#save_edit_period_' + periodid);
             btnsavename.addEventListener('click', e => {
-                window.console.log(e);
                 let nameperiod = document.querySelector('#name_new_period_' + periodid).value;
                 let vigencyperiod = document.querySelector('#vigency_new_period_' + periodid).value;
                 let hassubperiodsCheck = document.querySelector('#addsubperiod-' + periodid);
@@ -79,10 +76,8 @@ const callDeletePeriod = (learningid, periodid) => {
         }
     },]);
     promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_delete_period_learning_plan', response);
         window.location.reload(true);
     }).fail(function (response) {
-        window.console.error(response);
     });
 };
 
@@ -100,10 +95,8 @@ const callEditPeriod = (periodid, nameperiod, vigencyperiod, hassubperiods) => {
         }
     },]);
     promise[0].done(function (response) {
-        window.console.log('local_sc_learningplans_edit_period_learning_plan', response);
         window.location.reload(true);
     }).fail(function (response) {
-        window.console.error(response);
     });
 };
 document.addEventListener('DOMContentLoaded', function () {
