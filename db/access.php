@@ -32,4 +32,15 @@ $capabilities = array(
             'teacher' => CAP_ALLOW,
         ),
     ),
+    // Manage learning plans (edit courses, credits, periods, dependencies).
+    // Referenced by db/services.php and external/course/save_course_credit.php;
+    // was missing here, so has_capability() returned false for everyone.
+    'local/sc_learningplans:manage' => array(
+        'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW,
+        ),
+    ),
 );
