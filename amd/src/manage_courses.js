@@ -794,45 +794,43 @@ let creditChangeAction = (learningplanid) => {
                 },
             }));
 
-            Ajax.call(calls).then((responses) => {
-                let anyFail = false;
-                responses.forEach((response, idx) => {
-                    const row = dirtyRows[idx];
-                    const statusEl = row.input.parentElement.querySelector('.gmk-credit-status');
-                    if (response && response.error === false && response.data) {
-                        const data = response.data;
-                        row.input.value = data.credits;
-                        row.input.setAttribute('data-original-value', data.credits);
-                        row.input.classList.remove('is-invalid');
-                        savedMsgPromise.then((msg) => setStatus(statusEl, 'text-success', msg));
-                    } else {
-                        anyFail = true;
-                        failedMsgPromise.then((msg) => setStatus(statusEl, 'text-danger', msg));
-                        if (response.exception) {
-                            notification.exception(response);
-                        }
-                    }
-                });
+            // Ajax.call returns an array of jQuery Deferreds (one per request).
+            // We iterate explicitly so the success/failure of every dirty row
+            // is reflected individually.
+            const promises = Ajax.call(calls);
+            let pending = promises.length;
+            let anyFail = false;
+
+            const finish = () => {
                 updateDirtyState();
-                if (!anyFail) {
-                    if (btnRevertAll) {
-                        btnRevertAll.disabled = false;
-                    }
-                } else {
+                if (anyFail) {
                     btnSaveAll.disabled = false;
                     if (btnRevertAll) {
                         btnRevertAll.disabled = false;
                     }
-                }
-            }).catch((err) => {
-                failedMsgPromise.then((msg) => {
-                    dirtyRows.forEach((r) => setStatus(r.input.parentElement.querySelector('.gmk-credit-status'), 'text-danger', msg));
-                });
-                btnSaveAll.disabled = false;
-                if (btnRevertAll) {
+                } else if (btnRevertAll) {
                     btnRevertAll.disabled = false;
                 }
-                notification.exception(err);
+            };
+
+            promises.forEach((promise, idx) => {
+                const row = dirtyRows[idx];
+                const statusEl = row.input.parentElement.querySelector('.gmk-credit-status');
+                promise.done((data) => {
+                    row.input.value = data.credits;
+                    row.input.setAttribute('data-original-value', data.credits);
+                    row.input.classList.remove('is-invalid');
+                    savedMsgPromise.then((msg) => setStatus(statusEl, 'text-success', msg));
+                }).fail((ex) => {
+                    anyFail = true;
+                    failedMsgPromise.then((msg) => setStatus(statusEl, 'text-danger', msg));
+                    notification.exception(ex);
+                }).always(() => {
+                    pending--;
+                    if (pending === 0) {
+                        finish();
+                    }
+                });
             });
         });
     }
