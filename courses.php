@@ -158,10 +158,13 @@ $templatedata = [
     'optionalcourses' => $optionalcourses,
     'name' => $namepage,
     'linkedplans' => array_values(sc_learningplan_get_linked_plans($id)),
-    'availableplans' => array_values($DB->get_records_sql("SELECT id, name FROM {local_learning_plans} WHERE id <> :id", ['id' => $id]))
+    'availableplans' => array_values($DB->get_records_sql("SELECT id, name FROM {local_learning_plans} WHERE id <> :id", ['id' => $id])),
+    // Serialise the period->subperiods payload as a data attribute so we don't
+    // ship it through js_call_amd() (which warns above 1024 chars).
+    'periodspayload' => json_encode($listperiods, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS),
 ];
 
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('local_sc_learningplans/manage_courses', $templatedata);
-$PAGE->requires->js_call_amd('local_sc_learningplans/manage_courses', 'init', ['learningplanid' => $id,'periods'=>$listperiods]);
+$PAGE->requires->js_call_amd('local_sc_learningplans/manage_courses', 'init', ['learningplanid' => $id]);
 echo $OUTPUT->footer();

@@ -8,8 +8,20 @@ const addCourseSubPeriodSelector = document.getElementById('selectSubPeriodToLea
 
 let learnigplanPeriods;
 
-export const init = (learningplanid, periods) => {
-    learnigplanPeriods = periods
+const loadPeriodsFromDom = () => {
+    const el = document.getElementById('gmk-periods-payload');
+    if (!el || !el.value) {
+        return {};
+    }
+    try {
+        return JSON.parse(el.value);
+    } catch (e) {
+        return {};
+    }
+};
+
+export const init = (learningplanid) => {
+    learnigplanPeriods = loadPeriodsFromDom();
 
     deleteCourseAction(learningplanid);
     addCoursePeriodAction(learningplanid);
@@ -647,34 +659,84 @@ function handleDragEnd() {
 /**
  * Wire the per-(plan, course) credits input so changes are persisted to
  * local_learning_credits and the affected student snapshots are refreshed.
+ *
+ * Persistence is triggered by the visible "Save" button (gmk-credit-save),
+ * not by the input change event - this matches the conventional Moodle UX
+ * and avoids accidental saves while the admin is still typing.
  */
 let creditChangeAction = (learningplanid) => {
-    const editors = document.querySelectorAll('.gmk-credit-editor .gmk-credit-input');
-    editors.forEach((input) => {
-        input.addEventListener('change', (e) => {
-            const raw = e.target.value.trim();
-            const value = parseInt(raw, 10);
-            if (Number.isNaN(value) || value < 0 || value > 99) {
-                e.target.classList.add('is-invalid');
-                e.target.focus();
-                return;
+    const invalidMsgPromise = Str.get_string('credits_invalid', 'local_sc_learningplans');
+    const savingMsgPromise = Str.get_string('credits_saving', 'local_sc_learningplans');
+    const savedMsgPromise = Str.get_string('credits_saved', 'local_sc_learningplans');
+    const failedMsgPromise = Str.get_string('credits_save_failed', 'local_sc_learningplans');
+
+    const triggerSave = (btn) => {
+        const wrapper = btn.closest('.gmk-credit-editor');
+        if (!wrapper) {
+            return;
+        }
+        const input = wrapper.querySelector('.gmk-credit-input');
+        const status = wrapper.querySelector('.gmk-credit-status');
+        const raw = (input.value || '').trim();
+        const value = parseInt(raw, 10);
+        if (Number.isNaN(value) || value < 0 || value > 99) {
+            input.classList.add('is-invalid');
+            invalidMsgPromise.then((msg) => {
+                status.textContent = msg;
+                status.classList.remove('text-success');
+                status.classList.add('text-danger');
+            });
+            input.focus();
+            return;
+        }
+        input.classList.remove('is-invalid');
+        const lpid = parseInt(wrapper.getAttribute('data-learningplanid') || learningplanid, 10);
+        const cid = parseInt(wrapper.getAttribute('data-courseid'), 10);
+        if (!lpid || !cid) {
+            return;
+        }
+        btn.disabled = true;
+        input.disabled = true;
+        savingMsgPromise.then((msg) => {
+            status.textContent = msg;
+            status.classList.remove('text-success', 'text-danger');
+            status.classList.add('text-muted');
+        });
+        callSaveCourseCredit(lpid, cid, value, input, btn, status, savedMsgPromise, failedMsgPromise);
+    };
+
+    const saveButtons = document.querySelectorAll('.gmk-credit-save');
+    saveButtons.forEach((btn) => {
+        btn.addEventListener('click', () => triggerSave(btn));
+    });
+
+    // Convenience: pressing Enter inside the input triggers save.
+    const editors = document.querySelectorAll('.gmk-credit-editor');
+    editors.forEach((editor) => {
+        const input = editor.querySelector('.gmk-credit-input');
+        const btn = editor.querySelector('.gmk-credit-save');
+        if (!input || !btn) {
+            return;
+        }
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                triggerSave(btn);
             }
-            e.target.classList.remove('is-invalid');
-            const wrapper = e.target.closest('.gmk-credit-editor');
-            const lpid = parseInt(wrapper.getAttribute('data-learningplanid') || learningplanid, 10);
-            const cid = parseInt(wrapper.getAttribute('data-courseid'), 10);
-            if (!lpid || !cid) {
-                return;
-            }
-            callSaveCourseCredit(lpid, cid, value, e.target);
         });
     });
 };
 
-const callSaveCourseCredit = (learningplanid, courseid, credits, inputEl) => {
-    if (inputEl) {
-        inputEl.disabled = true;
-    }
+const callSaveCourseCredit = (learningplanid, courseid, credits, inputEl, btnEl, statusEl, savedMsgPromise, failedMsgPromise) => {
+    const resetControls = () => {
+        if (inputEl) {
+            inputEl.disabled = false;
+        }
+        if (btnEl) {
+            btnEl.disabled = false;
+        }
+    };
+
     const promise = Ajax.call([{
         methodname: 'local_sc_learningplans_save_course_credit',
         args: {
@@ -687,12 +749,23 @@ const callSaveCourseCredit = (learningplanid, courseid, credits, inputEl) => {
     promise[0].done(function (response) {
         if (inputEl) {
             inputEl.value = response.credits;
-            inputEl.disabled = false;
+        }
+        resetControls();
+        if (statusEl) {
+            savedMsgPromise.then((msg) => {
+                statusEl.textContent = msg;
+                statusEl.classList.remove('text-muted', 'text-danger');
+                statusEl.classList.add('text-success');
+            });
         }
     }).fail(function (response) {
-        if (inputEl) {
-            inputEl.disabled = false;
-            inputEl.classList.add('is-invalid');
+        resetControls();
+        if (statusEl) {
+            failedMsgPromise.then((msg) => {
+                statusEl.textContent = msg;
+                statusEl.classList.remove('text-muted', 'text-success');
+                statusEl.classList.add('text-danger');
+            });
         }
         notification.exception(response);
     });

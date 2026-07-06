@@ -75,11 +75,11 @@
                                                 <div class="spacer"></div>
 
                                                 {{! Credits editor (per-plan) }}
-                                                <div class="gmk-credit-editor mr-3" data-learningplanid="{{learningplanid}}" data-courseid="{{courseid}}">
-                                                    <label class="mb-0 small text-muted" for="gmk-credit-{{id}}">{{#str}} credits_column, local_sc_learningplans {{/str}}</label>
+                                                <div class="gmk-credit-editor mr-3 d-flex align-items-center" data-learningplanid="{{learningplanid}}" data-courseid="{{courseid}}">
+                                                    <label class="mb-0 mr-2 small text-muted" for="gmk-credit-{{id}}">{{#str}} credits_column, local_sc_learningplans {{/str}}</label>
                                                     <input type="number"
                                                            id="gmk-credit-{{id}}"
-                                                           class="form-control form-control-sm gmk-credit-input"
+                                                           class="form-control form-control-sm gmk-credit-input mr-1"
                                                            style="width: 70px;"
                                                            min="0"
                                                            max="99"
@@ -87,6 +87,13 @@
                                                            value="{{resolvedcredits}}"
                                                            placeholder="{{#str}} credits_placeholder, local_sc_learningplans {{/str}}"
                                                            title="{{#str}} credits_help, local_sc_learningplans {{/str}}" />
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-primary gmk-credit-save"
+                                                            id="gmk-credit-save-{{id}}"
+                                                            title="{{#str}} credits_save, local_sc_learningplans {{/str}}">
+                                                        <i class="fa fa-save"></i>
+                                                    </button>
+                                                    <span class="gmk-credit-status ml-1 small" aria-live="polite"></span>
                                                 </div>
 
                                                 {{! Actions for courses }}
@@ -231,11 +238,11 @@
                                     <div class="spacer"></div>
 
                                     {{! Credits editor (per-plan) }}
-                                    <div class="gmk-credit-editor mr-3" data-learningplanid="{{learningplanid}}" data-courseid="{{courseid}}">
-                                        <label class="mb-0 small text-muted" for="gmk-credit-{{id}}">{{#str}} credits_column, local_sc_learningplans {{/str}}</label>
+                                    <div class="gmk-credit-editor mr-3 d-flex align-items-center" data-learningplanid="{{learningplanid}}" data-courseid="{{courseid}}">
+                                        <label class="mb-0 mr-2 small text-muted" for="gmk-credit-{{id}}">{{#str}} credits_column, local_sc_learningplans {{/str}}</label>
                                         <input type="number"
                                                id="gmk-credit-{{id}}"
-                                               class="form-control form-control-sm gmk-credit-input"
+                                               class="form-control form-control-sm gmk-credit-input mr-1"
                                                style="width: 70px;"
                                                min="0"
                                                max="99"
@@ -243,6 +250,13 @@
                                                value="{{resolvedcredits}}"
                                                placeholder="{{#str}} credits_placeholder, local_sc_learningplans {{/str}}"
                                                title="{{#str}} credits_help, local_sc_learningplans {{/str}}" />
+                                        <button type="button"
+                                                class="btn btn-sm btn-primary gmk-credit-save"
+                                                id="gmk-credit-save-{{id}}"
+                                                title="{{#str}} credits_save, local_sc_learningplans {{/str}}">
+                                            <i class="fa fa-save"></i>
+                                        </button>
+                                        <span class="gmk-credit-status ml-1 small" aria-live="polite"></span>
                                     </div>
 
                                     {{! Actions for courses }}
@@ -373,6 +387,9 @@
 {{> local_sc_learningplans/modals/add_course_periods }}
 {{> local_sc_learningplans/modals/add_course_required }}
 {{> local_sc_learningplans/modals/add_course_optional }}
+
+{{! Hidden payload for the AMD module: keeps large data out of js_call_amd(). }}
+<input type="hidden" id="gmk-periods-payload" value="{{{periodspayload}}}" />
 
 {{! Modal Plan Dependencies }}
 <div class="modal fade" id="modalPlanDependencies" tabindex="-1" role="dialog" aria-labelledby="modalPlanDependenciesLabel" aria-hidden="true">
