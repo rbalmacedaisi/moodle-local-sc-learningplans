@@ -64,7 +64,7 @@ if ($terser === '') {
  *   - export { a, b as c };                 -> _exports.a = a; _exports.c = b;
  *   - export * from "dep";                   -> (delegated to _deps)
  */
-function rewrite_es6_to_amd(string $source): string {
+function rewrite_es6_to_amd(string $source): array {
     // Strip top-level ES6 imports.
     $imports = [];
     $deps = [];
