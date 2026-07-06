@@ -659,13 +659,16 @@ function handleDragEnd() {
 /**
  * Credits editor: per-row input + a single global "Save" button.
  *
- * Always-visible toolbar with a save button. The button is always enabled;
- * clicking it processes every row whose value differs from its
- * data-original-value (a "dirty" row). Rows that the user did not change
- * are skipped, so a no-op save is harmless.
+ * Belt-and-braces detection so the dirty counter always moves:
+ *   1. Direct listeners on every input we find at init().
+ *   2. Document-level event delegation (catches dynamically-added rows).
+ *   3. 500ms polling against the input.value vs data-original-value
+ *      (catches cases where events don't fire because of an extension,
+ *      custom widget, etc.).
+ *
+ * The global save button is always enabled; a no-op save is harmless.
  */
 let creditChangeAction = (learningplanid) => {
-    const invalidMsgPromise = Str.get_string('credits_invalid', 'local_sc_learningplans');
     const savingMsgPromise = Str.get_string('credits_saving', 'local_sc_learningplans');
     const savedMsgPromise = Str.get_string('credits_saved', 'local_sc_learningplans');
     const failedMsgPromise = Str.get_string('credits_save_failed', 'local_sc_learningplans');
@@ -674,11 +677,16 @@ let creditChangeAction = (learningplanid) => {
     const btnSaveAll = document.querySelector('.gmk-credits-save-all');
     const btnRevertAll = document.querySelector('.gmk-credits-revert-all');
     const dirtyCountEl = toolbar ? toolbar.querySelector('.gmk-credits-dirty-count') : null;
+    const debugEl = toolbar ? toolbar.querySelector('.gmk-credits-debug') : null;
 
-    const inputs = document.querySelectorAll('.gmk-credit-input');
-    if (window.console && console.log) {
-        console.log('[gmk-credits] init: inputs=' + inputs.length + ' hasSaveBtn=' + !!btnSaveAll);
-    }
+    const setDebug = (msg) => {
+        if (debugEl) {
+            debugEl.textContent = msg;
+        }
+        if (window.console && console.log) {
+            console.log('[gmk-credits] ' + msg);
+        }
+    };
 
     const setStatus = (statusEl, kind, msg) => {
         if (!statusEl) {
@@ -692,31 +700,33 @@ let creditChangeAction = (learningplanid) => {
     const isDirty = (input) => {
         const current = (input.value || '').trim();
         const original = (input.getAttribute('data-original-value') || '').trim();
-        return current !== original;
+        return current !== original && current !== '';
     };
 
     const updateDirtyState = () => {
         const all = document.querySelectorAll('.gmk-credit-input');
         let dirtyCount = 0;
+        let firstdirty = '';
         all.forEach((input) => {
             const dirty = isDirty(input);
             input.classList.toggle('is-dirty', dirty);
             if (dirty) {
                 dirtyCount++;
+                if (!firstdirty) {
+                    firstdirty = '#' + input.id + '="' + input.value + '" (orig=' + input.getAttribute('data-original-value') + ')';
+                }
             }
         });
         if (dirtyCountEl) {
             dirtyCountEl.textContent = String(dirtyCount);
         }
-        // The save button is always enabled: a no-op save is harmless and
-        // avoids the "I clicked but nothing happens" UX issue when the
-        // dirty counter is out of sync.
         if (btnSaveAll) {
             btnSaveAll.disabled = false;
         }
         if (btnRevertAll) {
             btnRevertAll.disabled = dirtyCount === 0;
         }
+        setDebug('inputs=' + all.length + ' dirty=' + dirtyCount + (firstdirty ? ' ' + firstdirty : ''));
     };
 
     const validateInput = (input) => {
@@ -731,13 +741,7 @@ let creditChangeAction = (learningplanid) => {
         return value;
     };
 
-    // Wire every input using event delegation on document so dynamically-
-    // inserted rows (after init) still work.
-    document.addEventListener('input', (e) => {
-        const input = e.target.closest && e.target.closest('.gmk-credit-input');
-        if (!input) {
-            return;
-        }
+    const onUserChanged = (input) => {
         const value = validateInput(input);
         if (value === null) {
             input.classList.add('is-invalid');
@@ -750,19 +754,52 @@ let creditChangeAction = (learningplanid) => {
             status.classList.remove('text-success', 'text-danger', 'text-muted');
         }
         updateDirtyState();
+    };
+
+    // 1. Direct listeners on every input currently in the DOM.
+    const attachDirectListeners = () => {
+        document.querySelectorAll('.gmk-credit-input').forEach((input) => {
+            if (input.__gmkCreditWired) {
+                return;
+            }
+            input.__gmkCreditWired = true;
+            input.addEventListener('input', () => onUserChanged(input));
+            input.addEventListener('change', () => onUserChanged(input));
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (btnSaveAll) {
+                        btnSaveAll.click();
+                    }
+                }
+            });
+        });
+    };
+
+    // 2. Document-level delegation as a backup.
+    document.addEventListener('input', (e) => {
+        if (!e.target || !e.target.closest) {
+            return;
+        }
+        const input = e.target.closest('.gmk-credit-input');
+        if (!input) {
+            return;
+        }
+        onUserChanged(input);
     });
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key !== 'Enter') {
-            return;
+    // 3. Polling fallback - runs every 500ms; catches anything the events miss.
+    setInterval(() => {
+        const all = document.querySelectorAll('.gmk-credit-input');
+        if (all.length !== creditChangeAction.lastInputCount) {
+            creditChangeAction.lastInputCount = all.length;
+            attachDirectListeners();
+            setDebug('rebound: inputs=' + all.length);
         }
-        const input = e.target.closest && e.target.closest('.gmk-credit-input');
-        if (!input || !btnSaveAll) {
-            return;
-        }
-        e.preventDefault();
-        btnSaveAll.click();
-    });
+        updateDirtyState();
+    }, 500);
+
+    attachDirectListeners();
 
     const gatherDirtyRows = () => {
         const rows = [];
@@ -789,17 +826,10 @@ let creditChangeAction = (learningplanid) => {
     if (btnSaveAll) {
         btnSaveAll.addEventListener('click', () => {
             const dirtyRows = gatherDirtyRows();
-            if (window.console && console.log) {
-                console.log('[gmk-credits] save clicked: dirty=' + dirtyRows.length);
-            }
+            setDebug('save clicked: dirty=' + dirtyRows.length);
             if (dirtyRows.length === 0) {
                 savingMsgPromise.then((msg) => {
-                    if (toolbar) {
-                        const statusEl = toolbar.querySelector('.gmk-credits-dirty-count');
-                        if (statusEl) {
-                            statusEl.textContent = msg;
-                        }
-                    }
+                    setDebug(msg);
                 });
                 return;
             }
@@ -820,19 +850,13 @@ let creditChangeAction = (learningplanid) => {
                 },
             }));
 
-            // Ajax.call returns an array of jQuery Deferreds (one per request).
             const promises = Ajax.call(calls);
             let pending = promises.length;
             let anyFail = false;
 
             const finish = () => {
                 updateDirtyState();
-                if (anyFail) {
-                    // Leave the save button enabled so the user can retry.
-                    if (btnRevertAll) {
-                        btnRevertAll.disabled = false;
-                    }
-                } else if (btnRevertAll) {
+                if (btnRevertAll) {
                     btnRevertAll.disabled = false;
                 }
             };
@@ -879,3 +903,4 @@ let creditChangeAction = (learningplanid) => {
 
     updateDirtyState();
 };
+creditChangeAction.lastInputCount = 0;
